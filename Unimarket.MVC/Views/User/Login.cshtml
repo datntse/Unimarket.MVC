@@ -1,0 +1,83 @@
+﻿@using Unimarket.MVC.Models.ViewModels
+@model LoginVM
+
+@{
+    ViewData["Title"] = "Login";
+    Layout = "";
+}
+<html>
+<head>
+    <title>Sign in</title>
+    <!-- <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css"> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <link rel="stylesheet" href="~/css/sign-in.css" /> 
+</head>
+<div class="container" id="container">
+    <h2>Đăng Nhập/Đăng Ký</h2>
+    <div class="container" id="container">
+        <div class="form-container sign-up-container">
+
+            <form action="auth" style="" method="post">
+                <input type="hidden" name="action" value="register" />
+                <div style="display: flex" class="form-control">
+                    <input class="form-control" type="text" placeholder="FirstName" name="firstName" required />
+                    <div id="name-message" style="color:red;font-size:11px"></div>
+                    <input style="margin-left: 5px" class="form-control" type="text" placeholder="LastName" name="lastName" required />
+                    <div id="name-message" style="color:red;font-size:11px"></div>
+
+                </div>
+                <input type="text" placeholder="Username" name="username" required />
+                <input type="email" placeholder="Email" name="email" required />
+
+                <input type="text" placeholder="Phone" name="phone" required />
+                <div id="phone-message" style="color:red;font-size:11px"></div>
+                <input type="password" placeholder="Password" name="password" id="password" required />
+                <div id="password-message" style="color:red;font-size:11px"></div>
+                <input type="password" placeholder="Confirm password" name="repass" id="confirmpassword" required />
+                <button type="submit" disabled="true">Đăng ký</button>
+            </form>
+        </div>
+        <div class="form-container sign-in-container">
+            <form asp-action="Login" method="post">
+                <h1>Đăng nhập</h1>
+
+                <div class="social-container">
+                    <a href="https://www.facebook.com/dialog/oauth?client_id=1509092289871952&redirect_uri=http://localhost:8080/FBK74/login-facebook" class="social"
+                       style="
+                       background-color: navy;
+                       color: white;
+                       "><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social" style="
+                       background-color: red;
+                       color: white;
+                       "><i class="fab fa-google-plus-g"></i></a>
+                </div>
+                <span>Sử dụng tài khoản mạng xã hội</span>
+                <input type="text" placeholder="UserName" name="UserName" required />
+                <input type="password" placeholder="Password" name="Password" required />
+                <a href="verify">Quên Mật Khẩu?</a>
+                <button type="submit">Đăng nhập</button>
+            </form>
+        </div>
+        @* <h5 style="color:red">${errorMessage}</h5> *@
+
+        <div class="overlay-container">
+            <div class="overlay">
+                <div class="overlay-panel overlay-left">
+                    <h1>Grammar Guardian- Giúp bạn cải thiện kỉ năng viết</h1>
+                    <p>Nhập thông tin cá nhân của bạn và bắt đầu hành trình với chúng tôi</p>
+                    <button class="ghost" id="signIn">Đăng Nhập</button>
+                </div>
+                <div class="overlay-panel overlay-right">
+                    <h1>Grammar Guardian</h1>
+                    <p>Nhập thông tin cá nhân của bạn và bắt đầu hành trình với chúng tôi</p>
+                    <button class="ghost" id="signUp">Đăng Ký</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/js/validate.js">
+</script>
+</html>
