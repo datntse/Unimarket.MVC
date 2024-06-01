@@ -40,11 +40,7 @@ namespace Unimarket.MVC.Controllers
             return View("Login");
         }
 
-        public IActionResult UserProfile()
-        {
-            return View();
-        }
-
+        
         [HttpGet]
         public IActionResult Login()
         {
