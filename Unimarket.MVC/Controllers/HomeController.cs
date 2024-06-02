@@ -1,27 +1,49 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System.Diagnostics;
+using System.Reflection;
+using System.Text;
 using Unimarket.MVC.Models;
+using Unimarket.MVC.Models.ViewModels;
+using Unimarket.MVC.Services;
 
 namespace Unimarket.MVC.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
+        private readonly IHttpClientFactory _factory;
+        private readonly ILogger<UserController> _logger;
+        private readonly HttpClient _client;
+        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly ICurrentUserService _currentUserService;
+        public HomeController(ILogger<HomeController> logger, IHttpClientFactory httpClientFactory,
+            IConfiguration configuration, ICurrentUserService currentUserService)
         {
-            _logger = logger;
+            _factory = httpClientFactory;
+            _client = new HttpClient();
+            _currentUserService = currentUserService;
+            _client = _factory.CreateClient("ServerApi");
+            _client.BaseAddress = new Uri(configuration["Cron:localhost"]);
         }
 
-        public IActionResult Index()
+
+
+        [HttpGet]
+        public async Task<IActionResult> Index()
         {
-            return View();
+
+            List<ProductVM> products = new List<ProductVM>();
+            var response = await _client.GetAsync(_client.BaseAddress + "Item");
+
+            if (response.IsSuccessStatusCode)
+            {
+                var data = await response.Content.ReadAsStringAsync();
+                products = JsonConvert.DeserializeObject<List<ProductVM>>(data);
+            }
+
+            return View(products);
         }
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
