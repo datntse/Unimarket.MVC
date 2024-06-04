@@ -1,7 +1,7 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
-@model IEnumerable<Unimarket.MVC.Models.ViewModels.ProductVM>
+@model Unimarket.MVC.Models.ViewModels.ProductVM;
 
 <section class="categories">
     <div class="container-fluid">
@@ -107,7 +107,7 @@
                     </div>
                 </div>
             </div>
-            @foreach(var item in Model){
+            @foreach(var item in Model.data){
                 <div class="col-lg-3 col-md-4 col-sm-6 mix men">
                     <div class="product__item">
                         <div class="product__item__pic set-bg" data-setbg="@item.ImageUrl">
