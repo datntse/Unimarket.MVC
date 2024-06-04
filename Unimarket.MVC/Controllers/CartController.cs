@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using System.Reflection;
 using System.Text;
 using Unimarket.MVC.Helpers;
+using Unimarket.MVC.Models.CreateModels;
 using Unimarket.MVC.Models.ViewModels;
 using Unimarket.MVC.Services;
 
@@ -30,30 +31,25 @@ namespace Unimarket.MVC.Controllers
             return View();
         }
 
-		[HttpPost]
-		public async Task<IActionResult> AddToCart(AddToCart item)
-		{
+        [HttpPost]
+        public async Task<IActionResult> AddToCart([FromBody] string itemId)
+        {
 			var userId = HttpContext.Session.GetString("UserId");
-
-			if (userId == null)
-			{
-				return Json(new { success = false, message = "User is not logged in." });
-			}
-
+			AddItemToCart item = new AddItemToCart();
 			item.UserId = userId;
-
-			var jsonContent = JsonConvert.SerializeObject(item);
-			var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
-
-			var response = await _client.PostAsync("Cart", content);
-
+			item.ItemId = itemId;
+			var response = await _client.PostAsync(_client.BaseAddress + "Cart", new StringContent(
+					JsonConvert.SerializeObject(item),
+					Encoding.UTF8,
+					"application/json"));
 			if (response.IsSuccessStatusCode)
 			{
-				return Json(new { success = true, message = "Item added to cart successfully!" });
+				ViewBag.SuccessMessage = "Registration successful!";
+				return Ok(response);
 			}
 			else
 			{
-				return Json(new { success = false, message = "Failed to add item to cart. Please try again." });
+				return BadRequest(new { success = false, message = "Failed to add item to cart. Please try again." });
 			}
 		}
 	}
