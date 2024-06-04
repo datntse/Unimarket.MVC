@@ -1,7 +1,7 @@
 ﻿@{
     ViewData["Title"] = "Product Detail Page";
 }
-
+@model Unimarket.MVC.Models.ViewModels.ProductDTO
 <div class="breadcrumb-option">
     <div class="container">
         <div class="row">
@@ -9,7 +9,7 @@
                 <div class="breadcrumb__links">
                     <a href="@Url.Action("Index","Home")"><i class="fa fa-home"></i> Home</a>
                     <a href="#">Áo</a>
-                    <span>Essential structured blazer</span>
+                    <span>@Model.Name</span>
                 </div>
             </div>
         </div>
@@ -24,70 +24,80 @@
                 <div class="product__details__pic">
                     <div class="product__details__pic__left product__thumb nice-scroll">
                         <a class="pt active" href="#product-1">
-                            <img src="img/product/details/thumb-1.jpg" alt="">
+                            <img src="@Model.ImageUrl" alt="">
                         </a>
-                        <a class="pt" href="#product-2">
-                            <img src="img/product/details/thumb-2.jpg" alt="">
-                        </a>
-                        <a class="pt" href="#product-3">
-                            <img src="img/product/details/thumb-3.jpg" alt="">
-                        </a>
-                        <a class="pt" href="#product-4">
-                            <img src="img/product/details/thumb-4.jpg" alt="">
-                        </a>
+                        @{
+                            int productImage = 2;
+                            int productImage_link = 2;
+                        }
+                        @foreach(var item in Model.SubImageUrl)
+                        {
+                            <a class="pt" href="#product-@productImage">
+                                <img src="@item" alt="">
+                            </a>
+                            productImage++;
+
+                        }
                     </div>
                     <div class="product__details__slider__content">
                         <div class="product__details__pic__slider owl-carousel">
-                            <img data-hash="product-1" class="product__big__img" src="img/product/details/product-1.jpg" alt="">
-                            <img data-hash="product-2" class="product__big__img" src="img/product/details/product-3.jpg" alt="">
-                            <img data-hash="product-3" class="product__big__img" src="img/product/details/product-2.jpg" alt="">
-                            <img data-hash="product-4" class="product__big__img" src="img/product/details/product-4.jpg" alt="">
+                            <img data-hash="product-1" class="product__big__img" src="@Model.ImageUrl" alt="">
+                            @foreach (var item in Model.SubImageUrl)
+                            {
+                                <img data-hash="product-@productImage_link" class="product__big__img" src="@item" alt="">
+                                productImage_link++;
+                            }
+                           
                         </div>
                     </div>
                 </div>
             </div>
             <div class="col-lg-6">
                 <div class="product__details__text">
-                    <h3>Essential structured blazer <span>Brand: SKMEIMore Men Watches from SKMEI</span></h3>
-                    <div class="rating">
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <span>( 138 reviews )</span>
-                    </div>
-                    <div class="product__details__price">$ 75.0 <span>$ 83.0</span></div>
+                    <h3>@Model.Name <span>Brand: @foreach(var item in Model.CategoryName){@item}</span></h3>
+                    @* <div class="product__details__price">$ 75.0 <span>$ 83.0</span></div> *@ 
+                    <div class="product__details__price">@Model.Price VND</div>
                     <p>
-                        Nemo enim ipsam voluptatem quia aspernatur aut odit aut loret fugit, sed quia consequuntur
-                        magni lores eos qui ratione voluptatem sequi nesciunt.
+                        @Model.Description
                     </p>
                     <div class="product__details__button">
                         <div class="quantity">
-                            <span>Quantity:</span>
+                            <span>Số lượng:</span>
                             <div class="pro-qty">
                                 <input type="text" value="1">
                             </div>
                         </div>
                         <a href="#" class="cart-btn"><span class="icon_bag_alt"></span> Add to cart</a>
-                        <ul>
+                        @* <ul>
                             <li><a href="#"><span class="icon_heart_alt"></span></a></li>
                             <li><a href="#"><span class="icon_adjust-horiz"></span></a></li>
-                        </ul>
+                        </ul> *@
                     </div>
                     <div class="product__details__widget">
                         <ul>
-                            <li>
-                                <span>Availability:</span>
-                                <div class="stock__checkbox">
-                                    <label for="stockin">
-                                        In Stock
-                                        <input type="checkbox" id="stockin">
-                                        <span class="checkmark"></span>
-                                    </label>
-                                </div>
-                            </li>
-                            <li>
+                            @if(Model.Status == 0)
+                            {
+                                <li>
+                                    <span>Trạng thái: </span>
+                                    <div class="stock__checkbox">
+                                        <label for="stockin">Còn hàng
+                                        </label>
+                                    </div>
+                                </li>
+                            }
+                            else
+                            {
+                                <li>
+                                    <span>Trạng thái: </span>
+                                    <div class="stock__checkbox">
+                                        <label for="stockin" style="color:red;">Hết hàng
+                                            <input type="checkbox" id="stockin">
+                                            <span class="checkmark"></span>
+                                        </label>
+                                    </div>
+                                </li>
+                            }
+                            @* <li>
                                 <span>Available color:</span>
                                 <div class="color__checkbox">
                                     <label for="red">
@@ -103,7 +113,7 @@
                                         <span class="checkmark grey-bg"></span>
                                     </label>
                                 </div>
-                            </li>
+                            </li> *@
                             <li>
                                 <span>Available size:</span>
                                 <div class="size__btn">
@@ -139,16 +149,16 @@
                         <li class="nav-item">
                             <a class="nav-link active" data-toggle="tab" href="#tabs-1" role="tab">Description</a>
                         </li>
-                        <li class="nav-item">
+                        @* <li class="nav-item">
                             <a class="nav-link" data-toggle="tab" href="#tabs-2" role="tab">Specification</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" data-toggle="tab" href="#tabs-3" role="tab">Reviews ( 2 )</a>
-                        </li>
+                        </li> *@
                     </ul>
                     <div class="tab-content">
                         <div class="tab-pane active" id="tabs-1" role="tabpanel">
-                            <h6>Description</h6>
+                            <h6>Chi tiết</h6>
                             <p>
                                 Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut loret fugit, sed
                                 quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt loret.
@@ -164,7 +174,7 @@
                                 quis, sem.
                             </p>
                         </div>
-                        <div class="tab-pane" id="tabs-2" role="tabpanel">
+                        @* <div class="tab-pane" id="tabs-2" role="tabpanel">
                             <h6>Specification</h6>
                             <p>
                                 Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut loret fugit, sed
@@ -197,12 +207,12 @@
                                 nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium
                                 quis, sem.
                             </p>
-                        </div>
+                        </div> *@
                     </div>
                 </div>
             </div>
         </div>
-        <div class="row">
+        @* <div class="row">
             <div class="col-lg-12 text-center">
                 <div class="related__title">
                     <h5>RELATED PRODUCTS</h5>
@@ -298,6 +308,6 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> *@
     </div>
 </section>

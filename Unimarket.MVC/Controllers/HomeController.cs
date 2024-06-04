@@ -30,7 +30,7 @@ namespace Unimarket.MVC.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> Index(Helpers.DefaultSearch defaultSearch)
+        public async Task<IActionResult> Index(DefaultSearch defaultSearch)
         {
 
             ResponseProductVM productList = new ResponseProductVM();

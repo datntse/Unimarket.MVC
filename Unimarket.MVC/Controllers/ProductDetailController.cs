@@ -1,4 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using Unimarket.MVC.Helpers;
+using Unimarket.MVC.Models.ViewModels;
 using Unimarket.MVC.Services;
 
 namespace Unimarket.MVC.Controllers
@@ -20,9 +23,18 @@ namespace Unimarket.MVC.Controllers
 			_client.BaseAddress = new Uri(configuration["Cron:localhost"]);
 		}
 		[HttpGet("{id}")]
-		public IActionResult Index(string id)
+		public async Task<IActionResult> Index(string id)
         {
-            return View();
-        }
+			ProductDTO productList = new ProductDTO();
+			var response = await _client.GetAsync(_client.BaseAddress + $"Item/get/{id}");
+
+			if (response.IsSuccessStatusCode)
+			{
+				var data = await response.Content.ReadAsStringAsync();
+				productList = JsonConvert.DeserializeObject<ProductDTO>(data);
+			}
+
+			return View(productList);
+		}
     }
 }

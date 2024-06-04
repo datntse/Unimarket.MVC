@@ -3,15 +3,8 @@
     public class ResponseProductVM
     {
         public int Total { get; set; }
-        public List<ProductVM> Data { get; set; }
+        public List<ProductDTO> Data { get; set; }
         public int CurrentPage { get; set; }
-    }
-    public class ProductVM
-    {
-        public int total { get; set; }
-        public int currentPage { get; set; }
-		public List<ProductDTO> data { get; set; }
-  
     }
 
     public class ProductDTO
