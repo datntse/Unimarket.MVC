@@ -22,7 +22,7 @@ namespace Unimarket.MVC.Controllers
 			_client = _factory.CreateClient("ServerApi");
 			_client.BaseAddress = new Uri(configuration["Cron:localhost"]);
 		}
-		[HttpGet("{id}")]
+		[HttpGet]
 		public async Task<IActionResult> Index(string id)
         {
 			ProductVM productList = new ProductVM();

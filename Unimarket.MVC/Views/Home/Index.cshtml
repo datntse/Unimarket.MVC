@@ -111,12 +111,12 @@
 							<div class="product__item__pic set-bg" data-setbg="@item.ImageUrl">
 								<ul class="product__hover">
 									<li><a href="@item.ImageUrl" class="image-popup"><span class="arrow_expand"></span></a></li>
-									<li><a asp-action="Index" asp-controller="ProductDetail" asp-route-id="@item.Id"><span class="icon_search"></span></a></li>
+									<li><a asp-controller="ProductDetail" asp-action="Index" asp-route-id="@item.Id"><span class="icon_search"></span></a></li>
 									<li><a href="#"><span class="icon_bag_alt"></span></a></li>
 								</ul>
 							</div>
 							<div class="product__item__text">
-								<h6><a href="#">@item.Name</a></h6>
+								<h6>@item.Name</h6>
 								<div class="rating">
 									<i class="fa fa-star"></i>
 									<i class="fa fa-star"></i>

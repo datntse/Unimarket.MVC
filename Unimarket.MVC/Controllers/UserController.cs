@@ -88,17 +88,23 @@ namespace Unimarket.MVC.Controllers
                 // Redirect user to the home page or another appropriate page
 
                 _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenResponse.Token);
-                var user = await _currentUserService.User();
-                if (user != null)
-                {
-                    HttpContext.Session.SetString("UserId", user.Id.ToString());
-                }
 
                 var handler = new JwtSecurityTokenHandler();
                 var token = handler.ReadJwtToken(tokenResponse.Token);
 
-                // Extract role claims
-                var roleClaims = token.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value).ToList();
+                //var userId = await _currentUserService.User();
+                //if (userId != null)
+                //{
+                //	HttpContext.Session.SetString("UserId", userId);
+                //}
+                var userId = token.Claims.Where(c => c.Type == ClaimTypes.UserData).Select(c => c.Value).FirstOrDefault();
+
+				if (userId != null)
+                {
+                    HttpContext.Session.SetString("UserId", userId);
+                }
+				// Extract role claims
+				var roleClaims = token.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value).ToList();
                 foreach (var role in roleClaims)
                 {
                     if (role.Equals(AppRole.Admin))

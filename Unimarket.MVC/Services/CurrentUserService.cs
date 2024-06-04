@@ -6,7 +6,7 @@ namespace Unimarket.MVC.Services
 
     public interface ICurrentUserService
     {
-        Task<UserModel> User();
+        Task<String> User();
     }
 
     public class CurrentUserService : ICurrentUserService
@@ -23,13 +23,13 @@ namespace Unimarket.MVC.Services
 
         }
 
-        public async Task<UserModel> User()
+        public async Task<String> User()
         {
-            var response = await _client.GetAsync(_client.BaseAddress + "User/GetUser");
+            var response = await _client.GetAsync(_client.BaseAddress + "auth/getUserId");
             if (response.IsSuccessStatusCode)
             {
                 var responseContent = await response.Content.ReadAsStringAsync();
-                var user = JsonConvert.DeserializeObject<UserModel>(responseContent);
+                var user = JsonConvert.DeserializeObject<String>(responseContent);
                 return user;
             }
             else

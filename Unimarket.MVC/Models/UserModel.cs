@@ -9,7 +9,6 @@ namespace Unimarket.MVC.Models
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;
         public DateTime Birthday { get; set; }
-
     }
 
     public class UserRolseResponse
