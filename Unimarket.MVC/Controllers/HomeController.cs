@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using System.Diagnostics;
 using System.Reflection;
 using System.Text;
+using Unimarket.MVC.Helpers;
 using Unimarket.MVC.Models;
 using Unimarket.MVC.Models.ViewModels;
 using Unimarket.MVC.Services;
@@ -29,19 +30,19 @@ namespace Unimarket.MVC.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(Helpers.DefaultSearch defaultSearch)
         {
 
-            List<ProductVM> products = new List<ProductVM>();
-            var response = await _client.GetAsync(_client.BaseAddress + "Item");
+            ResponseProductVM productList = new ResponseProductVM();
+            var response = await _client.GetAsync(_client.BaseAddress + $"Item?perPage={defaultSearch.perPage = 8}");
 
             if (response.IsSuccessStatusCode)
             {
                 var data = await response.Content.ReadAsStringAsync();
-                products = JsonConvert.DeserializeObject<List<ProductVM>>(data);
+                productList = JsonConvert.DeserializeObject<ResponseProductVM>(data);
             }
 
-            return View(products);
+            return View(productList);
         }
 
 

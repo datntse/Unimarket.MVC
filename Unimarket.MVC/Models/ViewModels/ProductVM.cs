@@ -1,5 +1,11 @@
 ﻿namespace Unimarket.MVC.Models.ViewModels
 {
+    public class ResponseProductVM
+    {
+        public int Total { get; set; }
+        public List<ProductVM> Data { get; set; }
+        public int CurrentPage { get; set; }
+    }
     public class ProductVM
     {
         public string Id { get; set; }
