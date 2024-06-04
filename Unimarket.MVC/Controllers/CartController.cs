@@ -49,9 +49,8 @@ namespace Unimarket.MVC.Controllers
 			}
 			else
 			{
-				ViewBag.ErrorMessage = "Please try again.";
-				return RedirectToAction("Index","Home");
+				return Json(new { success = false, message = "Failed to add item to cart. Please try again." });
 			}
 		}
-    }
+	}
 }
