@@ -8,7 +8,7 @@
             <div class="col-lg-12">
                 <div class="breadcrumb__links">
                     <a href="@Url.Action("Index","Home")"><i class="fa fa-home"></i> Home</a>
-                    <a href="#">Áo</a>
+                    <a href="#">@foreach (var item in Model.CategoryName) { @item}</a>
                     <span>@Model.Name</span>
                 </div>
             </div>
@@ -56,7 +56,7 @@
                 <div class="product__details__text">
                     <h3>@Model.Name <span>Brand: @foreach(var item in Model.CategoryName){@item}</span></h3>
                     @* <div class="product__details__price">$ 75.0 <span>$ 83.0</span></div> *@ 
-                    <div class="product__details__price">@Model.Price VND</div>
+                    <div class="product__details__price">@string.Format("{0:#,0}", Model.Price)đ</div>
                     <p>
                         @Model.ProductDetail
                     </p>
