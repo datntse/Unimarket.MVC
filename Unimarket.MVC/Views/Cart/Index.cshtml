@@ -1,7 +1,7 @@
 ﻿@{
     ViewData["Title"] = "Cart Page";
 }
-
+@model Unimarket.MVC.Models.ViewModels.ResponseCartVM
 <div class="breadcrumb-option">
     <div class="container">
         <div class="row">
@@ -31,98 +31,29 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td class="cart__product__item">
-                                    <img src="img/shop-cart/cp-1.jpg" alt="">
-                                    <div class="cart__product__item__title">
-                                        <h6>Chain bucket bag</h6>
-                                        <div class="rating">
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
+                            @foreach(var item in Model.Data)
+                            {
+                                <tr>
+                                    <td class="cart__product__item">
+                                        <img src="@item.Item.ImageUrl" width="90px" height="90px" alt="">
+                                        <div class="cart__product__item__title">
+                                            <h6>@item.Item.Name</h6>
                                         </div>
-                                    </div>
-                                </td>
-                                <td class="cart__price">$ 150.0</td>
-                                <td class="cart__quantity">
-                                    <div class="pro-qty">
-                                        <input type="text" value="1">
-                                    </div>
-                                </td>
-                                <td class="cart__total">$ 300.0</td>
-                                <td class="cart__close"><span class="icon_close"></span></td>
-                            </tr>
-                            <tr>
-                                <td class="cart__product__item">
-                                    <img src="img/shop-cart/cp-2.jpg" alt="">
-                                    <div class="cart__product__item__title">
-                                        <h6>Zip-pockets pebbled tote briefcase</h6>
-                                        <div class="rating">
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
+                                    </td>
+                                    <td class="cart__price">@string.Format("{0:#,0}", item.Item.Price)đ</td>
+                                    <td class="cart__quantity">
+                                        <div class="pro-qty">
+                                            <input type="text" value="@item.Quantity">
                                         </div>
-                                    </div>
-                                </td>
-                                <td class="cart__price">$ 170.0</td>
-                                <td class="cart__quantity">
-                                    <div class="pro-qty">
-                                        <input type="text" value="1">
-                                    </div>
-                                </td>
-                                <td class="cart__total">$ 170.0</td>
-                                <td class="cart__close"><span class="icon_close"></span></td>
-                            </tr>
-                            <tr>
-                                <td class="cart__product__item">
-                                    <img src="img/shop-cart/cp-3.jpg" alt="">
-                                    <div class="cart__product__item__title">
-                                        <h6>Black jean</h6>
-                                        <div class="rating">
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="cart__price">$ 85.0</td>
-                                <td class="cart__quantity">
-                                    <div class="pro-qty">
-                                        <input type="text" value="1">
-                                    </div>
-                                </td>
-                                <td class="cart__total">$ 170.0</td>
-                                <td class="cart__close"><span class="icon_close"></span></td>
-                            </tr>
-                            <tr>
-                                <td class="cart__product__item">
-                                    <img src="img/shop-cart/cp-4.jpg" alt="">
-                                    <div class="cart__product__item__title">
-                                        <h6>Cotton Shirt</h6>
-                                        <div class="rating">
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="cart__price">$ 55.0</td>
-                                <td class="cart__quantity">
-                                    <div class="pro-qty">
-                                        <input type="text" value="1">
-                                    </div>
-                                </td>
-                                <td class="cart__total">$ 110.0</td>
-                                <td class="cart__close"><span class="icon_close"></span></td>
-                            </tr>
+                                    </td>
+                                    <td class="cart__total">@string.Format("{0:#,0}", item.Item.Price * item.Quantity)đ</td>
+                                    <td class="cart__close">
+                                        <a class="delete-item" data-item-id="@item.ItemId" href="#">
+                                            <span class="icon_close"></span>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
                         </tbody>
                     </table>
                 </div>
@@ -131,7 +62,7 @@
         <div class="row">
             <div class="col-lg-6 col-md-6 col-sm-6">
                 <div class="cart__btn">
-                    <a href="#">Tiếp tục mua sắm</a>
+                    <a href="@Url.Action("Index","Home")">Tiếp tục mua sắm</a>
                 </div>
             </div>
             <div class="col-lg-6 col-md-6 col-sm-6">
