@@ -25,13 +25,13 @@ namespace Unimarket.MVC.Controllers
 		[HttpGet("{id}")]
 		public async Task<IActionResult> Index(string id)
         {
-			ProductDTO productList = new ProductDTO();
+			ProductVM productList = new ProductVM();
 			var response = await _client.GetAsync(_client.BaseAddress + $"Item/get/{id}");
 
 			if (response.IsSuccessStatusCode)
 			{
 				var data = await response.Content.ReadAsStringAsync();
-				productList = JsonConvert.DeserializeObject<ProductDTO>(data);
+				productList = JsonConvert.DeserializeObject<ProductVM>(data);
 			}
 
 			return View(productList);

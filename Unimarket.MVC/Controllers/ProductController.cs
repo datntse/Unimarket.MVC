@@ -1,12 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using Unimarket.MVC.Models.CreateModels;
 using Unimarket.MVC.Models.ViewModels;
 using Unimarket.MVC.Services;
-using System.Web;
-using System.Reflection;
 using System.Text;
-using System.Security.Cryptography.X509Certificates;
+using Unimarket.MVC.Models.CreateModels;
+using System.Reflection.Metadata.Ecma335;
 
 namespace Unimarket.MVC.Controllers
 {
@@ -45,7 +43,7 @@ namespace Unimarket.MVC.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddProduct(ItemCM itemCM, IFormFile mainImage, IFormFile subImage_1, IFormFile subImage_2, IFormFile subImage_3)
+        public async Task<IActionResult> AddProduct(ProductCM productCM, IFormFile mainImage, IFormFile subImage_1, IFormFile subImage_2, IFormFile subImage_3)
         {
             List<IFormFile> files = new List<IFormFile>();
             files.Add(mainImage);
@@ -60,29 +58,28 @@ namespace Unimarket.MVC.Controllers
             listImage.RemoveAt(3);
 
             List<String> category = new List<String>();
-            category.Add(itemCM.CategoryId);
-            ItemDTO itemDTO = new ItemDTO
+            category.Add(productCM.CategoryId);
+            ProductDTO productDTO = new ProductDTO
             {
                 CategoryId = category,
                 ImageUrl = mainIamge,
-                Quantity = itemCM.Quantity,
-                Description = itemCM.Description,
-                Name = itemCM.Name,
+                Quantity = productCM.Quantity,
+                Description = productCM.Description,
+                ProductDetail = productCM.ProductDetail,
+                Name = productCM.Name,
                 Id = Guid.NewGuid(),
-                Price = itemCM.Price,
+                Price = productCM.Price,
                 SubImageUrl = listImage.ToList()
             };
 
             var response = await _client.PostAsync(_client.BaseAddress + "Item",
                 new StringContent(
-                    JsonConvert.SerializeObject(itemDTO),
+                    JsonConvert.SerializeObject(productDTO),
                     Encoding.UTF8,
                     "application/json"));
             if (response.IsSuccessStatusCode)
             {
-                //var data = await response.Content.ReadAsStringAsync();au
-                //var result = JsonConvert.DeserializeObject<ProductVM>(data);
-                return View(null);
+                return RedirectToAction("Index");
             }
             return View();
         }

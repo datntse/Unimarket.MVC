@@ -1,7 +1,7 @@
 ﻿@{
     ViewData["Title"] = "Product Detail Page";
 }
-@model Unimarket.MVC.Models.ViewModels.ProductDTO
+@model Unimarket.MVC.Models.ViewModels.ProductVM
 <div class="breadcrumb-option">
     <div class="container">
         <div class="row">
@@ -58,7 +58,7 @@
                     @* <div class="product__details__price">$ 75.0 <span>$ 83.0</span></div> *@ 
                     <div class="product__details__price">@Model.Price VND</div>
                     <p>
-                        @Model.Description
+                        @Model.ProductDetail
                     </p>
                     <div class="product__details__button">
                         <div class="quantity">
@@ -159,20 +159,7 @@
                     <div class="tab-content">
                         <div class="tab-pane active" id="tabs-1" role="tabpanel">
                             <h6>Chi tiết</h6>
-                            <p>
-                                Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut loret fugit, sed
-                                quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt loret.
-                                Neque porro lorem quisquam est, qui dolorem ipsum quia dolor si. Nemo enim ipsam
-                                voluptatem quia voluptas sit aspernatur aut odit aut loret fugit, sed quia ipsu
-                                consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Nulla
-                                consequat massa quis enim.
-                            </p>
-                            <p>
-                                Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget
-                                dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes,
-                                nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium
-                                quis, sem.
-                            </p>
+                            @Html.Raw(Model.Description)
                         </div>
                         @* <div class="tab-pane" id="tabs-2" role="tabpanel">
                             <h6>Specification</h6>
