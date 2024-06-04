@@ -30,25 +30,21 @@ namespace Unimarket.MVC.Controllers
             return View();
         }
 
-        [HttpGet]
-        public async Task<IActionResult> AddToCart(string itemId)
-        {
+		[HttpPost]
+		public async Task<IActionResult> AddToCart(string itemId)
+		{
 			var response = await _client.PostAsync(_client.BaseAddress + "Cart", new StringContent(
 					JsonConvert.SerializeObject(itemId),
 					Encoding.UTF8,
 					"application/json"));
 			if (response.IsSuccessStatusCode)
 			{
-				ViewBag.SuccessMessage = "Registration successful!";
-
-
-				return View();
+				return Json(new { success = true, message = "Item added to cart successfully!" });
 			}
 			else
 			{
-				ViewBag.ErrorMessage = "Please try again.";
-				return RedirectToAction("Index","Home");
+				return Json(new { success = false, message = "Failed to add item to cart. Please try again." });
 			}
 		}
-    }
+	}
 }
