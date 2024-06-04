@@ -31,12 +31,22 @@ namespace Unimarket.MVC.Controllers
         }
 
 		[HttpPost]
-		public async Task<IActionResult> AddToCart(string itemId)
+		public async Task<IActionResult> AddToCart(AddToCart item)
 		{
-			var response = await _client.PostAsync(_client.BaseAddress + "Cart", new StringContent(
-					JsonConvert.SerializeObject(itemId),
-					Encoding.UTF8,
-					"application/json"));
+			var userId = HttpContext.Session.GetString("UserId");
+
+			if (userId == null)
+			{
+				return Json(new { success = false, message = "User is not logged in." });
+			}
+
+			item.UserId = userId;
+
+			var jsonContent = JsonConvert.SerializeObject(item);
+			var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+			var response = await _client.PostAsync("Cart", content);
+
 			if (response.IsSuccessStatusCode)
 			{
 				return Json(new { success = true, message = "Item added to cart successfully!" });

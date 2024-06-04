@@ -92,10 +92,11 @@
 									<li><a href="@item.ImageUrl" class="image-popup"><span class="arrow_expand"></span></a></li>
 									<li><a asp-controller="ProductDetail" asp-action="Index" asp-route-id="@item.Id"><span class="icon_search"></span></a></li>
 									<li>
-										<form id="addToCartForm-@item.Id" asp-controller="Cart" asp-action="AddToCart" asp-route-itemId="@item.Id" method="post">
-											<a href="#" onclick="submitAddToCartForm('@item.Id'); return false;">
-												<span class="icon_bag_alt"></span>
-											</a>
+										<form asp-controller="Cart" asp-action="AddToCart" method="post">
+											<input type="hidden" name="ItemId" value="@item.Id" />
+											<button type="submit">
+												<span class="icon_bag_alt"></span> Add to Cart
+											</button>
 										</form>
 									</li>
 								</ul>
@@ -427,28 +428,3 @@
 	</div>
 </section>
 <!-- Services Section End -->
-@section Scripts{
-	<script>
-		function submitAddToCartForm(itemId) {
-			var form = $('#addToCartForm-' + itemId);
-			var url = form.attr('action');
-			var formData = form.serialize();
-
-			$.ajax({
-				type: "POST",
-				url: url,
-				data: formData,
-				success: function (response) {
-					if (response.success) {
-						alert(response.message);
-					} else {
-						alert(response.message);
-					}
-				},
-				error: function () {
-					alert('Failed to add item to cart. Please try again.');
-				}
-			});
-		}
-	</script>
-}
