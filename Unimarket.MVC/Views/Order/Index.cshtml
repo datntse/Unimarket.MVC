@@ -1,6 +1,12 @@
 ﻿@{
     Layout = "";
+    int countStatus1 = Model.Data != null ? Model.Data.Count(item => item.Status == 1) : 0;
+    int countStatus2 = Model.Data != null ? Model.Data.Count(item => item.Status == 2) : 0;
+    int countStatus3 = Model.Data != null ? Model.Data.Count(item => item.Status == 3) : 0;
+    int number = 1;
+    int number2 = 1;
 }
+@model Unimarket.MVC.Models.ViewModels.ResponseOrder
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,12 +17,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
 
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <!-- Favicon -->
-    <link rel="shortcut icon" href="public/img/favicon.ico">
+    <link rel="shortcut icon" href="~/public/img/favicon.ico">
 
 
     <!-- DEMO CHARTS -->
-
     <!-- Template -->
     <link rel="stylesheet" href="public/graindashboard/css/graindashboard.css">
 
@@ -155,7 +163,7 @@
                         <span class="side-nav-fadeout-on-closed media-body">Documentation</span>
                     </a>
                 </li>
-                
+
             </ul>
         </aside>
         <!-- End Sidebar Nav -->
@@ -168,6 +176,7 @@
                 </div>
 
                 <div class="row">
+
                     <div class="col-md-6 col-xl-4 mb-3 mb-xl-4">
                         <!-- Widget -->
                         <div class="card flex-row align-items-center p-3 p-md-4">
@@ -176,7 +185,7 @@
                             </div>
                             <div>
                                 <h4 class="lh-1 mb-1">Đơn hàng chờ lấy</h4>
-                                <h6 class="mb-0">100</h6>
+                                <h6 class="mb-0">@countStatus1 Đơn</h6>
                             </div>
                             <i class="gd-arrow-up icon-text d-flex text-success ml-auto"></i>
                         </div>
@@ -191,7 +200,7 @@
                             </div>
                             <div>
                                 <h4 class="lh-1 mb-1">Đơn hàng vận chuyền</h4>
-                                <h6 class="mb-0">200 Đơn</h6>
+                                <h6 class="mb-0">@countStatus2 Đơn</h6>
                             </div>
                             <i class="gd-arrow-down icon-text d-flex text-danger ml-auto"></i>
                         </div>
@@ -206,7 +215,7 @@
                             </div>
                             <div>
                                 <h4 class="lh-1 mb-1">Đơn hàng đã giao</h4>
-                                <h6 class="mb-0">100</h6>
+                                <h6 class="mb-0">@countStatus3 Đơn</h6>
                             </div>
                             <i class="gd-arrow-up icon-text d-flex text-success ml-auto"></i>
                         </div>
@@ -235,244 +244,85 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-                                                <td class="py-3">149531</td>
-                                                <td class="py-3">
-                                                    <div>John Doe</div>
-                                                    <div class="text-muted">Acme Inc.</div>
-                                                </td>
-                                                <td class="py-3">(000) 111-1234</td>
-                                                <td class="py-3">$1,230.00</td>
-                                                <td class="py-3">
-                                                    <span class="badge badge-pill badge-warning">Pending</span>
-                                                </td>
-                                                <td class="py-3">
-                                                    <div class="position-relative">
-                                                        <a id="dropDown16Invoker" class="link-dark d-flex" href="#" aria-controls="dropDown16" aria-haspopup="true" aria-expanded="false" data-unfold-target="#dropDown16" data-unfold-event="click" data-unfold-type="css-animation" data-unfold-duration="300" data-unfold-animation-in="fadeIn" data-unfold-animation-out="fadeOut">
-                                                            <i class="gd-more-alt icon-text"></i>
-                                                        </a>
+                                            @foreach (var item in Model.Data)
+                                            {
+                                               
+                                                <tr>
+                                                    <td class="py-3">
+                                                        <div style="text-wrap: wrap;
+                                                        max-height: 40px;
+                                                        width: 60px;
+                                                        text-overflow: ellipsis;
+                                                        word-wrap: break-word;
+                                                        overflow: hidden;
+                                                        display: -webkit-box;
+                                                        -webkit-line-clamp: 1;
+                                                        -webkit-box-orient: vertical;">
+                                                            @item.Id
+                                                        </div>
+                                                    </td>
+                                                    <td class="py-3">
+                                                        <div>@(item.FirstName + item.LastName)</div>
+                                                        <div class="text-muted">@item.Username</div>
+                                                    </td>
+                                                    <td class="py-3">@item.PhoneNumber</td>
+                                                    <td class="py-3">@string.Format("{0:#,0}", item.TotalPrice)đ</td>
+                                                    <td class="py-3">
+                                                        @if (item.Status == 0)
+                                                        {
+                                                            <span class="badge badge-pill badge-light">Chờ lấy hàng</span>
+                                                        }
+                                                        @if (item.Status == 1)
+                                                        {
+                                                            <span class="badge badge-pill badge-warning">Vận chuyển</span>
+                                                        }
+                                                        @if (item.Status == 2)
+                                                        {
+                                                            <span class="badge badge-pill badge-success">Thành công</span>
+                                                        }
+                                                        @if (item.Status == 3)
+                                                        {
+                                                            <span class="badge badge-pill badge-danger">Thất bại</span>
+                                                        }
+                                                    </td>
+                                                    <td class="py-3">
+                                                        <div class="position-relative">
+                                                            <a id="dropDown16Invoker" class="link-dark d-flex" href="#" aria-controls="dropDown16" aria-haspopup="true" aria-expanded="false" data-unfold-target="#dropDown16-@number2" data-unfold-event="click" data-unfold-type="css-animation" data-unfold-duration="300" data-unfold-animation-in="fadeIn" data-unfold-animation-out="fadeOut">
+                                                                <i class="gd-more-alt icon-text"></i>
+                                                            </a>
 
-                                                        <ul id="dropDown16" class="unfold unfold-light unfold-top unfold-right position-absolute py-3 mt-1 unfold-css-animation unfold-hidden fadeOut" aria-labelledby="dropDown16Invoker" style="min-width: 150px; animation-duration: 300ms; right: 0px;">
-                                                            <li class="unfold-item">
-                                                                <a class="unfold-link media align-items-center text-nowrap" href="#">
-                                                                    <i class="gd-pencil unfold-item-icon mr-3"></i>
-                                                                    <span class="media-body">Xác nhận</span>
-                                                                </a>
-                                                            </li>
-                                                            <li class="unfold-item">
-                                                                <a class="unfold-link media align-items-center text-nowrap" href="#">
-                                                                    <i class="gd-close unfold-item-icon mr-3"></i>
-                                                                    <span class="media-body">Từ chối</span>
-                                                                </a>
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td class="py-3">149531</td>
-                                                <td class="py-3">
-                                                    <div>John Doe</div>
-                                                    <div class="text-muted">Acme Inc.</div>
-                                                </td>
-                                                <td class="py-3">(000) 111-1234</td>
-                                                <td class="py-3">$1,230.00</td>
-                                                <td class="py-3">
-                                                    <span class="badge badge-pill badge-success">Fulfilled</span>
-                                                </td>
-                                                <td class="py-3">
-                                                    <div class="position-relative">
-                                                        <a id="dropDown15Invoker" class="link-dark d-flex" href="#" aria-controls="dropDown15" aria-haspopup="true" aria-expanded="false" data-unfold-target="#dropDown15" data-unfold-event="click" data-unfold-type="css-animation" data-unfold-duration="300" data-unfold-animation-in="fadeIn" data-unfold-animation-out="fadeOut">
-                                                            <i class="gd-more-alt icon-text"></i>
-                                                        </a>
-
-                                                        <ul id="dropDown15" class="unfold unfold-light unfold-top unfold-right position-absolute py-3 mt-1 unfold-css-animation unfold-hidden fadeOut" aria-labelledby="dropDown15Invoker" style="min-width: 150px; animation-duration: 300ms; right: 0px;">
-                                                            <li class="unfold-item">
-                                                                <a class="unfold-link media align-items-center text-nowrap" href="#">
-                                                                    <i class="gd-pencil unfold-item-icon mr-3"></i>
-                                                                    <span class="media-body">Edit</span>
-                                                                </a>
-                                                            </li>
-                                                            <li class="unfold-item">
-                                                                <a class="unfold-link media align-items-center text-nowrap" href="#">
-                                                                    <i class="gd-close unfold-item-icon mr-3"></i>
-                                                                    <span class="media-body">Delete</span>
-                                                                </a>
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td class="py-3">149531</td>
-                                                <td class="py-3">
-                                                    <div>John Doe</div>
-                                                    <div class="text-muted">Acme Inc.</div>
-                                                </td>
-                                                <td class="py-3">(000) 111-1234</td>
-                                                <td class="py-3">$1,230.00</td>
-                                                <td class="py-3">
-                                                    <span class="badge badge-pill badge-warning">Pending</span>
-                                                </td>
-                                                <td class="py-3">
-                                                    <div class="position-relative">
-                                                        <a id="dropDown14Invoker" class="link-dark d-flex" href="#" aria-controls="dropDown14" aria-haspopup="true" aria-expanded="false" data-unfold-target="#dropDown14" data-unfold-event="click" data-unfold-type="css-animation" data-unfold-duration="300" data-unfold-animation-in="fadeIn" data-unfold-animation-out="fadeOut">
-                                                            <i class="gd-more-alt icon-text"></i>
-                                                        </a>
-
-                                                        <ul id="dropDown14" class="unfold unfold-light unfold-top unfold-right position-absolute py-3 mt-1 unfold-css-animation unfold-hidden fadeOut" aria-labelledby="dropDown14Invoker" style="min-width: 150px; animation-duration: 300ms; right: 0px;">
-                                                            <li class="unfold-item">
-                                                                <a class="unfold-link media align-items-center text-nowrap" href="#">
-                                                                    <i class="gd-pencil unfold-item-icon mr-3"></i>
-                                                                    <span class="media-body">Edit</span>
-                                                                </a>
-                                                            </li>
-                                                            <li class="unfold-item">
-                                                                <a class="unfold-link media align-items-center text-nowrap" href="#">
-                                                                    <i class="gd-close unfold-item-icon mr-3"></i>
-                                                                    <span class="media-body">Delete</span>
-                                                                </a>
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td class="py-3">149531</td>
-                                                <td class="py-3">
-                                                    <div>John Doe</div>
-                                                    <div class="text-muted">Acme Inc.</div>
-                                                </td>
-                                                <td class="py-3">(000) 111-1234</td>
-                                                <td class="py-3">$1,230.00</td>
-                                                <td class="py-3">
-                                                    <span class="badge badge-pill badge-danger">Cancelled</span>
-                                                </td>
-                                                <td class="py-3">
-                                                    <div class="position-relative">
-                                                        <a id="dropDown13Invoker" class="link-dark d-flex" href="#" aria-controls="dropDown13" aria-haspopup="true" aria-expanded="false" data-unfold-target="#dropDown13" data-unfold-event="click" data-unfold-type="css-animation" data-unfold-duration="300" data-unfold-animation-in="fadeIn" data-unfold-animation-out="fadeOut">
-                                                            <i class="gd-more-alt icon-text"></i>
-                                                        </a>
-
-                                                        <ul id="dropDown13" class="unfold unfold-light unfold-top unfold-right position-absolute py-3 mt-1 unfold-css-animation unfold-hidden fadeOut" aria-labelledby="dropDown13Invoker" style="min-width: 150px; animation-duration: 300ms; right: 0px;">
-                                                            <li class="unfold-item">
-                                                                <a class="unfold-link media align-items-center text-nowrap" href="#">
-                                                                    <i class="gd-pencil unfold-item-icon mr-3"></i>
-                                                                    <span class="media-body">Edit</span>
-                                                                </a>
-                                                            </li>
-                                                            <li class="unfold-item">
-                                                                <a class="unfold-link media align-items-center text-nowrap" href="#">
-                                                                    <i class="gd-close unfold-item-icon mr-3"></i>
-                                                                    <span class="media-body">Delete</span>
-                                                                </a>
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td class="py-3">149531</td>
-                                                <td class="py-3">
-                                                    <div>John Doe</div>
-                                                    <div class="text-muted">Acme Inc.</div>
-                                                </td>
-                                                <td class="py-3">(000) 111-1234</td>
-                                                <td class="py-3">$1,230.00</td>
-                                                <td class="py-3">
-                                                    <span class="badge badge-pill badge-success">Fulfilled</span>
-                                                </td>
-                                                <td class="py-3">
-                                                    <div class="position-relative">
-                                                        <a id="dropDown12Invoker" class="link-dark d-flex" href="#" aria-controls="dropDown12" aria-haspopup="true" aria-expanded="false" data-unfold-target="#dropDown12" data-unfold-event="click" data-unfold-type="css-animation" data-unfold-duration="300" data-unfold-animation-in="fadeIn" data-unfold-animation-out="fadeOut">
-                                                            <i class="gd-more-alt icon-text"></i>
-                                                        </a>
-
-                                                        <ul id="dropDown12" class="unfold unfold-light unfold-top unfold-right position-absolute py-3 mt-1 unfold-css-animation unfold-hidden fadeOut" aria-labelledby="dropDown12Invoker" style="min-width: 150px; animation-duration: 300ms; right: 0px;">
-                                                            <li class="unfold-item">
-                                                                <a class="unfold-link media align-items-center text-nowrap" href="#">
-                                                                    <i class="gd-pencil unfold-item-icon mr-3"></i>
-                                                                    <span class="media-body">Edit</span>
-                                                                </a>
-                                                            </li>
-                                                            <li class="unfold-item">
-                                                                <a class="unfold-link media align-items-center text-nowrap" href="#">
-                                                                    <i class="gd-close unfold-item-icon mr-3"></i>
-                                                                    <span class="media-body">Delete</span>
-                                                                </a>
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td class="py-3">149531</td>
-                                                <td class="py-3">
-                                                    <div>John Doe</div>
-                                                    <div class="text-muted">Acme Inc.</div>
-                                                </td>
-                                                <td class="py-3">(000) 111-1234</td>
-                                                <td class="py-3">$1,230.00</td>
-                                                <td class="py-3">
-                                                    <span class="badge badge-pill badge-light">Draft</span>
-                                                </td>
-                                                <td class="py-3">
-                                                    <div class="position-relative">
-                                                        <a id="dropDown11Invoker" class="link-dark d-flex" href="#" aria-controls="dropDown11" aria-haspopup="true" aria-expanded="false" data-unfold-target="#dropDown11" data-unfold-event="click" data-unfold-type="css-animation" data-unfold-duration="300" data-unfold-animation-in="fadeIn" data-unfold-animation-out="fadeOut">
-                                                            <i class="gd-more-alt icon-text"></i>
-                                                        </a>
-
-                                                        <ul id="dropDown11" class="unfold unfold-light unfold-top unfold-right position-absolute py-3 mt-1 unfold-css-animation unfold-hidden fadeOut" aria-labelledby="dropDown11Invoker" style="min-width: 150px; animation-duration: 300ms; right: 0px;">
-                                                            <li class="unfold-item">
-                                                                <a class="unfold-link media align-items-center text-nowrap" href="#">
-                                                                    <i class="gd-pencil unfold-item-icon mr-3"></i>
-                                                                    <span class="media-body">Edit</span>
-                                                                </a>
-                                                            </li>
-                                                            <li class="unfold-item">
-                                                                <a class="unfold-link media align-items-center text-nowrap" href="#">
-                                                                    <i class="gd-close unfold-item-icon mr-3"></i>
-                                                                    <span class="media-body">Delete</span>
-                                                                </a>
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td class="py-3">149531</td>
-                                                <td class="py-3">
-                                                    <div>John Doe</div>
-                                                    <div class="text-muted">Acme Inc.</div>
-                                                </td>
-                                                <td class="py-3">(000) 111-1234</td>
-                                                <td class="py-3">$1,230.00</td>
-                                                <td class="py-3">
-                                                    <span class="badge badge-pill badge-success">Fulfilled</span>
-                                                </td>
-                                                <td class="py-3">
-                                                    <div class="position-relative">
-                                                        <a id="dropDown10Invoker" class="link-dark d-flex" href="#" aria-controls="dropDown10" aria-haspopup="true" aria-expanded="false" data-unfold-target="#dropDown10" data-unfold-event="click" data-unfold-type="css-animation" data-unfold-duration="300" data-unfold-animation-in="fadeIn" data-unfold-animation-out="fadeOut">
-                                                            <i class="gd-more-alt icon-text"></i>
-                                                        </a>
-
-                                                        <ul id="dropDown10" class="unfold unfold-light unfold-top unfold-right position-absolute py-3 mt-1 unfold-css-animation unfold-hidden fadeOut" aria-labelledby="dropDown10Invoker" style="min-width: 150px; animation-duration: 300ms; right: 0px;">
-                                                            <li class="unfold-item">
-                                                                <a class="unfold-link media align-items-center text-nowrap" href="#">
-                                                                    <i class="gd-pencil unfold-item-icon mr-3"></i>
-                                                                    <span class="media-body">Xác nhận</span>
-                                                                </a>
-                                                            </li>
-                                                            <li class="unfold-item">
-                                                                <a class="unfold-link media align-items-center text-nowrap" href="#">
-                                                                    <i class="gd-close unfold-item-icon mr-3"></i>
-                                                                    <span class="media-body">Từ chối</span>
-                                                                </a>
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                                </td>
-                                            </tr>
+                                                            <ul id="dropDown16-@number2" class="unfold unfold-light unfold-top unfold-right position-absolute py-3 mt-1 unfold-css-animation unfold-hidden fadeOut" aria-labelledby="dropDown16Invoker" style="min-width: 150px; animation-duration: 300ms; right: 0px;">
+                                                                <li class="unfold-item">
+                                                                    <a class="unfold-link media align-items-center text-nowrap chi-tiet-link" data-bs-toggle="modal" data-bs-target="#orderDetail-@number2"
+                                                                       >
+                                                                        <i class="gd-pencil unfold-item-icon mr-3"></i>
+                                                                        <span class="media-body">Chi tiết</span>
+                                                                       
+                                                                    </a>
+                                                                </li>                                                               
+                                                                @if(item.Status != 2 && item.Status !=3)
+                                                                {
+                                                                    <li class="unfold-item">
+                                                                        <a class="unfold-link media align-items-center text-nowrap update-order" href="#" data-order-id="@item.Id" data-order-status="@item.Status">
+                                                                            <i class="gd-pencil unfold-item-icon mr-3"></i>
+                                                                            <span class="media-body">Xác nhận</span>
+                                                                        </a>
+                                                                    </li>
+                                                                    <li class="unfold-item">
+                                                                        <a class="unfold-link media align-items-center text-nowrap reject-order" href="#" data-order-id="@item.Id">
+                                                                            <i class="gd-close unfold-item-icon mr-3"></i>
+                                                                            <span class="media-body">Từ chối</span>
+                                                                        </a>
+                                                                    </li>
+                                                                }
+                                                           </ul>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                {
+                                                    number2++;
+                                                }
+                                            }
                                         </tbody>
                                     </table>
                                 </div>
@@ -507,12 +357,127 @@
             </footer>
             <!-- End Footer -->
         </div>
+      
     </main>
+    <!-- Footer -->
+    <footer class="small p-3 px-md-4 mt-auto">
+        <div class="row justify-content-between">
+            <div class="col-lg text-center text-lg-left mb-3 mb-lg-0">
+                <ul class="list-dot list-inline mb-0">
+                    <li class="list-dot-item list-dot-item-not list-inline-item mr-lg-2"><a class="link-dark" href="#">FAQ</a></li>
+                    <li class="list-dot-item list-inline-item mr-lg-2"><a class="link-dark" href="#">Support</a></li>
+                    <li class="list-dot-item list-inline-item mr-lg-2"><a class="link-dark" href="#">Contact us</a></li>
+                </ul>
+            </div>
 
+            <div class="col-lg text-center mb-3 mb-lg-0">
+                <ul class="list-inline mb-0">
+                    <li class="list-inline-item mx-2"><a class="link-muted" href="#"><i class="gd-twitter-alt"></i></a></li>
+                    <li class="list-inline-item mx-2"><a class="link-muted" href="#"><i class="gd-facebook"></i></a></li>
+                    <li class="list-inline-item mx-2"><a class="link-muted" href="#"><i class="gd-github"></i></a></li>
+                </ul>
+            </div>
 
-    <script src="~/public/graindashboard/js/graindashboard.js"></script>
-    <script src="public/graindashboard/js/graindashboard.vendor.js"></script>
+        </div>
+    </footer>
+    <!-- End Footer -->
+    <!-- Modal -->
+    @foreach(var item in Model.Data)
+    {
+        <div class="modal fade" id="orderDetail-@number" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Chi tiết</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>ID: <span >@item.Id</span></p>
+                        <p>Họ tên: <span>@item.FirstName @item.LastName</span></p>
+                    <p>Username: <span>@item.Username</span></p>
+                    <p>Số điện thoại: <span ></span>@item.PhoneNumber</p>
+                    <p>Tổng tiền: <span>@item.TotalPrice</span></p>
+                    <p>Hình thức thanh toán: <span >@item.PaymentType</span></p>
+                    <p>Địa chỉ: <span >@item.Address</span></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+        </div>
+        {
+            number++;
+        }
+    }
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.update-order').on('click', function (e) {
+                e.preventDefault();
 
+                var orderId = $(this).data('order-id');
+                var currentStatus = $(this).data('order-status');
+                var newStatus = currentStatus + 1; 
 
+                var data = {
+                    OrderId: orderId,
+                    Status: newStatus
+                };
+
+                $.ajax({
+                    dataType: "json",
+                    url: 'Order/UpdateOrder', 
+                    type: 'PUT',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(data),
+                    success: function (response) {
+                        if (response.success) {
+                            alert("Order updated successfully!");
+                            location.reload(); // Reload the page after success
+                        } else {
+                            alert("Failed to update order. Please try again.");
+                        }
+                    },
+                    error: function (error) {
+                        alert("An error occurred. Please try again.");
+                    }
+                });
+            });
+
+            $('.reject-order').on('click', function (e) {
+                e.preventDefault();
+
+                var orderId = $(this).data('order-id');
+                var newStatus = 3; // Set status to 3 for rejection
+
+                var data = {
+                    OrderId: orderId,
+                    Status: newStatus
+                };
+
+                $.ajax({
+                    dataType: "json",
+                    url: 'Order/UpdateOrder',
+                    type: 'PUT',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(data),
+                    success: function (response) {
+                        if (response.success) {
+                            alert("Order rejected successfully!");
+                            location.reload(); // Reload the page after success
+                        } else {
+                            alert("Failed to reject order. Please try again.");
+                        }
+                    },
+                    error: function (error) {
+                        alert("An error occurred. Please try again.");
+                    }
+                });
+            });
+        });
+    </script>
 </body>
+<script src="~/public/graindashboard/js/graindashboard.js"></script>
+<script src="public/graindashboard/js/graindashboard.vendor.js"></script>
+
 </html>
