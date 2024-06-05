@@ -5,6 +5,7 @@ using Unimarket.MVC.Services;
 using System.Text;
 using Unimarket.MVC.Models.CreateModels;
 using System.Reflection.Metadata.Ecma335;
+using Unimarket.MVC.Helpers;
 
 namespace Unimarket.MVC.Controllers
 {
@@ -24,9 +25,19 @@ namespace Unimarket.MVC.Controllers
             _client = _factory.CreateClient("ServerApi");
             _client.BaseAddress = new Uri(configuration["Cron:localhost"]);
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            ProductManageVM roductManageVM = new ProductManageVM();
+            var responseProduct = await _client.GetAsync(_client.BaseAddress + "Item");
+            var responseProductCategory = await _client.GetAsync(_client.BaseAddress + "category");
+            if (responseProduct.IsSuccessStatusCode && responseProductCategory.IsSuccessStatusCode)
+            {
+                var dataProduct = await responseProduct.Content.ReadAsStringAsync();
+                var dataCategory = await responseProductCategory.Content.ReadAsStringAsync();
+                roductManageVM.Product = JsonConvert.DeserializeObject<ResponseProductVM>(dataProduct);
+                roductManageVM.Categories = JsonConvert.DeserializeObject<List<CategoryVM>>(dataCategory);
+            }
+            return View(roductManageVM);
         }
         [HttpGet]
         public async Task<IActionResult> AddProduct()
@@ -40,6 +51,42 @@ namespace Unimarket.MVC.Controllers
                 return View(result);
             }
             return View(null);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> UpdateProduct([FromQuery] string itemId)
+        {
+            var responseProduct = await _client.GetAsync(_client.BaseAddress + $"Item/get/{itemId}");
+            var responseCategory = await _client.GetAsync(_client.BaseAddress + "category");
+
+            if (responseProduct.IsSuccessStatusCode && responseCategory.IsSuccessStatusCode)
+            {
+                ProductUM productUM = new ProductUM();
+                var data = await responseProduct.Content.ReadAsStringAsync();
+                productUM.Product = JsonConvert.DeserializeObject<ProductVM>(data);
+                var dateCate = await responseCategory.Content.ReadAsStringAsync();
+                productUM.Categories = JsonConvert.DeserializeObject<List<CategoryVM>>(dateCate);
+                return View(productUM);
+            }
+            return RedirectToAction("Index");
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateProduct(ProductCM productCM)
+        {
+            List<String> category = new List<String>();
+            category.Add(productCM.CategoryId);
+            var responseProduct = await _client.PutAsync(_client.BaseAddress + "Item", new StringContent(
+                  JsonConvert.SerializeObject(productCM),
+                  Encoding.UTF8,
+                  "application/json"));
+
+            if (responseProduct.IsSuccessStatusCode )
+            {
+                return RedirectToAction("Index");
+            }
+            return RedirectToAction("UpdateProduct");
         }
 
         [HttpPost]

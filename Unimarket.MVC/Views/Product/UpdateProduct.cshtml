@@ -1,0 +1,208 @@
+﻿@{
+    ViewData["Title"] = "Product Manager";
+    Layout = "_DashboardLayout"; // Chỉ định layout nếu layout mặc định không được sử dụng
+}
+@model Unimarket.MVC.Models.ViewModels.ProductUM;
+<div class="container tm-mt-big tm-mb-big">
+    <div class="row">
+        <form class="col-xl-9 col-lg-10 col-md-12 col-sm-12 mx-auto" asp-action="UpdateProduct" method="POST" enctype="multipart/form-data">
+            <div class="tm-bg-primary-dark tm-block tm-block-h-auto">
+                <div class="row">
+                    <div class="col-12">
+                        <h2 class="tm-block-title d-inline-block">Chỉnh sửa sản phẩm</h2>
+                    </div>
+                </div>
+                <input type="hidden" name="Id" value="@Model.Product.Id"/>
+                <div class="row tm-edit-product-row">
+                    <div class="col-xl-6 col-lg-6 col-md-12">
+                        <div class="form-group mb-3">
+                            <label for="name">
+                                Tên sản phẩm
+                            </label>
+                            <input id="name"
+                                   name="Name"
+                                   type="text"
+                                   class="form-control validate"
+                                   required value=@Model.Product.Name" />
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="product-details">Chi tiết sản phẩm</label>
+                            <textarea id="product-details" name="ProductDetail" class="form-control validate"
+                                      rows="3"
+                                      required>@Model.Product.ProductDetail</textarea>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="Description">Mô tả chi tiết</label>
+                            <textarea id="description" name="Description" class="form-control validate">@Model.Product.Description</textarea>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="CategoryId">Phân loại</label>
+                            <select name="CategoryId" class="custom-select tm-select-accounts"
+                                    id="CategoryId">
+                            @foreach (var cate in Model.Categories)
+                            {
+                                @if (cate.Name.Equals(Model.Product.CategoryName))
+                                {
+                                        <option value="@cate.Id" selected>@cate.Name</option>
+                                }
+                                else
+                                {
+                                        <option value="@cate.Id">@cate.Name</option>
+                                }
+                            }
+                            </select>
+                        </div>
+                        <div class="row">
+                            <div class="form-group mb-3 col-xs-12 col-sm-6">
+                                <label for="stock">
+                                    Số lượng
+                                </label>
+                                <input id="stock"
+                                       name="Quantity"
+                                       type="text"
+                                       class="form-control validate" value="@Model.Product.Quantity"
+                                       required />
+                            </div>
+                            <div class="form-group mb-3 col-xs-12 col-sm-6">
+                                <label for="stock">
+                                    Giá tiền
+                                </label>
+                                <input id="stock"
+                                       name="price"
+                                       type="text"
+                                       class="form-control validate"
+                                       required value="@Model.Product.Price" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-6 col-lg-6 col-md-12 mx-auto mb-4">
+                        <div class="tm-product-img-dummy mx-auto">
+                            <img id="imageMain-display" src="@Model.Product.ImageUrl" class="tm-product-img-dummy mx-auto" />
+                            <input name="mainImage" id="imageMain" type="file" style="display:none;" multiple accept="image/*" />
+
+                        </div>
+                        <!-- Container để chứa các lớp tm-product-img-dummy nằm ngang -->
+                        <div style="display: flex; justify-content: space-around; margin-top: 20px;">
+                            @{
+                                int subImageIndex = 1;
+                            }
+                            @foreach (var image in Model.Product.SubImageUrl)
+                            {
+                                <div class="tm-product-img-dummy mx-auto" style="width: 30%; height:8rem">
+                                    <img id="subImg-display-@subImageIndex" src="@image" style="width: 100%" />
+                                    <input name="subImage_@subImageIndex" id="subImage-@subImageIndex" type="file" style="display:none;" multiple accept="image/*" />
+                                </div>
+                                subImageIndex++;
+                            }
+
+
+                        </div>
+                        <div class="custom-file mt-3 mb-3">
+                            <input id="fileInput" type="file" style="display:none;" multiple accept="image/*" />
+                            <input type="button"
+                                   class="btn btn-primary btn-block mx-auto"
+                                   value="UPLOAD ẢNH"
+                                   onclick="document.getElementById('fileInput').click();" />
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-primary btn-block text-uppercase">CẬP NHẬT SẢN PHẨM</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script src="https://cdn.ckeditor.com/ckeditor5/38.1.1/classic/ckeditor.js"></script>
+<script>
+    ClassicEditor
+        .create(document.querySelector('#description'))
+        .catch(error => {
+            console.error(error);
+        });
+
+    const ItemMainPic = document.getElementById('imageMain-display');
+    const ItemSubPic_1 = document.getElementById('subImg-display-1');
+    const ItemSubPic_2 = document.getElementById('subImg-display-2');
+    const ItemSubPic_3 = document.getElementById('subImg-display-3');
+
+    const imageInput = document.getElementById('imageMain');
+    const subImageInput_1 = document.getElementById('subImage-1');
+    const subImageInput_2 = document.getElementById('subImage-2');
+    const subImageInput_3 = document.getElementById('subImage-3');
+
+
+    ItemMainPic.addEventListener('click', () => {
+        imageInput.disabled = false;
+        imageInput.click();
+    });
+    imageInput.addEventListener('change', () => {
+        imageInput.disabled = false;
+        const file = imageInput.files[0];
+        const formData = new FormData();
+        formData.append('image', file);
+
+        const reader = new FileReader();
+        reader.onload = () => {
+            ItemMainPic.src = reader.result;
+        };
+        reader.readAsDataURL(file);
+    });
+
+    // sub image 1
+    ItemSubPic_1.addEventListener('click', () => {
+        subImageInput_1.disabled = false;
+        subImageInput_1.click();
+    });
+    subImageInput_1.addEventListener('change', () => {
+        subImageInput_1.disabled = false;
+        const file = subImageInput_1.files[0];
+        const formData = new FormData();
+        formData.append('image', file);
+
+        const reader = new FileReader();
+        reader.onload = () => {
+            ItemSubPic_1.src = reader.result;
+        };
+        reader.readAsDataURL(file);
+    });
+
+    // sub image 2
+    ItemSubPic_2.addEventListener('click', () => {
+        subImageInput_2.disabled = false;
+        subImageInput_2.click();
+    });
+    subImageInput_2.addEventListener('change', () => {
+        subImageInput_2.disabled = false;
+        const file = subImageInput_2.files[0];
+        const formData = new FormData();
+        formData.append('image', file);
+
+        const reader = new FileReader();
+        reader.onload = () => {
+            ItemSubPic_2.src = reader.result;
+        };
+        reader.readAsDataURL(file);
+    });
+
+    //subimage 3
+    ItemSubPic_3.addEventListener('click', () => {
+        subImageInput_3.disabled = false;
+        subImageInput_3.click();
+    });
+    subImageInput_3.addEventListener('change', () => {
+        subImageInput_3.disabled = false;
+        const file = subImageInput_3.files[0];
+        const formData = new FormData();
+        formData.append('image', file);
+
+        const reader = new FileReader();
+        reader.onload = () => {
+            ItemSubPic_3.src = reader.result;
+        };
+        reader.readAsDataURL(file);
+    });
+
+
+
+</script>

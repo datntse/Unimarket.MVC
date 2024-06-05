@@ -20,4 +20,16 @@
 		public List<string> CategoryName { get; set; }
 		public List<string> SubImageUrl { get; set; }
 	}
+
+	public class ProductManageVM
+	{
+		public ResponseProductVM Product { get; set; }
+		public List<CategoryVM> Categories { get; set; }
+	}
+
+	public class ProductUM 
+    {
+		public ProductVM Product { get; set; }
+        public List<CategoryVM> Categories { get; set; }
+    }
 }
