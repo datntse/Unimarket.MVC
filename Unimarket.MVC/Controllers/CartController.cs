@@ -45,6 +45,36 @@ namespace Unimarket.MVC.Controllers
 			return View(cartItem);
         }
 
+		[HttpGet]
+		public async Task<IActionResult> UpdateCart(string itemId, string status)
+		{
+            var userId = HttpContext.Session.GetString("UserId");
+            AddItemToCart item = new AddItemToCart();
+            item.UserId = userId;
+            item.ItemId = itemId;
+			HttpResponseMessage response = null;
+			if(status.Equals("up")) {
+                 response = await _client.PostAsync(_client.BaseAddress + "Cart", new StringContent(
+                  JsonConvert.SerializeObject(item),
+                  Encoding.UTF8,
+                  "application/json"));
+            } else
+			{
+                 response = await _client.PostAsync(_client.BaseAddress + "Cart/descrease", new StringContent(
+                  JsonConvert.SerializeObject(item),
+                  Encoding.UTF8,
+                  "application/json"));
+            }
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                return BadRequest(new { success = false, message = "Failed to add item to cart. Please try again." });
+            }
+        }
+
         [HttpPost]
         public async Task<IActionResult> AddToCart([FromBody] string itemId)
         {
@@ -58,7 +88,6 @@ namespace Unimarket.MVC.Controllers
 					"application/json"));
 			if (response.IsSuccessStatusCode)
 			{
-				ViewBag.SuccessMessage = "Registration successful!";
 				return Ok(response);
 			}
 			else
@@ -89,8 +118,8 @@ namespace Unimarket.MVC.Controllers
 			}
 		}
 
-        [HttpPost] // Change to HttpPost to match the API controller
-        public async Task<IActionResult> DeleteInCart(string itemId)
+        [HttpGet] // Change to HttpPost to match the API controller
+        public async Task<IActionResult> DeleteInCart([FromQuery] string itemId)
         {
             var userId = HttpContext.Session.GetString("UserId");
 
@@ -99,11 +128,10 @@ namespace Unimarket.MVC.Controllers
                 UserId = userId,
                 ItemId = itemId
             };
-
-            var response = await _client.PostAsync(_client.BaseAddress + "Cart/delete-item-in-cart", new StringContent(
-                    JsonConvert.SerializeObject(deleteItem),
-                    Encoding.UTF8,
-                    "application/json"));
+            var request = new HttpRequestMessage(HttpMethod.Delete, _client.BaseAddress + "Cart/delete-item-in-cart");
+            var jsonContent = JsonConvert.SerializeObject(deleteItem);
+            request.Content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+            HttpResponseMessage response = await _client.SendAsync(request);
 
             if (response.IsSuccessStatusCode)
             {

@@ -78,7 +78,7 @@
                     <div class="col-xl-6 col-lg-6 col-md-12 mx-auto mb-4">
                         <div class="tm-product-img-dummy mx-auto">
                             <img id="imageMain-display" src="@Model.Product.ImageUrl" class="tm-product-img-dummy mx-auto" />
-                            <input name="mainImage" id="imageMain" type="file" style="display:none;" multiple accept="image/*" />
+                            <input name="mainImage" id="imageMain" type="file" value="@Model.Product.ImageUrl" style="display:none;" multiple accept="image/*" />
 
                         </div>
                         <!-- Container để chứa các lớp tm-product-img-dummy nằm ngang -->
@@ -90,7 +90,7 @@
                             {
                                 <div class="tm-product-img-dummy mx-auto" style="width: 30%; height:8rem">
                                     <img id="subImg-display-@subImageIndex" src="@image" style="width: 100%" />
-                                    <input name="subImage_@subImageIndex" id="subImage-@subImageIndex" type="file" style="display:none;" multiple accept="image/*" />
+                                    <input name="subImage_@subImageIndex" value="@image" id="subImage-@subImageIndex" type="file" style="display:none;" multiple accept="image/*" />
                                 </div>
                                 subImageIndex++;
                             }

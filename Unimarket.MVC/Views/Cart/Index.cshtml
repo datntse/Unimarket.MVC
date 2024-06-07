@@ -2,96 +2,174 @@
     ViewData["Title"] = "Cart Page";
 }
 @model Unimarket.MVC.Models.ViewModels.ResponseCartVM
-<div class="breadcrumb-option">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="breadcrumb__links">
-                    <a href="@Url.Action("Index","Home")"><i class="fa fa-home"></i> Trang chủ</a>
-                    <span>Vỏ hàng của bạn</span>
+<div class="cart-content">
+    <div class="breadcrumb-option">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="breadcrumb__links">
+                        <a href="@Url.Action("Index","Home")"><i class="fa fa-home"></i> Trang chủ</a>
+                        <span>Vỏ hàng của bạn</span>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <section class="shop-cart spad">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="shop__cart__table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Tên sản phẩm</th>
+                                    <th>Giá tiền</th>
+                                    <th>Số lượng</th>
+                                    <th>Tổng tiền</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.Data)
+                                {
+                                    <tr>
+                                        <td class="cart__product__item">
+                                            <img src="@item.Item.ImageUrl" width="90px" height="90px" alt="">
+                                            <div class="cart__product__item__title">
+                                                <h6>@item.Item.Name</h6>
+                                            </div>
+                                        </td>
+                                        <td class="cart__price">@string.Format("{0:#,0}", item.Item.Price)đ</td>
+                                        <td class="cart__quantity">
+                                            <div class="pro-qty">
+                                                <span class="dec qtybtn" onclick="descreaseQuantity('@item.ItemId')">-</span>
+                                                <input type="text" value="@item.Quantity"/>
+                                                <span class="inc qtybtn" onclick="increaseQuantity('@item.ItemId')">+</span>
+                                            </div>
+                                        </td>
+                                        <td class="cart__total">@string.Format("{0:#,0}", item.Item.Price * item.Quantity)đ</td>
+                                        <td class="cart__close">
+                                            @* <a class="delete-item" id="delete-btn" data-itemid="@item.ItemId" asp-controller="Cart" asp-action="DeleteInCart" asp-route-itemId="@item.ItemId"> *@
+                                            <a class="delete-item" onclick="removeItemFromCart('@item.ItemId')" data-itemid="@item.ItemId">
+                                                <span class="icon_close"></span>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6 col-md-6 col-sm-6">
+                    <div class="cart__btn">
+                        <a href="@Url.Action("Index","Home")">Tiếp tục mua sắm</a>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-6">
+                    <div class="cart__btn update__btn">
+                        <a href="#"><span class="icon_loading"></span> cập nhật giả hàng</a>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="discount__content">
+                        <h6>Áp dụng mã giảm giá</h6>
+                        <form action="#">
+                            <input type="text" placeholder="Nhập mã giảm giá của bạn">
+                            <button type="submit" class="site-btn">Áp dụng</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-lg-4 offset-lg-2">
+                    <div class="cart__total__procced">
+                        <h6>Chi tiết thanh toán</h6>
+                        <ul>
+                            <li>Tổng tiền hàng <span>$ 750.0</span></li>
+                            <li>Chi phí vận chuyển <span>$ 50.0</span></li>
+                            <li><strong>Tổng <span>$ 700.0</span></strong></li>
+                        </ul>
+                        <a href="@Url.Action("Index", "Checkout")" class="primary-btn">Tiến hành đặt hàng</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 </div>
 
-<section class="shop-cart spad">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="shop__cart__table">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Tên sản phẩm</th>
-                                <th>Giá tiền</th>
-                                <th>Số lượng</th>
-                                <th>Tổng tiền</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach(var item in Model.Data)
-                            {
-                                <tr>
-                                    <td class="cart__product__item">
-                                        <img src="@item.Item.ImageUrl" width="90px" height="90px" alt="">
-                                        <div class="cart__product__item__title">
-                                            <h6>@item.Item.Name</h6>
-                                        </div>
-                                    </td>
-                                    <td class="cart__price">@string.Format("{0:#,0}", item.Item.Price)đ</td>
-                                    <td class="cart__quantity">
-                                        <div class="pro-qty">
-                                            <input type="text" value="@item.Quantity">
-                                        </div>
-                                    </td>
-                                    <td class="cart__total">@string.Format("{0:#,0}", item.Item.Price * item.Quantity)đ</td>
-                                    <td class="cart__close">
-                                        <a class="delete-item" data-item-id="@item.ItemId" href="#">
-                                            <span class="icon_close"></span>
-                                        </a>
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-6 col-md-6 col-sm-6">
-                <div class="cart__btn">
-                    <a href="@Url.Action("Index","Home")">Tiếp tục mua sắm</a>
-                </div>
-            </div>
-            <div class="col-lg-6 col-md-6 col-sm-6">
-                <div class="cart__btn update__btn">
-                    <a href="#"><span class="icon_loading"></span> cập nhật giả hàng</a>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-6">
-                <div class="discount__content">
-                    <h6>Áp dụng mã giảm giá</h6>
-                    <form action="#">
-                        <input type="text" placeholder="Nhập mã giảm giá của bạn">
-                        <button type="submit" class="site-btn">Áp dụng</button>
-                    </form>
-                </div>
-            </div>
-            <div class="col-lg-4 offset-lg-2">
-                <div class="cart__total__procced">
-                    <h6>Chi tiết thanh toán</h6>
-                    <ul>
-                        <li>Tổng tiền hàng <span>$ 750.0</span></li>
-                        <li>Chi phí vận chuyển <span>$ 50.0</span></li>
-                        <li><strong>Tổng <span>$ 700.0</span></strong></li>
-                    </ul>
-                    <a href="@Url.Action("Index", "Checkout")" class="primary-btn">Tiến hành đặt hàng</a>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+@section Scripts {
+    <script>
+        console.log("123");
+        function increaseQuantity(itemId) {
+            $.ajax({
+                url: "Cart/UpdateCart",
+                data: {
+                    itemId,
+                    status: "up"
+                },
+                success: function (response) {
+                    $('.cart-content').html(response);
+                    console.log(response);
+                },
+                error: function () {
+                    window.location.replace('/User/Login');
+                }
+            });
+        }
+        function descreaseQuantity(itemId) {
+            $.ajax({
+                // dataType: "json",
+                // contentType: "application/json; charset=utf-8",
+                type: "GET",
+                url: "Cart/UpdateCart",
+                data: {
+                    itemId,
+                    status: "down"
+                },
+                success: function (response) {
+                    success: function (response) {
+                        $('.cart-content').html(response);
+                    },
+                    error: function () {
+                        window.location.replace('/User/Login');
+                    }
+                });
+        }
+        function removeItemFromCart(itemId) {
+            Swal.fire({
+                title: "Bạn có chắc loại bỏ sản phẩm này ra khỏi giỏ hàng?",
+                showCancelButton: true,
+                confirmButtonText: "Xác nhận",
+            }).then((result) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (result.isConfirmed) {
+                    //send request to delete item
+                    $.ajax({
+                        // dataType: "json",
+                        // contentType: "application/json; charset=utf-8",
+                        type: "GET",
+                        url: "Cart/DeleteInCart",
+                        data: itemId,
+                        success: function (response) {
+                            Swal.fire({
+                                position: "center",
+                                icon: "success",
+                                title: "Loại bỏ sản phẩm thành công!",
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
+                        },
+                        error: function () {
+                            window.location.replace('/User/Login');
+                        }
+                    });
+                }
+            });
+        }
+    </script>
+}

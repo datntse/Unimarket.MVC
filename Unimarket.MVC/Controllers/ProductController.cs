@@ -73,7 +73,7 @@ namespace Unimarket.MVC.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> UpdateProduct(ProductCM productCM)
+        public async Task<IActionResult> UpdateProduct(ProductCM productCM, IFormFile mainImage, IFormFile subImage_1, IFormFile subImage_2, IFormFile subImage_3)
         {
             List<String> category = new List<String>();
             category.Add(productCM.CategoryId);
