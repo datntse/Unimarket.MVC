@@ -16,6 +16,7 @@
         public string Username { get; set; }
         public string Address { get; set; }
         public string PhoneNumber { get; set; }
+        public string Note {  get; set; }
         public String FirstName { get; set; }
         public String LastName { get; set; }
         public List<OrderdetailVM> OrderdetailVM { get; set; }
