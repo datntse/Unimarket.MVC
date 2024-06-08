@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authentication;
 using Unimarket.MVC.Services;
 using Unimarket.MVC.Handlers;
 
@@ -19,7 +18,7 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddHttpContextAccessor();
 
-builder.Services.AddHttpClient("UnimarketAPI")
+builder.Services.AddHttpClient("ServerApi")
                 .ConfigureHttpClient(c => c.BaseAddress = new Uri(builder.Configuration["Cron:ServerUrl"] ?? ""))
                 .AddHttpMessageHandler<AuthenticationHandler>();
 builder.Services.AddTransient<AuthenticationHandler>();

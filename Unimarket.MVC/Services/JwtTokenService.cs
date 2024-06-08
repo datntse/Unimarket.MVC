@@ -35,7 +35,7 @@ namespace Unimarket.MVC.Services
                 Token = _httpContextAccessor.HttpContext.Session?.GetString("AccessToken"),
                 RefreshToken = _httpContextAccessor.HttpContext.Session?.GetString("RefeshToken"),
             };
-            var response = await _client.PostAsync(_client.BaseAddress + "User/refresh-token", new StringContent(model.RefreshToken));
+            var response = await _client.PostAsync(_client.BaseAddress + "auth/refresh-token", new StringContent(model.RefreshToken));
             if (!response.IsSuccessStatusCode)
             {
                 return false;

@@ -120,28 +120,28 @@ namespace Unimarket.MVC.Controllers
         [HttpPost]
         public async Task<IActionResult> AddToCart([FromBody] string itemId)
         {
-			var userId = HttpContext.Session.GetString("UserId");
-            if(userId == null)
+            var userId = HttpContext.Session.GetString("UserId");
+            if (userId == null)
             {
                 return RedirectToAction("Login", "User");
             }
-			AddItemToCart item = new AddItemToCart();
-			item.UserId = userId;
-			item.ItemId = itemId;
-			var response = await _client.PostAsync(_client.BaseAddress + "Cart", new StringContent(
-					JsonConvert.SerializeObject(item),
-					Encoding.UTF8,
-					"application/json"));
-			if (response.IsSuccessStatusCode)
-			{
-				return Ok(response);
-			}
-			else
-			{
-				return BadRequest(new { success = false, message = "Failed to add item to cart. Please try again." });
-			}
-		}
-		[HttpPost]
+            AddItemToCart item = new AddItemToCart();
+            item.UserId = userId;
+            item.ItemId = itemId;
+            var response = await _client.PostAsync(_client.BaseAddress + "Cart", new StringContent(
+                    JsonConvert.SerializeObject(item),
+                    Encoding.UTF8,
+                    "application/json"));
+            if (response.IsSuccessStatusCode)
+            {
+                return Ok(response);
+            }
+            else
+            {
+                return BadRequest(new { success = false, message = "Failed to add item to cart. Please try again." });
+            }
+        }
+        [HttpPost]
 		public async Task<IActionResult> AddQuantityToCart([FromBody] AddToCarts item)
 		{
 			var userId = HttpContext.Session.GetString("UserId");

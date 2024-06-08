@@ -48,7 +48,7 @@
                                 <tbody>
                                     @foreach (var item in Model.Data)
                                     {
-                                        totalMoney = item.Quantity * item.Item.Price;
+                                        totalMoney += item.Quantity * item.Item.Price;
                                         <tr>
                                             <td class="cart__product__item">
                                                 <img src="@item.Item.ImageUrl" width="90px" height="90px" alt="">
