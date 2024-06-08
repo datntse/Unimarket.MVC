@@ -1,4 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.ViewEngines;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Newtonsoft.Json;
 using System.Reflection;
 using System.Text;
@@ -38,22 +41,53 @@ namespace Unimarket.MVC.Controllers
 				var data = await response.Content.ReadAsStringAsync();
 				cartItem = JsonConvert.DeserializeObject<ResponseCartVM>(data);
 			}
-			else
-			{
-				return RedirectToAction("Login", "User");
-			}
+			//else
+			//{
+			//	return RedirectToAction("Login", "User");
+			//}
 			return View(cartItem);
         }
+        public async Task<string> RenderViewAsync<TModel>(string viewName, TModel model, bool partial = false)
+        {
+            if (string.IsNullOrEmpty(viewName))
+            {
+                viewName = ControllerContext.ActionDescriptor.ActionName;
+            }
 
-		[HttpGet]
-		public async Task<IActionResult> UpdateCart(string itemId, string status)
+            ViewData.Model = model;
+
+            using (var writer = new StringWriter())
+            {
+                IViewEngine viewEngine = HttpContext.RequestServices.GetService(typeof(ICompositeViewEngine)) as ICompositeViewEngine;
+                ViewEngineResult viewResult = viewEngine.FindView(ControllerContext, viewName, !partial);
+
+                if (viewResult.Success == false)
+                {
+                    return $"A view with the name {viewName} could not be found";
+                }
+
+                ViewContext viewContext = new ViewContext(
+                    ControllerContext,
+                    viewResult.View,
+                    ViewData,
+                    TempData,
+                    writer,
+                    new HtmlHelperOptions()
+                );
+
+                await viewResult.View.RenderAsync(viewContext);
+                return writer.GetStringBuilder().ToString();
+            }
+        }
+        [HttpPost]
+		public async Task<IActionResult> UpdateCart([FromBody] UpdateCart model)
 		{
             var userId = HttpContext.Session.GetString("UserId");
             AddItemToCart item = new AddItemToCart();
             item.UserId = userId;
-            item.ItemId = itemId;
+            item.ItemId = model.ItemId;
 			HttpResponseMessage response = null;
-			if(status.Equals("up")) {
+			if(model.Status.Equals("up")) {
                  response = await _client.PostAsync(_client.BaseAddress + "Cart", new StringContent(
                   JsonConvert.SerializeObject(item),
                   Encoding.UTF8,
@@ -67,7 +101,15 @@ namespace Unimarket.MVC.Controllers
             }
             if (response.IsSuccessStatusCode)
             {
-                return RedirectToAction("Index");
+				ResponseCartVM cartItem = new ResponseCartVM();
+				response = await _client.GetAsync(_client.BaseAddress + $"Cart/get/usercart?userId={userId}");
+				if (response.IsSuccessStatusCode)
+				{
+					var data = await response.Content.ReadAsStringAsync();
+					cartItem = JsonConvert.DeserializeObject<ResponseCartVM>(data);
+				}
+                string htmlContent = await RenderViewAsync("UpdateCart", cartItem, true);
+                return Json(htmlContent);
             }
             else
             {
@@ -79,6 +121,10 @@ namespace Unimarket.MVC.Controllers
         public async Task<IActionResult> AddToCart([FromBody] string itemId)
         {
 			var userId = HttpContext.Session.GetString("UserId");
+            if(userId == null)
+            {
+                return RedirectToAction("Login", "User");
+            }
 			AddItemToCart item = new AddItemToCart();
 			item.UserId = userId;
 			item.ItemId = itemId;
@@ -119,7 +165,7 @@ namespace Unimarket.MVC.Controllers
 		}
 
         [HttpGet] // Change to HttpPost to match the API controller
-        public async Task<IActionResult> DeleteInCart([FromQuery] string itemId)
+        public async Task<IActionResult> DeleteInCart([FromQuery]string itemId)
         {
             var userId = HttpContext.Session.GetString("UserId");
 

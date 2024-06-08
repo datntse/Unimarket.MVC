@@ -342,18 +342,13 @@
 						Swal.fire({
 							position: "center",
 							icon: "error",
-							title: response.message,
+							title: "Vượt số lượng sản phẩm",
 							showConfirmButton: true
 						});
 					}
 				},
 				error: function () {
-					Swal.fire({
-						position: "center",
-						icon: "error",
-						title: "Có lỗi xảy ra, vui lòng thử lại!",
-						showConfirmButton: true
-					});
+					window.location.replace('/User/Login');
 				}
 			});
 
