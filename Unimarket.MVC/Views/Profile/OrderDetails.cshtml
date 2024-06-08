@@ -1,6 +1,7 @@
 ﻿@{
     ViewData["Title"] = "Order Details Page";
 }
+@model Unimarket.MVC.Models.ViewModels.OrderDTO
 <style>
     .order-summary {
         border: 1px solid #ddd;
@@ -10,7 +11,7 @@
     }
 
         .order-summary .total {
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             font-weight: bold;
             color: #ff4500;
         }
@@ -29,7 +30,7 @@
         }
 
     .box {
-        width:100%;
+        width: 100%;
     }
 
     .progress {
@@ -39,8 +40,8 @@
         justify-content: space-between;
         width: 100%;
         height: 100px;
-        padding-left:50px;
-        padding-right:50px;
+        padding-left: 50px;
+        padding-right: 50px;
         align-items: center;
     }
 
@@ -122,8 +123,8 @@
         text-transform: uppercase;
         -webkit-transform: translate(-50%, 0);
         transform: translate(-50%, 0);
-        width:100px;
-    }   
+        width: 100px;
+    }
 
     .table img {
         width: 50px;
@@ -137,7 +138,7 @@
             <div class="col-lg-12">
                 <div class="breadcrumb__links">
                     <a href="@Url.Action("Index","Home")"><i class="fa fa-home"></i> Trang chủ</a></i>
-                    <a href="@Url.Action("OrderHistory","Profile")"> Order History</a></i>
+                    <a href="@Url.Action("OrderHistory","Profile")"> Thông tin đơn hàng</a></i>
                     <span>Tài Khoản</span>
                 </div>
             </div>
@@ -159,152 +160,143 @@
                 </div>
                 <div class="col-lg-9">
                     <div class="card">
+                        @{
+                            int totalQuantity = 0;
+                            foreach (var detail in Model.OrderdetailVM)
+                            {
+                                totalQuantity += detail.Quantity;
+                            }
+                        }
                         <div class="card-body">
-                            <h5 class="card-title">Chi tiết đơn hàng • April 24, 2021 • 3 Products</h5>
+                            <h5 class="card-title">Chi tiết đơn hàng • @Model.CreateAt.ToString("dd/MM/yyyy") • @totalQuantity Sản Phẩm</h5>
                             <div class="row">
                                 <div class="col-md-4 mb-3">
                                     <div class="border p-3">
-                                        <h5>Billing Address</h5>
-                                        <p><strong>Dainne Russell</strong></p>
-                                        <p>4140 Parker Rd. Allentown, New Mexico 31134</p>
-                                        <p><strong>Email:</strong> dainne.russell@gmail.com</p>
-                                        <p><strong>Phone:</strong> (671) 555-0110</p>
+                                        <h5>Địa chỉ</h5>
+                                        <p><strong>Tên: @Model.FirstName @Model.LastName</strong></p>
+                                        <p>@Model.Address</p>
+                                        <p><strong>Email:</strong> @Model.Username</p>
+                                        <p><strong>Số điện thoại:</strong> @Model.PhoneNumber</p>
                                     </div>
                                 </div>
                                 <div class="col-md-4 mb-3">
                                     <div class="border p-3">
                                         <h5>Shipping Address</h5>
-                                        <p><strong>Dainne Russell</strong></p>
-                                        <p>4140 Parker Rd. Allentown, New Mexico 31134</p>
-                                        <p><strong>Email:</strong> dainne.russell@gmail.com</p>
-                                        <p><strong>Phone:</strong> (671) 555-0110</p>
+                                        <p><strong>Unimarket</strong></p>
+                                        <p>FPT University</p>
+                                        <p><strong>Email:</strong> unimarket@gmail.com</p>
+                                        <p><strong>Phone:</strong> 09999999</p>
                                     </div>
                                 </div>
                                 <div class="order-summary col-md-4 mb-3">
-                                        <div class="row">
-                                            <div class="col-6">
-                                                <p><strong>Order ID:</strong> #4152</p>
-                                            </div>
-                                            <div class="col-6 text-right">
-                                                <p><strong>Payment Method:</strong> Paypal</p>
-                                            </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <p><strong>Order ID:</strong> @Model.Id</p>
                                         </div>
-                                        <div class="divider"></div>
-                                        <div class="row">
-                                            <div class="col-6">
-                                                <p>Subtotal:</p>
-                                            </div>
-                                            <div class="col-6 text-right">
-                                                <p>$365.00</p>
-                                            </div>
+                                        <div class="col-12">
+                                            <p><strong>Hình thức thanh toán:</strong> @Model.PaymentType</p>
                                         </div>
-                                        <div class="row">
-                                            <div class="col-6">
-                                                <p>Discount:</p>
-                                            </div>
-                                            <div class="col-6 text-right">
-                                                <p>20%</p>
-                                            </div>
+                                    </div>
+                                    <div class="divider"></div>
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <p>Thành tiền:</p>
                                         </div>
-                                        <div class="row">
-                                            <div class="col-6">
-                                                <p>Shipping:</p>
-                                            </div>
-                                            <div class="col-6 text-right">
-                                                <p>Free</p>
-                                            </div>
+                                        <div class="col-6 text-right">
+                                            <p>@string.Format("{0:#,0}", Model.TotalPrice)đ</p>
                                         </div>
-                                        <div class="divider"></div>
-                                        <div class="row" style="margin-top:30px">
-                                            <div class="col-6">
-                                                <p class="total">Total:</p>
-                                            </div>
-                                            <div class="col-6 text-right">
-                                                <p class="total">$84.00</p>
-                                            </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <p>Giảm giá:</p>
                                         </div>
+                                        <div class="col-6 text-right">
+                                            <p>0%</p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <p>Shipping:</p>
+                                        </div>
+                                        <div class="col-6 text-right">
+                                            <p>Miễn phí</p>
+                                        </div>
+                                    </div>
+                                    <div class="divider"></div>
+                                    <div class="row" style="margin-top:30px">
+                                        <div class="col-6">
+                                            <p class="total">Tổng tiền:</p>
+                                        </div>
+                                        <div class="col-6 text-right">
+                                            <p class="total">@string.Format("{0:#,0}", Model.TotalPrice)đ</p>
+                                        </div>
+                                    </div>
                                 </div>
-                                    <!-- Progress Bar -->
-                                <div class="box">
+
+                                <!-- Progress Bar -->
+                                @if (Model.Status != 3)
+                                {
+                                    <div class="box">
                                         <div class="progress">
                                             <div class="bar">
-                                                <div class="bar__fill" style="width:33%;"></div>
+                                                <div class="bar__fill" style="width: @(Model.Status == 0 ? 35 : Model.Status * 66)%"></div>
                                             </div>
-                                            <div class="point point--complete">
+                                            <div class="point @(Model.Status >= 0 ? "point--complete" : "")">
                                                 <div class="bullet"></div>
                                                 <label class="label">Xác nhận đơn</label>
                                             </div>
-                                            <div class="point point--active">
+                                            <div class="point @(Model.Status > 0 ? "point--complete" : "") @(Model.Status >= 0 ? "point--active" : "")">
                                                 <div class="bullet"></div>
                                                 <label class="label">Đóng gói</label>
                                             </div>
-                                            <div class="point">
+                                            <div class="point @(Model.Status > 1 ? "point--complete" : "") @(Model.Status >= 1 ? "point--active" : "")">
                                                 <div class="bullet"></div>
                                                 <label class="label">Vận chuyển</label>
                                             </div>
-                                            <div class="point">
+                                            <div class="point @(Model.Status == 2 ? "point--active" : "")">
                                                 <div class="bullet"></div>
                                                 <label class="label">Thành công</label>
                                             </div>
                                         </div>
                                     </div>
-                                        
+                                }else if(Model.Status == 3)
+                                {
+                                    <div class="row">
+                                        <div class="">
+                                            <p style="font-size:2rem; margin-left:3rem; color:red"><strong>Đơn hàng không thành công</strong></p>
+                                        </div>
+                                    </div>
+                                }
 
-                                    <!-- Order Details Table -->
-                                    <table class="table" style="margin-top:10px;">
-                                        <thead>
+                                <!-- Order Details Table -->
+                                <table class="table" style="margin-top:10px;">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Sản phẩm</th>
+                                            <th scope="col">Giá tiền</th>
+                                            <th scope="col">Số lượng</th>
+                                            <th scope="col">Thành tiền</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model.OrderdetailVM)
+                                        {
                                             <tr>
-                                                <th scope="col">Sản phẩm</th>
-                                                <th scope="col">Giá tiền</th>
-                                                <th scope="col">Số lượng</th>
-                                                <th scope="col">Thành tiền</th>
+                                                <td><img src="@item.ItemsVMs.ImageUrl" alt="Red Capsicum"> @item.ItemsVMs.Name</td>
+                                                <td>@string.Format("{0:#,0}", item.ItemsVMs.Price)đ</td>
+                                                <td>@item.Quantity</td>
+                                                <td>@string.Format("{0:#,0}", item.ItemsVMs.Price * item.Quantity)đ</td>
                                             </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td><img src="~/img/shop/shop-1.jpg" alt="Red Capsicum"> Red Capsicum</td>
-                                                <td>$14.00</td>
-                                                <td>x5</td>
-                                                <td>$70.00</td>
-                                            </tr>
-                                            <tr>
-                                                <td><img src="~/img/shop/shop-2.jpg" alt="Green Capsicum"> Green Capsicum</td>
-                                                <td>$14.00</td>
-                                                <td>x2</td>
-                                                <td>$28.00</td>
-                                            </tr>
-                                            <tr>
-                                                <td><img src="~/img/shop/shop-3.jpg" alt="Green Chili"> Green Chili</td>
-                                                <td>$26.70</td>
-                                                <td>x10</td>
-                                                <td>$267.00</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                                        }
+                                    </tbody>
+                                </table>
 
                             </div>
                         </div>
+
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
-@section Scripts{
-    <script>
-        $(document).ready(function () {
-            $(".point").on("click", function (e) {
-                let getTotalPoints = $(".point").length,
-                    getIndex = $(this).index();
-                getCompletedIndex = $(".point--active").index();
-                $(".bar__fill").css("width", (getIndex - 1) / (getTotalPoints - 1) * 100 + '%')
-                if (getIndex => getCompletedIndex) {
-                    $(".point--active").addClass("point--complete").removeClass("point--active");
-                    $(this).addClass("point--active");
-                    $(this).prevAll().addClass("point--complete");
-                    $(this).nextAll().removeClass("point--complete");
-                }
-            })
-        })
-    </script>
-}

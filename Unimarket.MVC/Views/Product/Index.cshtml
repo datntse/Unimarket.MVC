@@ -60,25 +60,200 @@
                 <div class="tm-product-table-container">
                     <table class="table tm-table-small tm-product-table">
                         <tbody>
-                            @foreach(var cate in Model.Categories)
+                            @foreach (var cate in Model.Categories)
                             {
                                 <tr>
                                     <td class="tm-product-name">@cate.Name</td>
-                                    <td class="text-center">
-                                        <a href="#" class="tm-product-delete-link">
-                                            <i class="far fa-trash-alt tm-product-delete-icon"></i>
+                                    <td class="text-right">
+                                        <a href="#" class="tm-product-delete-link editicon" data-category-id="@cate.Id"
+                                           data-category-name="@cate.Name" data-bs-toggle="modal" data-bs-target="#editCategoryModal">
+                                            <i class="far fa-solid fa-pen-to-square tm-product-delete-icon"></i>
+                                        </a>
+                                        <a href="#" class="tm-product-delete-link" data-category-id="@cate.Id">
+                                            <i class="far fa-trash-alt tm-product-delete-icon deleteicon"></i>
                                         </a>
                                     </td>
                                 </tr>
                             }
+                            <!-- Modal for Editing Category -->
+                            <div class="modal fade" id="editCategoryModal" tabindex="-1" aria-labelledby="editCategoryModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h3 class="modal-title fs-5" style="color:black;" id="editCategoryModalLabel">Chỉnh sửa Category</h3>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form id="editCategoryForm">
+                                                <div class="mb-3 d-flex align-items-center">
+                                                    <label for="edit-category-name" style="color:black;" class="col-form-label">Tên category:</label>
+                                                    <input type="text" class="form-control" id="edit-category-name">
+                                                </div>
+                                                <div class="alert alert-danger d-none" id="error-message"></div>
+                                            </form>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                                            <button type="button" class="btn btn-primary" id="update-category">Lưu thay đổi</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </tbody>
                     </table>
                 </div>
                 <!-- table container -->
-                <button class="btn btn-primary btn-block text-uppercase mb-3">
+                <button class="btn btn-primary btn-block text-uppercase mb-3" data-bs-toggle="modal" data-bs-target="#exampleModal">
                     Add new category
                 </button>
+                <!-- Modal -->
+                <div class="modal fade" id="editCategoryModal" tabindex="-1" aria-labelledby="editCategoryModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h3 class="modal-title fs-5" style="color:black;" id="editCategoryModalLabel">Chỉnh sửa Category</h3>
+                            </div>
+                            <div class="modal-body">
+                                <form id="editCategoryForm">
+                                    <input type="hidden" id="edit-category-id"> <!-- Hidden input to store category id -->
+                                    <div class="mb-3 d-flex align-items-center">
+                                        <label for="edit-category-name" style="color:black;" class="col-form-label">Tên category:</label>
+                                        <input type="text" class="form-control" id="edit-category-name">
+                                    </div>
+                                    <div class="alert alert-danger d-none" id="error-message"></div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                                <button type="button" class="btn btn-primary" id="update-category">Lưu thay đổi</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#save-category').on('click', function () {
+            var categoryName = $('#category-name').val();
+            if (isDuplicate(categoryName)) {
+                alert("Category đã tồn tại!");
+                return; 
+            }
+            console.log(categoryName);
+            $.ajax({
+                dataType: "json",
+                url: 'Product/CreateCategory', 
+                type: 'POST',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(categoryName),
+                success: function (response) {
+                        alert("Tạo category thành công!");
+                        $('#exampleModal').modal('hide'); // Hide the modal
+                        location.reload(); // Reload the page to reflect the new category
+                },
+                error: function (error) {
+                    alert("Có lỗi xảy ra vui lòng thử lại.");
+                }
+            });
+        });
+    });
+    function isDuplicate(categoryName) {
+        var existingCategories = []; // Array to store existing category names
+
+        // Loop through existing category names in the table and check for duplicates
+        $('.tm-product-name').each(function () {
+            existingCategories.push($(this).text().trim()); // Add existing category name to the array
+        });
+
+        // Check if the category name already exists in the array
+        return existingCategories.includes(categoryName);
+    }
+
+    $(document).ready(function () {
+        $('.deleteicon').on('click', function (e) {
+            e.preventDefault();
+
+            var categoryId = $(this).data('category-id');
+            console.log(categoryId);
+
+            if (confirm("Bạn có chắc chắn muốn xóa category này không")) {
+                $.ajax({
+                    url: `Product/DeleteCategory?categoryId=${categoryId}`,
+                    type: 'DELETE',
+                    success: function (response) {
+                        alert("Xóa category thành công!");
+                        location.reload();
+                    },
+                    error: function (error) {
+                        alert("Có lỗi xảy ra vui lòng thử lại.");
+                    }
+                });
+            }
+        });
+    });
+
+</script>
+<script>
+    $(document).ready(function () {
+        // Fill the modal with category info when edit button is clicked
+        $('.editicon').on('click', function () {
+            var categoryId = $(this).data('category-id');
+            var categoryName = $(this).data('category-name');
+
+            $('#edit-category-id').val(categoryId);
+            $('#edit-category-name').val(categoryName);
+        });
+
+        // Update category when the save button is clicked
+        $('#update-category').on('click', async function () {
+            var categoryId = $('#edit-category-id').val();
+            var categoryName = $('#edit-category-name').val().trim();
+            var errorMessage = $('#error-message');
+
+            // Check for duplicate category name on the client side
+            if (isDuplicate(categoryName)) {
+                errorMessage.text("Tên category đã tồn tại.");
+                errorMessage.removeClass('d-none');
+                return;
+            } else {
+                errorMessage.addClass('d-none');
+            }
+
+            // Send AJAX request to update category
+            $.ajax({
+                url: 'Product/UpdateCategory', // Update URL to your controller's update action
+                type: 'PUT',
+                contentType: 'application/json; charset=utf-8',
+                data: JSON.stringify({ Id: categoryId, Name: categoryName }),
+                success: function (response) {
+                    if (response.success) {
+                        alert("Cập nhật category thành công!");
+                        $('#editCategoryModal').modal('hide'); // Hide the modal
+                        location.reload(); // Reload the page to reflect the updated category
+                    } else {
+                        errorMessage.text(response.message);
+                        errorMessage.removeClass('d-none');
+                    }
+                },
+                error: function (error) {
+                    alert("Có lỗi xảy ra vui lòng thử lại.");
+                }
+            });
+        });
+    });
+
+    function isDuplicate(categoryName) {
+        var existingCategories = []; // Array to store existing category names
+
+        // Loop through existing category names in the table and check for duplicates
+        $('.tm-product-name').each(function () {
+            existingCategories.push($(this).text().trim()); // Add existing category name to the array
+        });
+
+        // Check if the category name already exists in the array
+        return existingCategories.includes(categoryName);
+    }
+
+</script>

@@ -130,5 +130,60 @@ namespace Unimarket.MVC.Controllers
             }
             return View();
         }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateCategory([FromBody] String categoryName)
+        {
+            var response = await _client.PostAsync(_client.BaseAddress + "category", new StringContent(
+                    JsonConvert.SerializeObject(categoryName),
+                    Encoding.UTF8,
+                    "application/json"));
+            if (response.IsSuccessStatusCode)
+            {
+                ViewBag.SuccessMessage = "Registration successful!";
+                return Ok(response);
+            }
+            else
+            {
+                return BadRequest(new { success = false, message = "Failed to add item to cart. Please try again." });
+            }
+        }
+        [HttpPut]
+        public async Task<IActionResult> UpdateCategory([FromBody] CategoryDTO category)
+        {
+            var response = await _client.PutAsync(
+                _client.BaseAddress + "category",
+                new StringContent(JsonConvert.SerializeObject(category), Encoding.UTF8, "application/json")
+            );
+
+            if (response.IsSuccessStatusCode)
+            {
+                return Ok(new { success = true });
+            }
+            else
+            {
+                return BadRequest(new { success = false, message = "Failed to update category. Please try again." });
+            }
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> DeleteCategory([FromQuery] string categoryId)
+        {
+            string apiUrl = $"{_client.BaseAddress}category/delete-category?categoryId={categoryId}";
+
+            // Send the DELETE request to the API
+            var response = await _client.DeleteAsync(apiUrl);
+
+            if (response.IsSuccessStatusCode)
+            {
+                // Return a success response if the deletion was successful
+                return Ok(new { success = true });
+            }
+            else
+            {
+                // If deletion fails, return an error response
+                return BadRequest(new { success = false, message = "Failed to delete category. Please try again." });
+            }
+        }
     }
 }
