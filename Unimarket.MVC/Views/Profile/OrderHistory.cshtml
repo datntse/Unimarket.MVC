@@ -37,9 +37,8 @@
             <div class="row">
                 <div class="col-lg-3">
                     <div class="list-group">
-                        <a href="#" class="list-group-item list-group-item-action"><i class="fas fa-user-edit"></i> Thông tin cá nhân</a>
-                        <a href="#" class="list-group-item list-group-item-action" style="background-color: rgba(253,176,16, 0.8)">Lịch sử đơn hàng</a>
-                        <a href="#" class="list-group-item list-group-item-action">Order details</a>
+                        <a href="@Url.Action("Index")" class="list-group-item list-group-item-action"><i class="fas fa-user-edit"></i> Thông tin cá nhân</a>
+                        <a href="@Url.Action("OrderHistory")" class="list-group-item list-group-item-action" style="background-color: rgba(253,176,16, 0.8)">Lịch sử đơn hàng</a>
                         <a href="#" class="list-group-item list-group-item-action">Log-out</a>
                     </div>
                 </div>
@@ -49,30 +48,39 @@
                             <h5 class="font-weight-semi-bold mb-0">Lịch sử đơn hàng</h5>
                         </div>
 
-                        <div class="card-body pt-0">
-                            <div class="table-responsive-xl">
-                                <table class="table text-nowrap mb-0">
-                                    <thead>
-                                        <tr>
-                                            <th class="font-weight-semi-bold border-top-0 py-2">#</th>
-                                            <th class="font-weight-semi-bold border-top-0 py-2">Ngày</th>
-                                            <th class="font-weight-semi-bold border-top-0 py-2">Tổng tiền</th>
-                                            <th class="font-weight-semi-bold border-top-0 py-2">Thanh toán</th>
-                                            <th class="font-weight-semi-bold border-top-0 py-2">Trạng thái</th>
-                                            <th class="font-weight-semi-bold border-top-0 py-2">Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach (var item in Model.Data)
-                                        {
-                                            int totalQuantity = 0;
-                                            foreach (var detail in item.OrderdetailVM)
-                                            {
-                                                totalQuantity += detail.Quantity;
-                                            }
+                        @if (Model.Data.Count() == 0)
+                        {
+                            <h3 style="text-align: center;
+    font-weight: bold;
+    padding: 30px;">
+                                Bạn chưa có đơn hàng nào!!!
+                            </h3>
+                        }else
+                        {
+                            <div class="card-body pt-0">
+                                <div class="table-responsive-xl">
+                                    <table class="table text-nowrap mb-0">
+                                        <thead>
                                             <tr>
-                                                <td class="py-3">
-                                                    <div style="text-wrap: wrap;
+                                                <th class="font-weight-semi-bold border-top-0 py-2">#</th>
+                                                <th class="font-weight-semi-bold border-top-0 py-2">Ngày</th>
+                                                <th class="font-weight-semi-bold border-top-0 py-2">Tổng tiền</th>
+                                                <th class="font-weight-semi-bold border-top-0 py-2">Thanh toán</th>
+                                                <th class="font-weight-semi-bold border-top-0 py-2">Trạng thái</th>
+                                                <th class="font-weight-semi-bold border-top-0 py-2">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var item in Model.Data)
+                                            {
+                                                int totalQuantity = 0;
+                                                foreach (var detail in item.OrderdetailVM)
+                                                {
+                                                    totalQuantity += detail.Quantity;
+                                                }
+                                                <tr>
+                                                    <td class="py-3">
+                                                        <div style="text-wrap: wrap;
                                                         max-height: 40px;
                                                         width: 60px;
                                                         text-overflow: ellipsis;
@@ -81,40 +89,41 @@
                                                         display: -webkit-box;
                                                         -webkit-line-clamp: 1;
                                                         -webkit-box-orient: vertical;">
-                                                        @item.Id
-                                                    </div>
-                                                </td>
-                                                <td class="py-3">@item.CreateAt.ToString("dd/MM/yyyy")</td>
-                                                <td class="py-3">
-                                                    <div>@string.Format("{0:#,0}", item.TotalPrice)đ</div>
-                                                    <div class="text-muted">@totalQuantity sản phẩm</div>
-                                                </td>
-                                                <td class="py-3">@item.PaymentType</td>
-                                                <td class="py-3">
-                                                    @if (item.Status == 0)
-                                                    {
-                                                        <span class="badge badge-pill badge-light">Đang chờ vận chuyển</span>
-                                                    }
-                                                    @if (item.Status == 1)
-                                                    {
-                                                        <span class="badge badge-pill badge-warning">Đang vận chuyển</span>
-                                                    }
-                                                    @if (item.Status == 2)
-                                                    {
-                                                        <span class="badge badge-pill badge-success">Thành công</span>
-                                                    }
-                                                    @if (item.Status == 3)
-                                                    {
-                                                        <span class="badge badge-pill badge-danger">Thất bại</span>
-                                                    }
-                                                </td>
-                                                <td><a href="@Url.Action("OrderDetails", "Profile", new { orderId = item.Id })" class="btn btn-custom">Chi tiết</a></td>
-                                            </tr>
-                                        }
-                                    </tbody>
-                                </table>
+                                                            @item.Id
+                                                        </div>
+                                                    </td>
+                                                    <td class="py-3">@item.CreateAt.ToString("dd/MM/yyyy")</td>
+                                                    <td class="py-3">
+                                                        <div>@string.Format("{0:#,0}", item.TotalPrice)đ</div>
+                                                        <div class="text-muted">@totalQuantity sản phẩm</div>
+                                                    </td>
+                                                    <td class="py-3">@item.PaymentType</td>
+                                                    <td class="py-3">
+                                                        @if (item.Status == 0)
+                                                        {
+                                                            <span class="badge badge-pill badge-light">Đang chờ vận chuyển</span>
+                                                        }
+                                                        @if (item.Status == 1)
+                                                        {
+                                                            <span class="badge badge-pill badge-warning">Đang vận chuyển</span>
+                                                        }
+                                                        @if (item.Status == 2)
+                                                        {
+                                                            <span class="badge badge-pill badge-success">Thành công</span>
+                                                        }
+                                                        @if (item.Status == 3)
+                                                        {
+                                                            <span class="badge badge-pill badge-danger">Thất bại</span>
+                                                        }
+                                                    </td>
+                                                    <td><a href="@Url.Action("OrderDetails", "Profile", new { orderId = item.Id })" class="btn btn-custom">Chi tiết</a></td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
-                        </div>
+                        }
                     </div>
                     
             </div>
