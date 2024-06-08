@@ -106,6 +106,29 @@
                     Add new category
                 </button>
                 <!-- Modal -->
+                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="editCategoryModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h3 class="modal-title fs-5" style="color:black;" id="editCategoryModalLabel">Chỉnh sửa Category</h3>
+                            </div>
+                            <div class="modal-body">
+                                <form id="editCategoryForm">
+                                    <input type="hidden" id="edit-category-id"> <!-- Hidden input to store category id -->
+                                    <div class="mb-3 d-flex align-items-center">
+                                        <label for="edit-category-name" style="color:black;" class="col-form-label">Tên category:</label>
+                                        <input type="text" class="form-control" id="category-name">
+                                    </div>
+                                    <div class="alert alert-danger d-none" id="error-message"></div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                                <button type="button" class="btn btn-primary" id="save-category">Lưu thay đổi</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="modal fade" id="editCategoryModal" tabindex="-1" aria-labelledby="editCategoryModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content">
