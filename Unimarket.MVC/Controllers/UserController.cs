@@ -12,6 +12,7 @@ using System.IdentityModel.Tokens.Jwt;
 using Unimarket.MVC.Models.ViewModels;
 using Unimarket.MVC.Helpers;
 using System.Net;
+using Unimarket.MVC.Models;
 
 namespace Unimarket.MVC.Controllers
 {
@@ -21,13 +22,13 @@ namespace Unimarket.MVC.Controllers
         private readonly ILogger<UserController> _logger;
         private readonly HttpClient _client;
         private readonly IHttpClientFactory _httpClientFactory;
-        private readonly ICurrentUserService _currentUserService;
+        private readonly IMailService _mailService;
         public UserController(ILogger<UserController> logger, IHttpClientFactory httpClientFactory,
-            IConfiguration configuration, ICurrentUserService currentUserService)
+            IConfiguration configuration, IMailService mailService)
         {
+            _mailService = mailService;
             _factory = httpClientFactory;
             _client = new HttpClient();
-            _currentUserService = currentUserService;
             _client = _factory.CreateClient("ServerApi");
             _client.BaseAddress = new Uri(configuration["Cron:localhost"]);
         }
@@ -41,7 +42,7 @@ namespace Unimarket.MVC.Controllers
             return View("Login");
         }
 
-        
+
         [HttpGet]
         public IActionResult Login()
         {
@@ -50,6 +51,8 @@ namespace Unimarket.MVC.Controllers
             {
                 return Redirect("/Home");
             }
+            ViewData["Message"] = TempData["Message"] as String;
+            ViewData["ErrorMessage"] = TempData["ErrorMessage"] as string;
             var model = new LoginVM();
             return View(model);
         }
@@ -98,16 +101,16 @@ namespace Unimarket.MVC.Controllers
                 //{
                 //	HttpContext.Session.SetString("UserId", userId);
                 //}
-                var userId = token.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).Select(c => c.Value).FirstOrDefault();
+                var userId = token.Claims.Where(c => c.Type == ClaimTypes.UserData).Select(c => c.Value).FirstOrDefault();
                 var userFullName = token.Claims.Where(c => c.Type == ClaimTypes.Name).Select(c => c.Value).FirstOrDefault();
 
-				if (userId != null)
+                if (userId != null)
                 {
                     HttpContext.Session.SetString("UserId", userId);
                     HttpContext.Session.SetString("User_FullName", userFullName);
                 }
-				// Extract role claims
-				var roleClaims = token.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value).ToList();
+                // Extract role claims
+                var roleClaims = token.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value).ToList();
                 foreach (var role in roleClaims)
                 {
                     if (role.Equals(AppRole.Admin))
@@ -116,19 +119,32 @@ namespace Unimarket.MVC.Controllers
                     }
                 }
                 return RedirectToAction("Index", "Home");
-            } else if (response.StatusCode.Equals(HttpStatusCode.Unauthorized))
-            {
-                ViewData["ErrorMessage"] = "Bạn vui lòng xác nhận tài khoản của bạn tại qua email mà bạn đã đăng kí.";
-                return View(model);
             }
             else
             {
-                ViewData["ErrorMessage"] = "Sai tên đăng nhập hoặc mật khẩu";
+                var message = await response.Content.ReadAsStringAsync();
+                ViewData["ErrorMessage"] = message;
                 return View(model);
             }
+
         }
 
-
+        [HttpGet]
+        public async Task<IActionResult> ConfirmEmail(string email)
+        {
+            // Send login request to Web API
+            var response = await _client.GetAsync(
+                _client.BaseAddress + $"auth/confirm?email={email}");
+            if (response.IsSuccessStatusCode)
+            {
+                ViewData["Message"] = "Xác thực tài khoản thành công!";
+                return RedirectToAction("Login", "User");
+            }
+            else
+            {
+                return RedirectToAction("Login", "User");
+            }
+        }
 
         [HttpPost]
         public async Task<IActionResult> Register(RegisterVM model)
@@ -137,6 +153,18 @@ namespace Unimarket.MVC.Controllers
             {
                 return View(model);
             }
+
+
+            string[] strings = model.Email.ToString().Split('@');
+            var isFptMail = strings.Length > 1 && strings[1].ToLower().Equals("fpt.edu.vn");
+
+            if(!isFptMail)
+            {
+                TempData["ErrorMessage"] = "Bạn vui lòng sử dụng mail sinh viên của FPT";
+                return RedirectToAction("Login", "User");
+            }
+
+
             var registerDTO = new RegisterDTO
             {
                 FirstName = model.FirstName,
@@ -150,11 +178,11 @@ namespace Unimarket.MVC.Controllers
                 Gender = model.Gender,
                 Status = 1,
                 StudentId = model.MSSV,
-                Avatar = null,
-                CCCDNumber = null,
+                Avatar = "unset",
+                CCCDNumber = "unset",
             };
             var data = JsonConvert.SerializeObject(registerDTO);
-            var response = await _client.PostAsync(_client.BaseAddress + "auth/signIn",
+            var response = await _client.PostAsync(_client.BaseAddress + "auth/signUp",
                 new StringContent(
                     data,
                     Encoding.UTF8,
@@ -162,15 +190,18 @@ namespace Unimarket.MVC.Controllers
 
             if (response.IsSuccessStatusCode)
             {
+                var url = Url.Action("ConfirmEmail", "User", new { email = model.Email }, protocol: Request.Scheme);
+                await _mailService.SendEmailAsync(model.Email, "Xác thực tài khoản của bạn", "<a href=\"" + url + "\" class=\"linkdetail\" style=\"text-decoration: none; margin: 0 auto; color: black;\">Xác nhận</a>");
+                TempData["Message"] = "Đến email dể xác nhận tài khoản";
                 return RedirectToAction("Login", "User");
             }
             else
             {
-                ViewBag.ErrorMessage = "An error occurred during registration. Please try again.";
-                return RedirectToAction("Index");
+                var errorResponse = await response.Content.ReadAsStringAsync();
+                TempData["ErrorMessage"] = errorResponse;
+                return RedirectToAction("Login", "User");
             }
         }
-
         //[AllowAnonymous]
         //public async Task<ActionResult> ExternalLogin()
         //{
@@ -248,8 +279,6 @@ namespace Unimarket.MVC.Controllers
 
         //    return RedirectToAction("Login", "User");
         //}
-
-
 
         [HttpGet]
         public async Task<IActionResult> Logout()
