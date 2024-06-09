@@ -1459,8 +1459,6 @@ ol {
         position: absolute;
         left: 81px;
         top: 12px;
-        height: 1px;
-        width: 5px;
         background: #0d0d0d;
         content: "";
     }
@@ -1468,7 +1466,7 @@ ol {
     .filter-range-wrap .range-slider .price-input input {
         font-size: 16px;
         color: #0d0d0d;
-        max-width: 16%;
+        max-width: 30%;
         border: none;
     }
 
@@ -1520,7 +1518,7 @@ ol {
     .sidebar__sizes .size__list label,
     .sidebar__color .size__list label {
         display: block;
-        padding-left: 20px;
+        padding-left: 10px;
         font-size: 14px;
         text-transform: uppercase;
         color: #444444;

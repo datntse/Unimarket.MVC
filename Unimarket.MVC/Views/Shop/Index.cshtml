@@ -1,6 +1,9 @@
-﻿@{
+﻿@model Unimarket.MVC.Models.ViewModels.ResponseProductVM
+
+@{
     ViewData["Title"] = "Shop Page";
 }
+
 <div class="breadcrumb-option">
     <div class="container">
         <div class="row">
@@ -20,423 +23,89 @@
         <div class="row">
             <div class="col-lg-3 col-md-3">
                 <div class="shop__sidebar">
-                    <div class="sidebar__categories">
-                        <div class="section-title">
-                            <h4>Categories</h4>
-                        </div>
-                        <div class="categories__accordion">
-                            <div class="accordion" id="accordionExample">
-                                <div class="card">
-                                    <div class="card-heading active">
-                                        <a data-toggle="collapse" data-target="#collapseOne">Women</a>
-                                    </div>
-                                    <div id="collapseOne" class="collapse show" data-parent="#accordionExample">
-                                        <div class="card-body">
-                                            <ul>
-                                                <li><a href="#">Coats</a></li>
-                                                <li><a href="#">Jackets</a></li>
-                                                <li><a href="#">Dresses</a></li>
-                                                <li><a href="#">Shirts</a></li>
-                                                <li><a href="#">T-shirts</a></li>
-                                                <li><a href="#">Jeans</a></li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="card">
-                                    <div class="card-heading">
-                                        <a data-toggle="collapse" data-target="#collapseTwo">Men</a>
-                                    </div>
-                                    <div id="collapseTwo" class="collapse" data-parent="#accordionExample">
-                                        <div class="card-body">
-                                            <ul>
-                                                <li><a href="#">Coats</a></li>
-                                                <li><a href="#">Jackets</a></li>
-                                                <li><a href="#">Dresses</a></li>
-                                                <li><a href="#">Shirts</a></li>
-                                                <li><a href="#">T-shirts</a></li>
-                                                <li><a href="#">Jeans</a></li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="card">
-                                    <div class="card-heading">
-                                        <a data-toggle="collapse" data-target="#collapseThree">Kids</a>
-                                    </div>
-                                    <div id="collapseThree" class="collapse" data-parent="#accordionExample">
-                                        <div class="card-body">
-                                            <ul>
-                                                <li><a href="#">Coats</a></li>
-                                                <li><a href="#">Jackets</a></li>
-                                                <li><a href="#">Dresses</a></li>
-                                                <li><a href="#">Shirts</a></li>
-                                                <li><a href="#">T-shirts</a></li>
-                                                <li><a href="#">Jeans</a></li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="card">
-                                    <div class="card-heading">
-                                        <a data-toggle="collapse" data-target="#collapseFour">Accessories</a>
-                                    </div>
-                                    <div id="collapseFour" class="collapse" data-parent="#accordionExample">
-                                        <div class="card-body">
-                                            <ul>
-                                                <li><a href="#">Coats</a></li>
-                                                <li><a href="#">Jackets</a></li>
-                                                <li><a href="#">Dresses</a></li>
-                                                <li><a href="#">Shirts</a></li>
-                                                <li><a href="#">T-shirts</a></li>
-                                                <li><a href="#">Jeans</a></li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="card">
-                                    <div class="card-heading">
-                                        <a data-toggle="collapse" data-target="#collapseFive">Cosmetic</a>
-                                    </div>
-                                    <div id="collapseFive" class="collapse" data-parent="#accordionExample">
-                                        <div class="card-body">
-                                            <ul>
-                                                <li><a href="#">Coats</a></li>
-                                                <li><a href="#">Jackets</a></li>
-                                                <li><a href="#">Dresses</a></li>
-                                                <li><a href="#">Shirts</a></li>
-                                                <li><a href="#">T-shirts</a></li>
-                                                <li><a href="#">Jeans</a></li>
-                                            </ul>
-                                        </div>
+                    <form method="get" action="@Url.Action("Index", "Shop")">
+                        <div class="sidebar__filter">
+                            <div class="filter-range-wrap">
+                                <div id="price-range" class="price-range ui-slider ui-corner-all ui-slider-horizontal ui-widget ui-widget-content"
+                                     data-min="1000" data-max="999999"></div>
+                                <div class="range-slider">
+                                    <div class="price-input">
+                                        <p>Price:</p>
+                                        <input type="number" id="minPriceInput" name="MinPrice" placeholder="Min Price" step="0.01" />
+                                        <br />
+                                        <input type="number" id="maxPriceInput" name="MaxPrice" placeholder="Max Price" step="0.01" />
                                     </div>
                                 </div>
                             </div>
+                            <button type="submit" style="    font-size: 14px;
+    color: #0d0d0d;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: 700;
+    display: inline-block;
+    padding: 5px 16px 5px 24px;
+    border: 2px solid #ff0000;
+    position: absolute;
+    right: 0;
+    bottom: -5px;
+    border-radius: 2px;">
+                                Filter
+                            </button>
                         </div>
-                    </div>
-                    <div class="sidebar__filter">
-                        <div class="section-title">
-                            <h4>Shop by price</h4>
-                        </div>
-                        <div class="filter-range-wrap">
-                            <div class="price-range ui-slider ui-corner-all ui-slider-horizontal ui-widget ui-widget-content"
-                                 data-min="33" data-max="99"></div>
-                            <div class="range-slider">
-                                <div class="price-input">
-                                    <p>Price:</p>
-                                    <input type="text" id="minamount">
-                                    <input type="text" id="maxamount">
-                                </div>
+                        <div class="sidebar__color">
+                            <div class="section-title">
+                                <h4>Sort by category</h4>
                             </div>
+                            <div class="size__list color__list">
+                                <div style="display:flex;">
+                                    <input type="checkbox" name="categoryNames" value="Quần" />
+                                    <label style="margin-top:8px;" for="quan">Quần</label>
+                                </div>
+                                <div style="display:flex;">
+                                    <input type="checkbox" name="categoryNames" value="Áo" />
+                                    <label style="margin-top:8px;" for="ao">Áo</label>
+                                </div>
+                                <!-- Add more categories as needed -->
+                            </div>
+                            <button id="filterButton">Filter</button>
                         </div>
-                        <a href="#">Filter</a>
-                    </div>
-                    <div class="sidebar__sizes">
-                        <div class="section-title">
-                            <h4>Shop by size</h4>
-                        </div>
-                        <div class="size__list">
-                            <label for="xxs">
-                                xxs
-                                <input type="checkbox" id="xxs">
-                                <span class="checkmark"></span>
-                            </label>
-                            <label for="xs">
-                                xs
-                                <input type="checkbox" id="xs">
-                                <span class="checkmark"></span>
-                            </label>
-                            <label for="xss">
-                                xs-s
-                                <input type="checkbox" id="xss">
-                                <span class="checkmark"></span>
-                            </label>
-                            <label for="s">
-                                s
-                                <input type="checkbox" id="s">
-                                <span class="checkmark"></span>
-                            </label>
-                            <label for="m">
-                                m
-                                <input type="checkbox" id="m">
-                                <span class="checkmark"></span>
-                            </label>
-                            <label for="ml">
-                                m-l
-                                <input type="checkbox" id="ml">
-                                <span class="checkmark"></span>
-                            </label>
-                            <label for="l">
-                                l
-                                <input type="checkbox" id="l">
-                                <span class="checkmark"></span>
-                            </label>
-                            <label for="xl">
-                                xl
-                                <input type="checkbox" id="xl">
-                                <span class="checkmark"></span>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="sidebar__color">
-                        <div class="section-title">
-                            <h4>Shop by size</h4>
-                        </div>
-                        <div class="size__list color__list">
-                            <label for="black">
-                                Blacks
-                                <input type="checkbox" id="black">
-                                <span class="checkmark"></span>
-                            </label>
-                            <label for="whites">
-                                Whites
-                                <input type="checkbox" id="whites">
-                                <span class="checkmark"></span>
-                            </label>
-                            <label for="reds">
-                                Reds
-                                <input type="checkbox" id="reds">
-                                <span class="checkmark"></span>
-                            </label>
-                            <label for="greys">
-                                Greys
-                                <input type="checkbox" id="greys">
-                                <span class="checkmark"></span>
-                            </label>
-                            <label for="blues">
-                                Blues
-                                <input type="checkbox" id="blues">
-                                <span class="checkmark"></span>
-                            </label>
-                            <label for="beige">
-                                Beige Tones
-                                <input type="checkbox" id="beige">
-                                <span class="checkmark"></span>
-                            </label>
-                            <label for="greens">
-                                Greens
-                                <input type="checkbox" id="greens">
-                                <span class="checkmark"></span>
-                            </label>
-                            <label for="yellows">
-                                Yellows
-                                <input type="checkbox" id="yellows">
-                                <span class="checkmark"></span>
-                            </label>
-                        </div>
-                    </div>
+                        <a href="@Url.Action("Index")">Xóa tìm kiếm</a>
+                    </form>
                 </div>
             </div>
             <div class="col-lg-9 col-md-9">
                 <div class="row">
-                    <div class="col-lg-4 col-md-6">
-                        <div class="product__item">
-                            <div class="product__item__pic set-bg" data-setbg="img/shop/shop-1.jpg">
-                                <div class="label new">New</div>
-                                <ul class="product__hover">
-                                    <li><a href="img/shop/shop-1.jpg" class="image-popup"><span class="arrow_expand"></span></a></li>
-                                    <li><a href="#"><span class="icon_heart_alt"></span></a></li>
-                                    <li><a href="#"><span class="icon_bag_alt"></span></a></li>
-                                </ul>
-                            </div>
-                            <div class="product__item__text">
-                                <h6><a href="#">Furry hooded parka</a></h6>
-                                <div class="rating">
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
+                    @foreach (var item in Model.Data)
+                    {
+                        <div class="col-lg-4 col-md-6">
+                            <div class="product__item">
+                                <div class="product__item__pic set-bg" data-setbg="@item.ImageUrl">
+                                    <ul class="product__hover">
+                                        <li><a href="@item.ImageUrl" class="image-popup"><span class="arrow_expand"></span></a></li>
+                                        <li><a href="#"><span class="icon_heart_alt"></span></a></li>
+                                        <li><a href="#"><span class="icon_bag_alt"></span></a></li>
+                                    </ul>
                                 </div>
-                                <div class="product__price">$ 59.0</div>
+                                <div class="product__item__text">
+                                    <h6><a href="#">@item.Name</a></h6>
+                                    <div class="rating">
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                    </div>
+                                    <div class="product__price">$ @item.Price</div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-lg-4 col-md-6">
-                        <div class="product__item">
-                            <div class="product__item__pic set-bg" data-setbg="img/shop/shop-2.jpg">
-                                <ul class="product__hover">
-                                    <li><a href="img/shop/shop-2.jpg" class="image-popup"><span class="arrow_expand"></span></a></li>
-                                    <li><a href="#"><span class="icon_heart_alt"></span></a></li>
-                                    <li><a href="#"><span class="icon_bag_alt"></span></a></li>
-                                </ul>
-                            </div>
-                            <div class="product__item__text">
-                                <h6><a href="#">Flowy striped skirt</a></h6>
-                                <div class="rating">
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                </div>
-                                <div class="product__price">$ 49.0</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-md-6">
-                        <div class="product__item">
-                            <div class="product__item__pic set-bg" data-setbg="img/shop/shop-3.jpg">
-                                <ul class="product__hover">
-                                    <li><a href="img/shop/shop-3.jpg" class="image-popup"><span class="arrow_expand"></span></a></li>
-                                    <li><a href="#"><span class="icon_heart_alt"></span></a></li>
-                                    <li><a href="#"><span class="icon_bag_alt"></span></a></li>
-                                </ul>
-                            </div>
-                            <div class="product__item__text">
-                                <h6><a href="#">Croc-effect bag</a></h6>
-                                <div class="rating">
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                </div>
-                                <div class="product__price">$ 59.0</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-md-6">
-                        <div class="product__item">
-                            <div class="product__item__pic set-bg" data-setbg="img/shop/shop-4.jpg">
-                                <ul class="product__hover">
-                                    <li><a href="img/shop/shop-4.jpg" class="image-popup"><span class="arrow_expand"></span></a></li>
-                                    <li><a href="#"><span class="icon_heart_alt"></span></a></li>
-                                    <li><a href="#"><span class="icon_bag_alt"></span></a></li>
-                                </ul>
-                            </div>
-                            <div class="product__item__text">
-                                <h6><a href="#">Dark wash Xavi jeans</a></h6>
-                                <div class="rating">
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                </div>
-                                <div class="product__price">$ 59.0</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-md-6">
-                        <div class="product__item sale">
-                            <div class="product__item__pic set-bg" data-setbg="img/shop/shop-5.jpg">
-                                <div class="label">Sale</div>
-                                <ul class="product__hover">
-                                    <li><a href="img/shop/shop-5.jpg" class="image-popup"><span class="arrow_expand"></span></a></li>
-                                    <li><a href="#"><span class="icon_heart_alt"></span></a></li>
-                                    <li><a href="#"><span class="icon_bag_alt"></span></a></li>
-                                </ul>
-                            </div>
-                            <div class="product__item__text">
-                                <h6><a href="#">Ankle-cuff sandals</a></h6>
-                                <div class="rating">
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                </div>
-                                <div class="product__price">$ 49.0 <span>$ 59.0</span></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-md-6">
-                        <div class="product__item">
-                            <div class="product__item__pic set-bg" data-setbg="img/shop/shop-6.jpg">
-                                <ul class="product__hover">
-                                    <li><a href="img/shop/shop-6.jpg" class="image-popup"><span class="arrow_expand"></span></a></li>
-                                    <li><a href="#"><span class="icon_heart_alt"></span></a></li>
-                                    <li><a href="#"><span class="icon_bag_alt"></span></a></li>
-                                </ul>
-                            </div>
-                            <div class="product__item__text">
-                                <h6><a href="#">Contrasting sunglasses</a></h6>
-                                <div class="rating">
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                </div>
-                                <div class="product__price">$ 59.0</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-md-6">
-                        <div class="product__item">
-                            <div class="product__item__pic set-bg" data-setbg="img/shop/shop-7.jpg">
-                                <ul class="product__hover">
-                                    <li><a href="img/shop/shop-7.jpg" class="image-popup"><span class="arrow_expand"></span></a></li>
-                                    <li><a href="#"><span class="icon_heart_alt"></span></a></li>
-                                    <li><a href="#"><span class="icon_bag_alt"></span></a></li>
-                                </ul>
-                            </div>
-                            <div class="product__item__text">
-                                <h6><a href="#">Circular pendant earrings</a></h6>
-                                <div class="rating">
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                </div>
-                                <div class="product__price">$ 59.0</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-md-6">
-                        <div class="product__item">
-                            <div class="product__item__pic set-bg" data-setbg="img/shop/shop-8.jpg">
-                                <div class="label stockout stockblue">Out Of Stock</div>
-                                <ul class="product__hover">
-                                    <li><a href="img/shop/shop-8.jpg" class="image-popup"><span class="arrow_expand"></span></a></li>
-                                    <li><a href="#"><span class="icon_heart_alt"></span></a></li>
-                                    <li><a href="#"><span class="icon_bag_alt"></span></a></li>
-                                </ul>
-                            </div>
-                            <div class="product__item__text">
-                                <h6><a href="#">Cotton T-Shirt</a></h6>
-                                <div class="rating">
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                </div>
-                                <div class="product__price">$ 59.0</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-md-6">
-                        <div class="product__item sale">
-                            <div class="product__item__pic set-bg" data-setbg="img/shop/shop-9.jpg">
-                                <div class="label">Sale</div>
-                                <ul class="product__hover">
-                                    <li><a href="img/shop/shop-9.jpg" class="image-popup"><span class="arrow_expand"></span></a></li>
-                                    <li><a href="#"><span class="icon_heart_alt"></span></a></li>
-                                    <li><a href="#"><span class="icon_bag_alt"></span></a></li>
-                                </ul>
-                            </div>
-                            <div class="product__item__text">
-                                <h6><a href="#">Water resistant zips backpack</a></h6>
-                                <div class="rating">
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                </div>
-                                <div class="product__price">$ 49.0 <span>$ 59.0</span></div>
-                            </div>
-                        </div>
-                    </div>
+                    }
                     <div class="col-lg-12 text-center">
                         <div class="pagination__option">
-                            <a href="#">1</a>
-                            <a href="#">2</a>
-                            <a href="#">3</a>
-                            <a href="#"><i class="fa fa-angle-right"></i></a>
+                            @for (int i = 0; i < Model.Total; i++)
+                            {
+                                <a href="@Url.Action("Index", "Shop")?currentPage=@i">@(i + 1)</a>
+                            }
                         </div>
                     </div>
                 </div>
@@ -444,3 +113,62 @@
         </div>
     </div>
 </section>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+<script>
+    $(function () {
+        var $priceRange = $('#price-range');
+        var minPrice = $priceRange.data('min');
+        var maxPrice = $priceRange.data('max');
+
+        // Set initial input values
+        $('#minPriceInput').val(minPrice);
+        $('#maxPriceInput').val(maxPrice);
+
+        // Initialize the slider
+        $priceRange.slider({
+            range: true,
+            min: minPrice,
+            max: maxPrice,
+            values: [minPrice, maxPrice],
+            slide: function (event, ui) {
+                $('#minPriceInput').val(ui.values[0]);
+                $('#maxPriceInput').val(ui.values[1]);
+            }
+        });
+
+        // Update slider when inputs change
+        $('#minPriceInput').change(function () {
+            var min = parseInt($(this).val());
+            var max = parseInt($('#maxPriceInput').val());
+            $priceRange.slider('values', 0, min);
+        });
+
+        $('#maxPriceInput').change(function () {
+            var min = parseInt($('#minPriceInput').val());
+            var max = parseInt($(this).val());
+            $priceRange.slider('values', 1, max);
+        });
+    });
+    document.addEventListener("DOMContentLoaded", function () {
+        document.getElementById("filterButton").addEventListener("click", function () {
+            // Get all checked checkboxes
+            var checkboxes = document.querySelectorAll('input[name="categoryNames"]:checked');
+
+            // Create an array to store selected categories
+            var selectedCategories = [];
+
+            // Push the values of checked checkboxes into the array
+            checkboxes.forEach(function (checkbox) {
+                selectedCategories.push(checkbox.value);
+            });
+
+            // Set the value of a hidden input field with the selected categories
+            document.getElementById("selectedCategories").value = JSON.stringify(selectedCategories);
+
+            // Submit the form
+            document.querySelector("form").submit();
+        });
+    });
+</script>
