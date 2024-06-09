@@ -98,7 +98,7 @@ namespace Unimarket.MVC.Controllers
                 //{
                 //	HttpContext.Session.SetString("UserId", userId);
                 //}
-                var userId = token.Claims.Where(c => c.Type == ClaimTypes.UserData).Select(c => c.Value).FirstOrDefault();
+                var userId = token.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).Select(c => c.Value).FirstOrDefault();
                 var userFullName = token.Claims.Where(c => c.Type == ClaimTypes.Name).Select(c => c.Value).FirstOrDefault();
 
 				if (userId != null)
@@ -112,8 +112,7 @@ namespace Unimarket.MVC.Controllers
                 {
                     if (role.Equals(AppRole.Admin))
                     {
-                        // Dashboard
-                        return RedirectToAction("Index", "Dashbroad");
+                        return RedirectToAction("Index", "Dashboard");
                     }
                 }
                 return RedirectToAction("Index", "Home");
@@ -154,10 +153,10 @@ namespace Unimarket.MVC.Controllers
                 Avatar = null,
                 CCCDNumber = null,
             };
-            var Json = JsonConvert.SerializeObject(registerDTO);
-            var response = await _client.PostAsync(_client.BaseAddress + "auth/signUp",
+            var data = JsonConvert.SerializeObject(registerDTO);
+            var response = await _client.PostAsync(_client.BaseAddress + "auth/signIn",
                 new StringContent(
-                    Json,
+                    data,
                     Encoding.UTF8,
                     "application/json"));
 
@@ -255,7 +254,7 @@ namespace Unimarket.MVC.Controllers
         [HttpGet]
         public async Task<IActionResult> Logout()
         {
-            var response = await _client.DeleteAsync(_client.BaseAddress + "auth/sign-out");
+            var response = await _client.DeleteAsync(_client.BaseAddress + "auth/signOut");
             if (response.IsSuccessStatusCode)
             {
                 HttpContext.Session?.Remove("AccessToken");
