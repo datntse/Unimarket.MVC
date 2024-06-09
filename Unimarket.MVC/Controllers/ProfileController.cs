@@ -23,9 +23,17 @@ namespace Unimarket.MVC.Controllers
             _client.BaseAddress = new Uri(configuration["Cron:localhost"]);
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var userId = HttpContext.Session.GetString("UserId");
+            var response = await _client.GetAsync(_client.BaseAddress + $"auth/profile/{userId}");
+            if (response.IsSuccessStatusCode)
+            {
+                var data = await response.Content.ReadAsStringAsync();
+                UserVM user = JsonConvert.DeserializeObject<UserVM>(data);
+                return View(user);
+            }
+            return RedirectToAction("Index", "Home");
         }
         [HttpGet]
         public async Task<IActionResult> OrderHistory([FromQuery] DefaultSearch defaultSearch)

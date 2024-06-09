@@ -4,37 +4,31 @@ namespace Unimarket.MVC.Models.ViewModels
 {
     public class RegisterVM
     {
-        [Required(ErrorMessage = "First name is required.")]
-        [StringLength(50, MinimumLength = 2, ErrorMessage = "First name must be between 2 and 50 characters.")]
         public string FirstName { get; set; }
-
-        [Required(ErrorMessage = "Last name is required.")]
-        [StringLength(50, MinimumLength = 2, ErrorMessage = "Last name must be between 2 and 50 characters.")]
         public string LastName { get; set; }
-
-        [Required(ErrorMessage = "Email address is required.")]
-        [EmailAddress(ErrorMessage = "Invalid email address.")]
         public string Email { get; set; }
-
-        [Required(ErrorMessage = "Password is required.")]
-        [StringLength(100, MinimumLength = 2, ErrorMessage = "Password must be at least 6 characters long.")]
+		public string UserName { get; set; }
         public string Password { get; set; }
-        [Required(ErrorMessage = "Confirm password is required.")]
-        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
-        public string ConfirmPassword { get; set; } = null!;
-        [Required(ErrorMessage = "You must agree to the terms and conditions.")]
-        public bool IsCheckPolicy { get; set; }
+		public String MSSV { get; set; }
+		public String DOB { get; set; }
+		public String Phone { get; set; }
+        public bool Gender { get; set; }
     }
 
 	public class RegisterDTO
 	{
-		[Required]
-		public string FirstName { get; set; } = null!;
-		public string LastName { get; set; } = null!;
-		[Required, EmailAddress]
-		public string Email { get; set; } = null!;
-		[Required]
-		public string Password { get; set; } = null!;
-		public bool IsAdmin { get; set; }
-	}
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Email { get; set; }
+        public string UserName { get; set; }
+        public string Password { get; set; }
+        public bool IsAdmin { get; set; } = false;
+        public String? DOB { get; set; }
+        public String? PhoneNumber { get; set; }
+        public String? CCCDNumber { get; set; }
+        public String StudentId { get; set; }
+        public String Avatar { get; set; }
+        public bool Gender { get; set; }
+        public int Status { get; set; } = 1;
+    }
 }

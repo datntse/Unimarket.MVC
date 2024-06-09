@@ -11,6 +11,7 @@ using Unimarket.MVC.Services;
 using System.IdentityModel.Tokens.Jwt;
 using Unimarket.MVC.Models.ViewModels;
 using Unimarket.MVC.Helpers;
+using System.Net;
 
 namespace Unimarket.MVC.Controllers
 {
@@ -98,10 +99,12 @@ namespace Unimarket.MVC.Controllers
                 //	HttpContext.Session.SetString("UserId", userId);
                 //}
                 var userId = token.Claims.Where(c => c.Type == ClaimTypes.UserData).Select(c => c.Value).FirstOrDefault();
+                var userFullName = token.Claims.Where(c => c.Type == ClaimTypes.Name).Select(c => c.Value).FirstOrDefault();
 
 				if (userId != null)
                 {
                     HttpContext.Session.SetString("UserId", userId);
+                    HttpContext.Session.SetString("User_FullName", userFullName);
                 }
 				// Extract role claims
 				var roleClaims = token.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value).ToList();
@@ -113,26 +116,17 @@ namespace Unimarket.MVC.Controllers
                         return RedirectToAction("Index", "Dashbroad");
                     }
                 }
-
                 return RedirectToAction("Index", "Home");
+            } else if (response.StatusCode.Equals(HttpStatusCode.Unauthorized))
+            {
+                ViewData["ErrorMessage"] = "Bạn vui lòng xác nhận tài khoản của bạn tại qua email mà bạn đã đăng kí.";
+                return View(model);
             }
             else
             {
-                ViewData["ErrorMessage"] = "Invalid username or password";
-                //ModelState.AddModelError(string.Empty, "Invalid username or password");
+                ViewData["ErrorMessage"] = "Sai tên đăng nhập hoặc mật khẩu";
                 return View(model);
             }
-        }
-
-        [HttpGet]
-        public IActionResult Register()
-        {
-            var userId = HttpContext.Session.GetString("UserId");
-            if (userId != null)
-            {
-                return Redirect("/Home");
-            }
-            return View();
         }
 
 
@@ -144,35 +138,37 @@ namespace Unimarket.MVC.Controllers
             {
                 return View(model);
             }
-
             var registerDTO = new RegisterDTO
             {
                 FirstName = model.FirstName,
                 LastName = model.LastName,
                 Email = model.Email,
+                UserName = model.UserName,
                 Password = model.Password,
-                IsAdmin = false
+                PhoneNumber = model.Phone,
+                IsAdmin = false,
+                DOB = model.DOB,
+                Gender = model.Gender,
+                Status = 1,
+                StudentId = model.MSSV,
+                Avatar = null,
+                CCCDNumber = null,
             };
-
-            // Send registration request to Web API
-            var response = await _client.PostAsync(
-                _client.BaseAddress + "User/SignUp",
+            var Json = JsonConvert.SerializeObject(registerDTO);
+            var response = await _client.PostAsync(_client.BaseAddress + "auth/signUp",
                 new StringContent(
-                    JsonConvert.SerializeObject(registerDTO),
+                    Json,
                     Encoding.UTF8,
                     "application/json"));
 
             if (response.IsSuccessStatusCode)
             {
-                // Registration successful, redirect to login page or other appropriate action
                 return RedirectToAction("Login", "User");
             }
             else
             {
-                // Handle error response
-                // Example: Display error message to user
                 ViewBag.ErrorMessage = "An error occurred during registration. Please try again.";
-                return View(model);
+                return RedirectToAction("Index");
             }
         }
 
@@ -256,17 +252,15 @@ namespace Unimarket.MVC.Controllers
 
 
 
-
         [HttpGet]
         public async Task<IActionResult> Logout()
         {
-            var response = await _client.DeleteAsync(_client.BaseAddress + "User/SignOut");
+            var response = await _client.DeleteAsync(_client.BaseAddress + "auth/sign-out");
             if (response.IsSuccessStatusCode)
             {
                 HttpContext.Session?.Remove("AccessToken");
                 HttpContext.Session?.Remove("RefeshToken");
                 HttpContext.Session?.Remove("UserId");
-                HttpContext.Session?.Remove("UserEmail");
                 return RedirectToAction("Login");
             }
             return Unauthorized();

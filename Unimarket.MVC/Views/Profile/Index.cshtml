@@ -1,6 +1,8 @@
 ﻿@{
     ViewData["Title"] = "Profile Page";
 }
+
+@model Unimarket.MVC.Models.ViewModels.UserVM
 <style>
     .list-group-item {
         font-weight: bold;
@@ -105,31 +107,31 @@
                                     <div class="col-sm-3 profile-image-container">
                                         <img src="~/img/avatar.png" alt="Profile Image" id="profileImagePreview">
                                         <button type="button" class="custom-button" onclick="document.getElementById('profileImage').click()">Choose Image</button>
-                                        <input type="file" class="custom-file-input" id="profileImage" style="display: none;" onchange="previewImage(event)">
+                                        @* <input type="file" class="custom-file-input" id="profileImage" style="display: none;" onchange="previewImage(event)"> *@
                                     </div>
                                     <div class="col-sm-9">
                                         <div class="form-group row">
-                                            <label for="name" class="col-sm-3 col-form-label">Name</label>
+                                            <label for="name" class="col-sm-3 col-form-label">Tên</label>
                                             <div class="col-sm-9">
-                                                <input type="text" class="form-control" id="name" value="Dianne">
+                                                <input type="text" class="form-control" id="name" value="@Model.FirstName @Model.LastName" readonly>
                                             </div>
                                         </div>
                                         <div class="form-group row">
-                                            <label for="studentID" class="col-sm-3 col-form-label">Student ID</label>
+                                            <label for="studentID" class="col-sm-3 col-form-label">MSSV</label>
                                             <div class="col-sm-9">
-                                                <input type="text" class="form-control" id="studentID" value="SE160000">
+                                                <input type="text" class="form-control" id="studentID" value="@Model.StudentId">
                                             </div>
                                         </div>
                                         <div class="form-group row">
                                             <label for="email" class="col-sm-3 col-form-label">Email</label>
                                             <div class="col-sm-9">
-                                                <input type="email" class="form-control" id="email" value="dianne.russell@gmail.com">
+                                                <input type="email" class="form-control" id="email" value="@Model.Email">
                                             </div>
                                         </div>
                                         <div class="form-group row">
                                             <label for="phoneNumber" class="col-sm-3 col-form-label">Phone Number</label>
                                             <div class="col-sm-9">
-                                                <input type="text" class="form-control" id="phoneNumber" value="(603) 555-0123">
+                                                <input type="text" class="form-control" id="phoneNumber" value="@Model.PhoneNumber">
                                             </div>
                                         </div>
                                     </div>
@@ -149,14 +151,14 @@
                                 <div class="form-group row">
                                     <div class="form-group col-md-6">
                                         <label class="col-form-label" for="firstName">First Name</label>
-                                        <input type="text" class="form-control" id="firstName" value="Dianne">
+                                        <input type="text" class="form-control" id="firstName" value="@Model.FirstName">
                                     </div>
                                     <div class="form-group col-md-6">
                                         <label class="col-form-label" for="lastName">Last Name</label>
-                                        <input type="text" class="form-control" id="lastName" value="Dianne">
+                                        <input type="text" class="form-control" id="lastName" value="@Model.LastName">
                                     </div>
                                 </div>
-                                <div class="form-row">
+                               @*  <div class="form-row">
                                     <div class="form-group col-md-6">
                                         <label class="col-form-label" for="companyName">Company Name (optional)</label>
                                         <input type="text" class="form-control" id="companyName" value="Zakirsoft">
@@ -185,7 +187,7 @@
                                         <label class="col-form-label" for="zip">Zip Code</label>
                                         <input type="text" class="form-control" id="zip" value="20033">
                                     </div>
-                                </div>
+                                </div> *@
                                 <div class="form-row">
                                     <div class="form-group col-md-6">
                                         <label class="col-form-label" for="email">Email</label>

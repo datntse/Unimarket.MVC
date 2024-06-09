@@ -1,4 +1,9 @@
-﻿<!DOCTYPE html>
+﻿@inject IHttpContextAccessor Accessor;
+@{
+    var user = @Accessor.HttpContext.Session.GetString("User_FullName");
+}
+
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -100,8 +105,15 @@
                 <div class="col-lg-3">
                     <div class="header__right">
                         <div class="header__right__auth">
+                            @if(user != null)
+                            {
+                                <a href="@Url.Action("Index", "Profile")">Chào, <b>@user</b> </a>
+                                <a href="@Url.Action("Logout", "User")"><b>Log out</b></a>
+                            } else
+                            {
                             <a href="@Url.Action("Login", "User")">Đăng nhập</a>
                             <a href="@Url.Action("Login", "User")">Đăng ký</a>
+                            }
                         </div>
                         <ul class="header__right__widget">
                             <li><span class="icon_search search-switch"></span></li>

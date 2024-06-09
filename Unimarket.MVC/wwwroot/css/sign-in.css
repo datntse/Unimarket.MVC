@@ -5,14 +5,15 @@
 }
 
 body {
-    background: url("~/img/Background-01.svg");
+    background: url("~/img/backgroud.jpg");
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: left;
     flex-direction: column;
     font-family: 'Montserrat', sans-serif;
     height: 100vh;
-    margin: -20px 0 50px;
+    margin-left: 50px;
+    ;
 }
 
 h1 {
@@ -97,6 +98,7 @@ input {
     width: 768px;
     max-width: 100%;
     min-height: 480px;
+    height: 700px;
 }
 
 .form-container {

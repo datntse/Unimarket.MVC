@@ -3,6 +3,7 @@
 
 @{
     ViewData["Title"] = "Login";
+    var message = ViewData["ErrorMessage"] as String;
     Layout = "";
 }
 <html>
@@ -10,10 +11,11 @@
     <title>Sign in</title>
     <!-- <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css"> -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
-    <link rel="stylesheet" href="~/css/sign-in.css" /> 
+    <link rel="stylesheet" href="~/css/sign-in.css" />
+    <link rel="stylesheet" href="~/css/jquery-ui.min.css" type="text/css">
     <style>
         body {
-            background-image: url('/img/Background-01.svg');
+            background-image: url('/img/backgroud.jpg');
         }
     </style>
 
@@ -22,33 +24,41 @@
     <h2>Đăng Nhập/Đăng Ký</h2>
     <div class="container" id="container">
         <div class="form-container sign-up-container">
-
-            <form action="auth" style="" method="post">
-                <input type="hidden" name="action" value="register" />
+            <form action="Register" method="post">
                 <div style="display: flex" class="form-control">
-                    <input class="form-control" type="text" placeholder="FirstName" name="firstName" required />
+                    <input class="form-control" type="text" placeholder="FirstName" id="firstName" name="firstName" required />
                     <div id="name-message" style="color:red;font-size:11px"></div>
-                    <input style="margin-left: 5px" class="form-control" type="text" placeholder="LastName" name="lastName" required />
+                    <input style="margin-left: 5px" class="form-control" type="text" id="lastName"  placeholder="LastName" name="lastName" required />
                     <div id="name-message" style="color:red;font-size:11px"></div>
-
                 </div>
-                <input type="text" placeholder="Username" name="username" required />
-                <input type="email" placeholder="Email" name="email" required />
-
-                <input type="text" placeholder="Phone" name="phone" required />
-                <div id="phone-message" style="color:red;font-size:11px"></div>
-                <input type="password" placeholder="Password" name="password" id="password" required />
+                <input type="text" placeholder="Username" id="userName"  name="userName" required />
+                <input type="email" placeholder="Email" id="email" name="email" required />
+                <div style="display: flex" class="form-control">
+                    <div id="phone-message"  style="color:red;font-size:11px"></div>
+                    <input type="text" id="mssv"  placeholder="MSSV" name="MSSV" required />
+                    <div id="phone-message"  style="color:red;font-size:11px"></div>
+                    <input style="margin-left: 5px" id="dob"  type="date" value="2000-01-01" name="dob" placeholder="Ngày sinh" required />
+                    <div id="phone-message" style="color:red;font-size:11px"></div>
+                </div>
+                <select name="gender" style="width: 100%; padding: 12px 15px; margin: 8px 0; background-color: #eee; border: none;">
+                    <option value="" selected="true" disabled="true">Giới tính</option>
+                    <option value="true">Nam</option>
+                    <option value="false">Nữ</option>
+                </select>
+                <input type="text" id="phone" placeholder="Phone" name="phone" required />
+                <input type="password" id="password" placeholder="Password" name="password" id="password" required />
                 <div id="password-message" style="color:red;font-size:11px"></div>
                 <input type="password" placeholder="Confirm password" name="repass" id="confirmpassword" required />
-                <button type="submit" disabled="true">Đăng ký</button>
+                <button onclick="register()" disabled="true">Đăng ký</button>
             </form>
         </div>
         <div class="form-container sign-in-container">
             <form asp-action="Login" method="post">
                 <h1>Đăng nhập</h1>
 
-                <div class="social-container">
-                    <a href="https://www.facebook.com/dialog/oauth?client_id=1509092289871952&redirect_uri=http://localhost:8080/FBK74/login-facebook" class="social"
+                <div class="social-container" style="color: red">
+
+           @*          <a href="https://www.facebook.com/dialog/oauth?client_id=1509092289871952&redirect_uri=http://localhost:8080/FBK74/login-facebook" class="social"
                        style="
                        background-color: navy;
                        color: white;
@@ -56,9 +66,13 @@
                     <a href="#" class="social" style="
                        background-color: red;
                        color: white;
-                       "><i class="fab fa-google-plus-g"></i></a>
+                       "><i class="fab fa-google-plus-g"></i></a> *@
+                    @if (message != null)
+                    {
+                        <span>@message</span>
+                    }
                 </div>
-                <span>Sử dụng tài khoản mạng xã hội</span>
+                @* <span>Sử dụng tài khoản mạng xã hội</span> *@
                 <input type="text" placeholder="UserName" name="UserName" required />
                 <input type="password" placeholder="Password" name="Password" required />
                 <a href="verify">Quên Mật Khẩu?</a>
@@ -84,6 +98,23 @@
     </div>
 </div>
 
-<script src="~/js/validate.js">
+
+<script src="~/js/jquery-3.3.1.min.js"></script>
+<script src="~/js/bootstrap.min.js"></script>
+<script src="~/js/jquery.magnific-popup.min.js"></script>
+<script src="~/js/jquery-ui.min.js"></script>
+<script src="~/js/jquery.slicknav.js"></script>
+<script src="~/js/jquery.nicescroll.min.js"></script>
+<script src="~/js/main.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="~/js/validate.js"></script>
+
+<script>
+    function register() {
+    var userName = $('#userName');
+
+        console.log("userName", userName);
+    }
 </script>
 </html>
