@@ -4,6 +4,7 @@
 @{
     ViewData["Title"] = "Login";
     var message = ViewData["ErrorMessage"] as String;
+    var successmessage = ViewData["Message"] as String;
     Layout = "";
 }
 <html>
@@ -59,6 +60,13 @@
         <div class="form-container sign-in-container">
             <form asp-action="Login" method="post">
                 <h1>Đăng nhập</h1>
+                @if (successmessage != null)
+                {
+                    <div class="social-container" style="color: green">
+                        <span>@successmessage</span>
+                        <a href="https://mail.google.com/">Mail</a> 
+                    </div>
+                }
 
                 <div class="social-container" style="color: red">
 
