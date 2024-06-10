@@ -27,32 +27,34 @@ namespace Unimarket.MVC.Controllers
         {
             ResponseProductVM productList = new ResponseProductVM();
 
-            // Construct the query string
             var queryParams = new List<string>
             {
-                $"perPage={1}",
+                $"perPage={1}", // Số sản phẩm trên mỗi trang, có thể điều chỉnh
                 $"currentPage={defaultSearch.currentPage}",
                 $"sortBy={defaultSearch.sortBy}",
                 $"isAscending={defaultSearch.isAscending}"
             };
 
-            // Add category names to the query string
             if (defaultSearch.categoryNames != null && defaultSearch.categoryNames.Any())
             {
                 queryParams.AddRange(defaultSearch.categoryNames.Select(c => $"categoryNames={Uri.EscapeDataString(c)}"));
+                ViewData["categoryNames"] = defaultSearch.categoryNames;
             }
 
-            // Add price range to the query string
             if (defaultSearch.MinPrice.HasValue)
             {
                 queryParams.Add($"minPrice={defaultSearch.MinPrice.Value}");
+                ViewData["MinPrice"] = defaultSearch.MinPrice.Value;
             }
             if (defaultSearch.MaxPrice.HasValue)
             {
                 queryParams.Add($"maxPrice={defaultSearch.MaxPrice.Value}");
+                ViewData["MaxPrice"] = defaultSearch.MaxPrice.Value;
             }
 
+
             var queryString = string.Join("&", queryParams);
+
             var response = await _client.GetAsync(_client.BaseAddress + $"Item?{queryString}");
 
             if (response.IsSuccessStatusCode)
