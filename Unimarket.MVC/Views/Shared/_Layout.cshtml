@@ -86,15 +86,6 @@
                             <li class="@(ViewContext.RouteData.Values["Controller"].ToString() == "Shop" && ViewContext.RouteData.Values["Action"].ToString() != "Index" ? "active" : "")">
                                 <a href="@Url.Action("Index", "Shop")">Sản phẩm</a>
                             </li>
-                            <li>
-                                <a href="#">Pages</a>
-                                <ul class="dropdown">
-                                    <li><a href="@Url.Action("Index", "ProductDetail")">Product Details</a></li>
-                                    <li><a href="@Url.Action("Index", "Cart")">Vỏ hàng</a></li>
-                                    <li><a href="@Url.Action("Index", "Checkout")">Checkout</a></li>
-                                    <li><a href="@Url.Action("Index", "Blog")">Tin tức</a></li>
-                                </ul>
-                            </li>
                             <li><a href="@Url.Action("Index", "Blog")">Tin Tức</a></li>
                             <li class="@(ViewContext.RouteData.Values["Controller"].ToString() == "Contact" && ViewContext.RouteData.Values["Action"].ToString() != "Index" ? "active" : "")">
                                 <a href="@Url.Action("Index", "Contact")">Contact</a>
