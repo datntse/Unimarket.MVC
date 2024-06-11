@@ -33,52 +33,55 @@
                 <div style="display: flex" class="form-control">
                     <input class="form-control" type="text" placeholder="FirstName" id="firstName" name="firstName" required />
                     <div id="name-message" style="color:red;font-size:11px"></div>
-                    <input style="margin-left: 5px" class="form-control" type="text" id="lastName"  placeholder="LastName" name="lastName" required />
+                    <input style="margin-left: 5px" class="form-control" type="text" id="lastName" placeholder="LastName" name="lastName" required />
                     <div id="name-message" style="color:red;font-size:11px"></div>
                 </div>
-                <input type="text" placeholder="Username" id="userName"  name="userName" required />
+                <input type="text" placeholder="Username" id="userName" name="userName" required />
+                <input type="password" id="password" placeholder="Password" name="password" id="password" required />
+                <div id="password-message" style="color:red;font-size:11px"></div>
+                <input type="password" placeholder="Confirm password" name="repass" id="confirmpassword" required />
                 <input type="email" placeholder="Email" id="email" name="email" required />
                 <div style="display: flex" class="form-control">
-                    <div id="phone-message"  style="color:red;font-size:11px"></div>
-                    <input type="text" id="mssv"  placeholder="MSSV" name="MSSV" required />
-                    <div id="phone-message"  style="color:red;font-size:11px"></div>
-                    <input style="margin-left: 5px" id="dob"  type="date" value="2000-01-01" name="dob" placeholder="Ngày sinh" required />
+                    <div id="phone-message" style="color:red;font-size:11px"></div>
+                    <input type="text" id="mssv" placeholder="MSSV" name="MSSV" required />
+                    <div id="phone-message" style="color:red;font-size:11px"></div>
+                    <input style="margin-left: 5px" id="dob" type="date" value="2000-01-01" name="dob" placeholder="Ngày sinh" required />
                     <div id="phone-message" style="color:red;font-size:11px"></div>
                 </div>
+                <input type="text" id="phone" placeholder="Phone" name="phone" required />
                 <select name="gender" style="width: 100%; padding: 12px 15px; margin: 8px 0; background-color: #eee; border: none;">
                     <option value="" selected="true" disabled="true">Giới tính</option>
                     <option value="true">Nam</option>
                     <option value="false">Nữ</option>
                 </select>
-                <input type="text" id="phone" placeholder="Phone" name="phone" required />
-                <input type="password" id="password" placeholder="Password" name="password" id="password" required />
-                <div id="password-message" style="color:red;font-size:11px"></div>
-                <input type="password" placeholder="Confirm password" name="repass" id="confirmpassword" required />
+                
                 <button onclick="register()" disabled="true">Đăng ký</button>
             </form>
         </div>
         <div class="form-container sign-in-container">
             <form asp-action="Login" method="post">
-                <h1>Đăng nhập</h1>
+                <div>
+                    <img src="~/img//logo.png" width="100%" height="50px">
+                    <h1>Đăng nhập</h1>
+                </div>
                 @if (successmessage != null)
                 {
                     <div class="social-container" style="color: green">
                         <span>@successmessage</span>
-                        <a href="https://mail.google.com/">Mail</a> 
+                        <a href="https://mail.google.com/">Mail</a>
                     </div>
                 }
 
                 <div class="social-container" style="color: red">
-                    <img />
-           @*          <a href="https://www.facebook.com/dialog/oauth?client_id=1509092289871952&redirect_uri=http://localhost:8080/FBK74/login-facebook" class="social"
-                       style="
-                       background-color: navy;
-                       color: white;
-                       "><i class="fab fa-facebook-f"></i></a>
+                    @*          <a href="https://www.facebook.com/dialog/oauth?client_id=1509092289871952&redirect_uri=http://localhost:8080/FBK74/login-facebook" class="social"
+                    style="
+                    background-color: navy;
+                    color: white;
+                    "><i class="fab fa-facebook-f"></i></a>
                     <a href="#" class="social" style="
-                       background-color: red;
-                       color: white;
-                       "><i class="fab fa-google-plus-g"></i></a> *@
+                    background-color: red;
+                    color: white;
+                    "><i class="fab fa-google-plus-g"></i></a> *@
                     @if (message != null)
                     {
                         <span>@message</span>
@@ -124,7 +127,7 @@
 
 <script>
     function register() {
-    var userName = $('#userName');
+        var userName = $('#userName');
 
         console.log("userName", userName);
     }
