@@ -38,7 +38,7 @@ namespace Unimarket.MVC.Services
                     <div class=""form"" style=""width: 600px; height: 450px; border: 1px solid black; border-radius: 10px;"">
                         <div class=""header"" style=""border: 1px solid gray; border-radius: 10px; background-color: #EFC15F;"">
                             <div class=""logo"" style=""height: 90px; width: 200px; background-color: white; margin: 10px auto; border-radius: 10px; display: flex; align-items: center; justify-content: center;"">
-                                <img src=""https://firebasestorage.googleapis.com/v0/b/bmosfile.appspot.com/o/Logo.png?alt=media&token=bec2eac4-0dea-4f53-b881-4dda53481ae5"" alt=""Logo"" srcset="""" style=""width: 100px; height: 100%; margin: 0 auto;"">
+                                <img src=""https://firebasestorage.googleapis.com/v0/b/bmosfile.appspot.com/o/images%2Flogo.png?alt=media&token=76b0e3c4-089d-404f-8c6c-ac6b2acef832"" alt=""Logo"" srcset="""" style=""width: 100px; height: 100%; margin: 0 auto;"">
                             </div>
                             <div class=""text"" style=""text-align: center;"">
                                 <h1>Chào mừng bạn đến với Unimarket</h1>

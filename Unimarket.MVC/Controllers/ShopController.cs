@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Unimarket.MVC.Helpers;
+using Unimarket.MVC.Models.CreateModels;
 using Unimarket.MVC.Models.ViewModels;
 using Unimarket.MVC.Services;
 
@@ -54,13 +55,18 @@ namespace Unimarket.MVC.Controllers
 
 
             var queryString = string.Join("&", queryParams);
-
+            List<CategoryVM> listCate = new List<CategoryVM>();
             var response = await _client.GetAsync(_client.BaseAddress + $"Item?{queryString}");
 
             if (response.IsSuccessStatusCode)
             {
                 var data = await response.Content.ReadAsStringAsync();
                 productList = JsonConvert.DeserializeObject<ResponseProductVM>(data);
+                var responseCategory = await _client.GetAsync(_client.BaseAddress + "category");
+                var dateCate = await responseCategory.Content.ReadAsStringAsync();
+                listCate = JsonConvert.DeserializeObject<List<CategoryVM>>(dateCate);
+                ViewData["ListCate"] = listCate;
+
             }
 
             return View(productList);
