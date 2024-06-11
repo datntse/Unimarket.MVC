@@ -73,7 +73,13 @@
                                     <ul class="product__hover">
                                         <li><a href="@item.ImageUrl" class="image-popup"><span class="arrow_expand"></span></a></li>
                                         <li><a asp-controller="ProductDetail" asp-action="Index" asp-route-id="@item.Id"><span class="icon_search"></span></a></li>
-                                        <li><a href="#"><span class="icon_bag_alt"></span></a></li>
+                                        <li>
+                                            <form id="addToCartForm-@item.Id" asp-controller="Cart" asp-action="AddToCart" asp-route-itemId="@item.Id" method="post">
+                                                <a href="#" onclick="submitAddToCartForm('@item.Id'); return false;">
+                                                    <span class="icon_bag_alt"></span>
+                                                </a>
+                                            </form>
+                                        </li>
                                     </ul>
                                 </div>
                                 <div class="product__item__text">
@@ -147,3 +153,31 @@
         });
     });
 </script>
+@section Scripts {
+
+
+    <script>
+
+        function submitAddToCartForm(itemId) {
+            $.ajax({
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                type: "POST",
+                url: "Cart/AddToCart",
+                data: JSON.stringify(itemId),
+                success: function (response) {
+                    Swal.fire({
+                        position: "center",
+                        icon: "success",
+                        title: "Thêm vào giỏ hàng thành công!",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                },
+                error: function () {
+                    window.location.replace('/User/Login');
+                }
+            });
+        }
+    </script>
+}

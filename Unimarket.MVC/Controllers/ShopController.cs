@@ -29,7 +29,7 @@ namespace Unimarket.MVC.Controllers
 
             var queryParams = new List<string>
             {
-                $"perPage={1}", // Số sản phẩm trên mỗi trang, có thể điều chỉnh
+                $"perPage={9}", // Số sản phẩm trên mỗi trang, có thể điều chỉnh
                 $"currentPage={defaultSearch.currentPage}",
                 $"sortBy={defaultSearch.sortBy}",
                 $"isAscending={defaultSearch.isAscending}"

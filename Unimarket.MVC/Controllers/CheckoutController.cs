@@ -44,7 +44,7 @@ namespace Unimarket.MVC.Controllers
 				};
 				return View(CheckOutVM);
 			}
-			return RedirectToAction("Index", "Home");
+			return RedirectToAction("OrderHistory", "Profile");
 		}
 		[HttpPost]
         public async Task<IActionResult> CheckOut([FromBody] CheckOutCM model)
