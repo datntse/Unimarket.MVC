@@ -56,11 +56,15 @@ namespace Unimarket.MVC.Controllers
             var queryString = string.Join("&", queryParams);
 
             var response = await _client.GetAsync(_client.BaseAddress + $"Item?{queryString}");
-
+            List<CategoryVM> listCate = new List<CategoryVM>();
             if (response.IsSuccessStatusCode)
             {
                 var data = await response.Content.ReadAsStringAsync();
                 productList = JsonConvert.DeserializeObject<ResponseProductVM>(data);
+                var responseCategory = await _client.GetAsync(_client.BaseAddress + "category");
+                var dateCate = await responseCategory.Content.ReadAsStringAsync();
+                listCate = JsonConvert.DeserializeObject<List<CategoryVM>>(dateCate);
+                ViewData["ListCate"] = listCate;
             }
 
             return View(productList);

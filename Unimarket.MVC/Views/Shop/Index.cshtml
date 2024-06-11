@@ -1,9 +1,13 @@
-﻿@model Unimarket.MVC.Models.ViewModels.ResponseProductVM
+﻿@using Unimarket.MVC.Models.ViewModels
+@model Unimarket.MVC.Models.ViewModels.ResponseProductVM
 
 @{
     ViewData["Title"] = "Shop Page";
     var minPrice = ViewData["MinPrice"] != null ? (float)ViewData["MinPrice"] : 1000f;
     var maxPrice = ViewData["MaxPrice"] != null ? (float)ViewData["MaxPrice"] : 999999f;
+    var listCate = ViewData["ListCate"] as List<CategoryVM>;
+    var itemsPerPage = 9;
+    var totalPages = (int)Math.Ceiling((double)Model.Total / itemsPerPage);
 }
 
 <div class="breadcrumb-option">
@@ -47,11 +51,11 @@
                                 <h4>Sort by category</h4>
                             </div>
                             <div class="size__list color__list">
-                                @foreach (var category in new List<string> { "Quần", "Áo" }) 
+                                @foreach (var category in listCate)
                                 {
                                     <div style="display:flex;">
-                                        <input type="checkbox" name="categoryNames" value="@category" @(ViewData["categoryNames"] != null && ((List<string>)ViewData["categoryNames"]).Contains(category) ? "checked" : "") />
-                                        <label style="margin-top:8px;" for="@category">@category</label>
+                                        <input type="checkbox" name="categoryNames" value="@category.Name" @(ViewData["categoryNames"] != null && ((List<string>)ViewData["categoryNames"]).Contains(category.Name) ? "checked" : "") />
+                                        <label style="margin-top:8px;" for="@category.Name">@category.Name</label>
                                     </div>
                                 }
                             </div>
@@ -98,7 +102,7 @@
                     }
                     <div class="col-lg-12 text-center">
                         <div class="pagination__option">
-                            @for (int i = 1; i <= Model.Total; i++)
+                            @for (int i = 1; i <= totalPages; i++)
                             {
                                 <a href="@Url.Action("Index", new {
                                     currentPage = i-1,
