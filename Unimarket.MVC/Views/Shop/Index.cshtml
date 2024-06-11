@@ -6,6 +6,8 @@
     var minPrice = ViewData["MinPrice"] != null ? (float)ViewData["MinPrice"] : 1000f;
     var maxPrice = ViewData["MaxPrice"] != null ? (float)ViewData["MaxPrice"] : 999999f;
     var listCate = ViewData["ListCate"] as List<CategoryVM>;
+    var itemsPerPage = 9;
+    var totalPages = (int)Math.Ceiling((double)Model.Total / itemsPerPage);
 }
 
 <div class="breadcrumb-option">
@@ -100,7 +102,7 @@
                     }
                     <div class="col-lg-12 text-center">
                         <div class="pagination__option">
-                            @for (int i = 1; i <= Model.Total; i++)
+                            @for (int i = 1; i <= totalPages; i++)
                             {
                                 <a href="@Url.Action("Index", new {
                                     currentPage = i-1,
