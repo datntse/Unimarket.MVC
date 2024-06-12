@@ -456,7 +456,12 @@
                     });
                 },
                 error: function () {
-                    window.location.replace('/User/Login');
+                    Swal.fire({
+                        position: "center",
+                        icon: "error",
+                        title: "Vượt số lượng sản phẩm",
+                        showConfirmButton: true
+                    });
                 }
             });
         }
