@@ -116,6 +116,9 @@ namespace Unimarket.MVC.Controllers
                     if (role.Equals(AppRole.Admin))
                     {
                         return RedirectToAction("Index", "Dashboard");
+                    } else if (role.Equals(AppRole.Staff))
+                    {
+                        return RedirectToAction("Index", "Order");
                     }
                 }
                 return RedirectToAction("Index", "Home");
