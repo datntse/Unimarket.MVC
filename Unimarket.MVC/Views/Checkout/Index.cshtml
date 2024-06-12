@@ -30,7 +30,7 @@
         </div>
         <form asp-controller="CheckOut" class="checkout__form" method="POST">
             <div class="row">
-                <div class="col-lg-8">
+                <div class="col-lg-7">
                     <h5>Chi tiết thanh toán</h5>
                     <div class="row">
                         <div class="col-lg-6 col-md-6 col-sm-6">
@@ -65,14 +65,14 @@
                         </div>
                         <div class="col-lg-12">
                             <div class="checkout__form__input">
-                                <p>Ghi chú cho đơn hàng <span>*</span></p>
+                                <p>Ghi chú cho đơn hàng</p>
                                 <input type="text" id="order-note"
                                        name="Note" placeholder="Ghi chú những thông tin bạn muốn.">
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-4">
+                <div class="col-lg-5">
                     <div class="checkout__order">
                         <h5>Đơn hàng của bạn</h5>
                         <div class="checkout__order__product">
@@ -85,7 +85,7 @@
                                 {
                                     productNumber++;
                                     totalPrice += item.Item.Price * item.Quantity;
-                                    <li>0.index @item.Item.Name<span>@string.Format("{0:#,0}", item.Item.Price)đ</span></li>
+                                    <li>0.@productNumber@item.Item.Name<span>@string.Format("{0:#,0}", item.Item.Price)đ</span></li>
                                 }
                             </ul>
                         </div>
@@ -109,31 +109,36 @@
 @section Scripts { 
     <script>
         function checkOut(itemId) {
+            event.preventDefault();
+
             var Address = $('#Address').val();
             var Note = $('#order-note').val();
             if (Address.length == 0) {
-                console.log("Failed");
-            }
-            console.log("address", Address);
-            console.log("note", Note);
-            event.preventDefault();
-            var action = {
-                Address,
-                Note
-            }
-            $.ajax({
-                dataType: "json",
-                contentType: "application/json; charset=utf-8",
-                url: "CheckOut/Checkout",
-                type: "POST",
-                data: JSON.stringify(action),
-                success: function (response) {
-                    console.log(response);
-                },
-                error: function () {
-                    window.location.replace('/User/Login');
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: "Vui lòng nhập địa chỉ để chúng tớ có thể giao hàng tới tới tay cậu nhé!",
+                });
+            } else {
+                var action = {
+                    Address,
+                    Note
                 }
-            });
+                $.ajax({
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    url: "CheckOut/Checkout",
+                    type: "POST",
+                    data: JSON.stringify(action),
+                    success: function (response) {
+                        window.location.replace('/Profile/History');
+                    },
+                    error: function () {
+                        window.location.replace('/User/Login');
+                    }
+                });
+            }
+       
         }
     </script>
 }

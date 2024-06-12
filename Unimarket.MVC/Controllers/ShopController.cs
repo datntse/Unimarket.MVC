@@ -57,7 +57,6 @@ namespace Unimarket.MVC.Controllers
             var queryString = string.Join("&", queryParams);
             List<CategoryVM> listCate = new List<CategoryVM>();
             var response = await _client.GetAsync(_client.BaseAddress + $"Item?{queryString}");
-            List<CategoryVM> listCate = new List<CategoryVM>();
             if (response.IsSuccessStatusCode)
             {
                 var data = await response.Content.ReadAsStringAsync();
@@ -70,6 +69,5 @@ namespace Unimarket.MVC.Controllers
 
             return View(productList);
         }
-
     }
 }

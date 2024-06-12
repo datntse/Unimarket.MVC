@@ -191,7 +191,7 @@ namespace Unimarket.MVC.Controllers
             if (response.IsSuccessStatusCode)
             {
                 var url = Url.Action("ConfirmEmail", "User", new { email = model.Email }, protocol: Request.Scheme);
-                await _mailService.SendEmailAsync(model.Email, "Xác thực tài khoản của bạn", "<a href=\"" + url + "\" class=\"linkdetail\" style=\"text-decoration: none; margin: 0 auto; color: black;\">Xác nhận</a>");
+                await _mailService.SendEmailAsync(model.Email, "Xác thực tài khoản của bạn", url);
                 TempData["Message"] = "Đến email dể xác nhận tài khoản";
                 return RedirectToAction("Login", "User");
             }
