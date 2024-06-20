@@ -56,7 +56,7 @@
                                                     <h6>@item.Item.Name</h6>
                                                 </div>
                                             </td>
-                                            <td class="cart__price">@string.Format("{0:#,0}", item.Item.Price)đ</td>
+                                            <td class="cart__price">@string.Format("{0:#,0}", item.Item.Price)VNĐ</td>
                                             <td class="cart__quantity">
                                                 <div class="pro-qty">
                                                     <span class="dec qtybtn" onclick="descreaseQuantity('@item.ItemId')">-</span>
@@ -64,7 +64,7 @@
                                                     <span class="inc qtybtn" onclick="increaseQuantity('@item.ItemId')">+</span>
                                                 </div>
                                             </td>
-                                            <td class="cart__total">@string.Format("{0:#,0}", item.Item.Price * item.Quantity)đ</td>
+                                            <td class="cart__total">@string.Format("{0:#,0}", item.Item.Price * item.Quantity)VNĐ</td>
                                             <td class="cart__close">
                                                 @* <a class="delete-item" id="delete-btn" data-itemid="@item.ItemId" asp-controller="Cart" asp-action="DeleteInCart" asp-route-itemId="@item.ItemId"> *@
                                                 <a class="delete-item" onclick="removeItemFromCart('@item.ItemId')" data-itemid="@item.ItemId">
@@ -105,9 +105,9 @@
                         <div class="cart__total__procced">
                             <h6>Chi tiết thanh toán</h6>
                             <ul>
-                                <li>Tổng tiền hàng <span>@string.Format("{0:#,0}", totalMoney)đ</span></li>
+                                <li>Tổng tiền hàng <span>@string.Format("{0:#,0}", totalMoney)VNĐ</span></li>
                                 <li>Chi phí vận chuyển <span>0đ</span></li>
-                                <li><strong>Tổng <span>@string.Format("{0:#,0}", totalMoney)đ</span></strong></li>
+                                <li><strong>Tổng <span>@string.Format("{0:#,0}", totalMoney)VNĐ</span></strong></li>
                             </ul>
                             <a href="@Url.Action("Index", "Checkout")" class="primary-btn">Tiến hành đặt hàng</a>
                         </div>

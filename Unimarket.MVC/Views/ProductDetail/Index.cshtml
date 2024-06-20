@@ -7,7 +7,7 @@
 		<div class="row">
 			<div class="col-lg-12">
 				<div class="breadcrumb__links">
-					<a href="@Url.Action("Index","Home")"><i class="fa fa-home"></i> Home</a>
+					<a href="@Url.Action("Index","Home")"><i class="fa fa-home"></i> Trang chủ</a>
 					<a href="#">@foreach (var item in Model.CategoryName)
 						{
 							@item
@@ -57,12 +57,12 @@
 			</div>
 			<div class="col-lg-6">
 				<div class="product__details__text">
-					<h3>@Model.Name <span>Brand: @foreach (var item in Model.CategoryName)
+					<h3>@Model.Name <span>Loại sản phẩm: @foreach (var item in Model.CategoryName)
 							{
 								@item
 							}</span></h3>
 					@* <div class="product__details__price">$ 75.0 <span>$ 83.0</span></div> *@
-					<div class="product__details__price">@string.Format("{0:#,0}", Model.Price)đ</div>
+					<div class="product__details__price">@string.Format("{0:#,0}", Model.Price)VNĐ</div>
 					<p>
 						@Model.ProductDetail
 					</p>
@@ -147,7 +147,7 @@
 				<div class="product__details__tab">
 					<ul class="nav nav-tabs" role="tablist">
 						<li class="nav-item">
-							<a class="nav-link active" data-toggle="tab" href="#tabs-1" role="tab">Description</a>
+							<a class="nav-link active" data-toggle="tab" href="#tabs-1" role="tab">Mô tả chi tiết</a>
 						</li>
 						@* <li class="nav-item">
 						<a class="nav-link" data-toggle="tab" href="#tabs-2" role="tab">Specification</a>

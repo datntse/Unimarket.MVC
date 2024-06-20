@@ -24,7 +24,7 @@
                             {
                                 <tr>
                                     <th scope="row">
-                                        <img id="imageMain-display" src="@product.ImageUrl class="tm-product-img-dummy mx-auto" style="height: 100px" />
+                                        <img id="imageMain-display" src="@product.ImageUrl class="tm-product-img-dummy mx-auto" style="height: 100px; max-width:150px;" />
                                     </th>
                                     <td class="tm-product-name">@product.Name</td>
                                     <td>@product.Quantity</td>
@@ -222,7 +222,7 @@
         $('.deleteicon').on('click', function (e) {
             e.preventDefault();
 
-            var categoryId = $(this).data('category-id');
+            var categoryId = $(this).closest('a').data('category-id');
             console.log(categoryId);
 
             if (confirm("Bạn có chắc chắn muốn xóa category này không")) {
@@ -240,6 +240,7 @@
             }
         });
     });
+
 
 </script>
 <script>

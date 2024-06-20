@@ -2,7 +2,16 @@
 @{
     var user = @Accessor.HttpContext.Session.GetString("User_FullName");
 }
-
+@functions {
+    public bool IsActive(string controller, params string[] actions)
+    {
+        var routeData = ViewContext.RouteData;
+        var currentController = routeData.Values["controller"]?.ToString();
+        var currentAction = routeData.Values["action"]?.ToString();
+        return string.Equals(currentController, controller, StringComparison.OrdinalIgnoreCase) &&
+               actions.Any(action => string.Equals(currentAction, action, StringComparison.OrdinalIgnoreCase));
+    }
+}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -33,6 +42,52 @@
     <link rel="stylesheet" href="~/css/style.css" type="text/css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
+    <!-- Custom Styles -->
+    <style>
+        .fixed-header {
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-container {
+            display: flex;
+            align-items: center;
+            border: 1px solid #000;
+            border-radius: 25px;
+            padding: 0px 10px;
+            width: 300px;
+            margin: 10px 0;
+        }
+
+        .search-input {
+            border: none;
+            outline: none;
+            flex-grow: 1;
+            padding: 5px 10px;
+            border-radius: 25px;
+        }
+
+        .search-button {
+            background: none;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+            .search-button i {
+                font-size: 18px;
+                color: #000;
+            }
+
+        body {
+            padding-top: 80px; /* Adjust this value based on the height of your header */
+        }
+    </style>
 </head>
 <body>
     <!-- Page Preloder -->
@@ -40,84 +95,59 @@
         <div class="loader"></div>
     </div>
 
-    <!-- Offcanvas Menu Begin -->
-    @* <div class="offcanvas-menu-overlay"></div>
-    <div class="offcanvas-menu-wrapper">
-    <div class="offcanvas__close">+</div>
-    <ul class="offcanvas__widget">
-    <li><span class="icon_search search-switch"></span></li>
-    <li>
-    <a href="@Url.Action("Index", "Shop")">
-    <span class="icon_heart_alt"></span>
-    <div class="tip">2</div>
-    </a>
-    </li>
-    <li>
-    <a href="#">
-    <span class="icon_bag_alt"></span>
-    <div class="tip">2</div>
-    </a>
-    </li>
-    </ul>
-    <div class="offcanvas__logo">
-    <a href="./index.html"><img src="img/logo.png" alt=""></a>
-    </div>
-    <div id="mobile-menu-wrap"></div>
-    <div class="offcanvas__auth">
-    <a href="#">Đăng nhập</a>
-    <a href="#">Đăng ký</a>
-    </div>
-    </div> *@
-    <!-- Offcanvas Menu End -->
     <!-- Header Section Begin -->
-    <header class="header">
+    <header class="header fixed-header">
         <div class="container-fluid">
-            <div class="row">
+            <div class="row align-items-center">
                 <div class="col-xl-2 col-lg-1">
                     <div class="header__logo">
                         <a href="@Url.Action("Index", "Home")"><img src="~/img/logo.png" alt=""></a>
                     </div>
                 </div>
                 <div class="col-xl-1">
-                    
                 </div>
-                <div class="col-xl-6 col-lg-7">
+                <div class="col-xl-4 col-lg-5">
                     <nav class="header__menu">
                         <ul>
-                            <li class="@(ViewContext.RouteData.Values["Controller"].ToString() == "Home" && ViewContext.RouteData.Values["Action"].ToString() == "Index" ? "active" : "")">
+                            <li class="@(IsActive("Home", "Index") ? "active" : "")">
                                 <a href="@Url.Action("Index", "Home")">Trang chủ</a>
                             </li>
-                            <li class="@(ViewContext.RouteData.Values["Controller"].ToString() == "Shop" && ViewContext.RouteData.Values["Action"].ToString() != "Index" ? "active" : "")">
+                            <li class="@(IsActive("Shop", "Index") ? "active" : "")">
                                 <a href="@Url.Action("Index", "Shop")">Sản phẩm</a>
                             </li>
-                            <li><a href="@Url.Action("Index", "Blog")">Tin Tức</a></li>
-                            <li class="@(ViewContext.RouteData.Values["Controller"].ToString() == "Contact" && ViewContext.RouteData.Values["Action"].ToString() != "Index" ? "active" : "")">
-                                <a href="@Url.Action("Index", "Contact")">Contact</a>
+                            <li class="@(IsActive("Blog", "Index") ? "active" : "")">
+                                <a href="@Url.Action("Index", "Blog")">Tin Tức</a>
+                            </li>
+                            <li class="@(IsActive("Contact", "Index") ? "active" : "")">
+                                <a href="@Url.Action("Index", "Contact")">Liên hệ</a>
                             </li>
                         </ul>
                     </nav>
                 </div>
+                <div class ="col-xl-2 col-lg-2">
+                    <div class="search-container">
+                        <input type="text" class="search-input" placeholder="Tìm kiếm...">
+                        <button type="submit" class="search-button">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
                 <div class="col-lg-3">
                     <div class="header__right">
                         <div class="header__right__auth">
-                            @if(user != null)
+                            @if (user != null)
                             {
                                 <a href="@Url.Action("Index", "Profile")">Chào, <b>@user</b> </a>
                                 <a href="@Url.Action("Logout", "User")"><b>Log out</b></a>
-                            } else
+                            }
+                            else
                             {
-                            <a href="@Url.Action("Login", "User")">Đăng nhập</a>
-                            <a href="@Url.Action("Login", "User")">Đăng ký</a>
+                                <a href="@Url.Action("Login", "User")">Đăng nhập</a>
+                                <a href="@Url.Action("Login", "User")">Đăng ký</a>
                             }
                         </div>
                         <ul class="header__right__widget">
-                            <li><span class="icon_search search-switch"></span></li>
-                            @* <li>
-                            <a href="#">
-                            <span class="icon_heart_alt"></span>
-                            <div class="tip">2</div>
-                            </a>
-                            </li> *@
+@*                             <li><span class="icon_search search-switch"></span></li> *@
                             <li>
                                 <a href="@Url.Action("Index", "Cart")">
                                     <span class="icon_bag_alt"></span>
@@ -128,145 +158,86 @@
                     </div>
                 </div>
             </div>
-            <div class="canvas__open">
-                <i class="fa fa-bars"></i>
-            </div>
         </div>
     </header>
     <div>
         @RenderBody()
     </div>
 
-    <!-- Instagram Begin -->
-    <!-- Instagram Begin -->
-    <div class="instagram">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-lg-2 col-md-4 col-sm-4 p-0">
-                    <div class="instagram__item set-bg" data-setbg="img/instagram/insta-1.jpg">
-                        <div class="instagram__text">
-                            <i class="fa fa-instagram"></i>
-                            <a href="#">ashion_shop</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-2 col-md-4 col-sm-4 p-0">
-                    <div class="instagram__item set-bg" data-setbg="img/instagram/insta-2.jpg">
-                        <div class="instagram__text">
-                            <i class="fa fa-instagram"></i>
-                            <a href="#">ashion_shop</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-2 col-md-4 col-sm-4 p-0">
-                    <div class="instagram__item set-bg" data-setbg="img/instagram/insta-3.jpg">
-                        <div class="instagram__text">
-                            <i class="fa fa-instagram"></i>
-                            <a href="#">ashion_shop</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-2 col-md-4 col-sm-4 p-0">
-                    <div class="instagram__item set-bg" data-setbg="img/instagram/insta-4.jpg">
-                        <div class="instagram__text">
-                            <i class="fa fa-instagram"></i>
-                            <a href="#">ashion_shop</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-2 col-md-4 col-sm-4 p-0">
-                    <div class="instagram__item set-bg" data-setbg="img/instagram/insta-5.jpg">
-                        <div class="instagram__text">
-                            <i class="fa fa-instagram"></i>
-                            <a href="#">ashion_shop</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-2 col-md-4 col-sm-4 p-0">
-                    <div class="instagram__item set-bg" data-setbg="img/instagram/insta-6.jpg">
-                        <div class="instagram__text">
-                            <i class="fa fa-instagram"></i>
-                            <a href="#">ashion_shop</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Instagram End -->
-    <!-- Instagram End -->
     <footer class="footer">
         <div class="container">
             <div class="row">
                 <div class="col-lg-4 col-md-6 col-sm-7">
                     <div class="footer__about">
                         <div class="footer__logo">
-                            <a href="./index.html"><img src="~/img/logo.png" alt=""></a>
+                            <a href="./index.html"><img src="~/img/logo.png" style="width=60%;" alt=""></a>
                         </div>
                         <p>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
-                            cilisis.
+                            Hãy đồng hành cùng Unimarket - nơi bạn có thể thỏa sức mua sắm một cách thuận lợi và tiết kiệm
                         </p>
-                        <div class="footer__payment">
-                            <a href="#"><img src="~/img/payment/payment-1.png" alt=""></a>
-                            <a href="#"><img src="~/img/payment/payment-2.png" alt=""></a>
-                            <a href="#"><img src="~/img/payment/payment-3.png" alt=""></a>
-                            <a href="#"><img src="~/img/payment/payment-4.png" alt=""></a>
-                            <a href="#"><img src="~/img/payment/payment-5.png" alt=""></a>
-                        </div>
+                        <p>
+                            Liên hệ với chúng tôi: <br />
+                            <u>Unimarket8888@gmail.com</u> hoặc <u>039 514 0547</u>
+                        </p>
                     </div>
                 </div>
                 <div class="col-lg-2 col-md-3 col-sm-5">
-                    <div class="footer__widget">
-                        <h6>Quick links</h6>
-                        <ul>
-                            <li><a href="#">About</a></li>
-                            <li><a href="#">Blogs</a></li>
-                            <li><a href="#">Contact</a></li>
-                            <li><a href="#">FAQ</a></li>
-                        </ul>
-                    </div>
                 </div>
                 <div class="col-lg-2 col-md-3 col-sm-4">
-                    <div class="footer__widget">
-                        <h6>Account</h6>
-                        <ul>
-                            <li><a href="#">My Account</a></li>
-                            <li><a href="#">Orders Tracking</a></li>
-                            <li><a href="#">Checkout</a></li>
-                            <li><a href="#">Wishlist</a></li>
-                        </ul>
-                    </div>
                 </div>
                 <div class="col-lg-4 col-md-8 col-sm-8">
-                    <div class="footer__newslatter">
-                        <h6>NEWSLETTER</h6>
-                        <form action="#">
-                            <input type="text" placeholder="Email">
-                            <button type="submit" class="site-btn">Subscribe</button>
-                        </form>
-                        <div class="footer__social">
-                            <a href="#"><i class="fa fa-facebook"></i></a>
-                            <a href="#"><i class="fa fa-twitter"></i></a>
-                            <a href="#"><i class="fa fa-youtube-play"></i></a>
-                            <a href="#"><i class="fa fa-instagram"></i></a>
-                            <a href="#"><i class="fa fa-pinterest"></i></a>
+                    <div class="row">
+                        <div class="col-lg-6 col-md-6 footer__widget">
+                            <h6>Về Unimarket</h6>
+                            <ul>
+                                <li><a href="#">Giới thiệu</a></li>
+                                <li><a href="#">Liên hệ</a></li>
+                                <li><a href="#">Báo cáo</a></li>
+                                <li><a href="#">Q&A</a></li>
+                            </ul>
                         </div>
+                        <div class="col-lg-6 col-md-6 footer__widget">
+                            <h6>Tài khoản</h6>
+                            <ul>
+                                <li>
+                                    <a href="@((user == null) ? Url.Action("Login", "User") : Url.Action("Index", "Profile"))">
+                                        Tài khoản của bạn
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="@((user == null) ? Url.Action("Login", "User") : Url.Action("OrderHistory", "Profile"))">
+                                        Lịch sử đơn hàng
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="@((user == null) ? Url.Action("Login", "User") : Url.Action("Index", "Cart"))">
+                                        Vỏ hàng
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="@((user == null) ? Url.Action("Login", "User") : Url.Action("Index", "Checkout"))">
+                                        Checkout
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+
                     </div>
+                    <p>Lô E2a-7, Đường D1, Đ. D1, Long Thạnh Mỹ, Thành Phố Thủ Đức.</p>
                 </div>
             </div>
         </div>
     </footer>
     <!-- Footer Section End -->
     <!-- Search Begin -->
-    <div class="search-model">
+@*     <div class="search-model">
         <div class="h-100 d-flex align-items-center justify-content-center">
             <div class="search-close-switch">+</div>
             <form class="search-model-form">
-                <input type="text" id="search-input" placeholder="Search here.....">
+                <input type="text" id="search-input" placeholder="Tram choa'.....">
             </form>
         </div>
-    </div>
+    </div> *@
     <!-- Search End -->
     <!-- Js Plugins -->
     <script src="~/js/jquery-3.3.1.min.js"></script>
@@ -283,7 +254,6 @@
     <script src="https://cdn.jsdelivr.net/npm/popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
-
 
 </body>
 

@@ -2,9 +2,9 @@
 
 @{
     Layout = "";
-    int countStatus1 = Model.Data != null ? Model.Data.Count(item => item.Status == 1) : 0;
-    int countStatus2 = Model.Data != null ? Model.Data.Count(item => item.Status == 2) : 0;
-    int countStatus3 = Model.Data != null ? Model.Data.Count(item => item.Status == 3) : 0;
+    int countStatus1 = Model.Data != null ? Model.Data.Count(item => item.Status == 0) : 0;
+    int countStatus2 = Model.Data != null ? Model.Data.Count(item => item.Status == 1) : 0;
+    int countStatus3 = Model.Data != null ? Model.Data.Count(item => item.Status == 2) : 0;
     int number = 1;
     int number2 = 1;
 }

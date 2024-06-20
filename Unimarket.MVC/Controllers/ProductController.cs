@@ -185,5 +185,6 @@ namespace Unimarket.MVC.Controllers
                 return BadRequest(new { success = false, message = "Failed to delete category. Please try again." });
             }
         }
+
     }
 }
