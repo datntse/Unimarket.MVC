@@ -6,6 +6,7 @@ using Unimarket.MVC.Services;
 
 namespace Unimarket.MVC.Controllers
 {
+    [Authorize(Roles = AppRole.Admin)]
 	public class DashboardController : Controller
 	{
         private readonly IHttpClientFactory _factory;
