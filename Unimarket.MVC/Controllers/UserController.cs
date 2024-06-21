@@ -119,7 +119,7 @@ namespace Unimarket.MVC.Controllers
                     } else if (role.Equals(AppRole.Staff))
                     {
                         return RedirectToAction("Index", "Order");
-                    }
+                    } 
                 }
                 return RedirectToAction("Index", "Home");
             }

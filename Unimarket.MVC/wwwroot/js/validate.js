@@ -42,6 +42,7 @@ passwordConfirm.addEventListener('keyup', (event) => {
 
     if (!(password == passwordInput.value)) {
         isValid = false;
+        console.log("123");
         passwordMessage.textContent = 'Mật khẩu không khớp với mật khẩu bạn đăng kí';
     }
 
