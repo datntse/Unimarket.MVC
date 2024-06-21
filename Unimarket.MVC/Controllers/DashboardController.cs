@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Unimarket.MVC.Helpers;
 using Unimarket.MVC.Models.ViewModels;
@@ -6,8 +7,7 @@ using Unimarket.MVC.Services;
 
 namespace Unimarket.MVC.Controllers
 {
-    [Authorize(Roles = AppRole.Admin)]
-	public class DashboardController : Controller
+    public class DashboardController : Controller
 	{
         private readonly IHttpClientFactory _factory;
         private readonly ILogger<DashboardController> _logger;
