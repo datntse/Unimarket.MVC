@@ -110,7 +110,7 @@
         <div class="row property__gallery">
             @foreach (var item in Model.Data)
             {
-                if (item.CategoryName.Contains("Quần"))
+                if (item.CategoryName.Contains("Thời trang nam"))
                 {
                     <div class="col-lg-3 col-md-4 col-sm-6 mix quan">
                         <div class="product__item">
@@ -142,7 +142,7 @@
                         </div>
                     </div>
                 }
-                if (item.CategoryName.Contains("Áo"))
+                if (item.CategoryName.Contains("Thời trang nữ"))
                 {
                     <div class="col-lg-3 col-md-4 col-sm-6 mix ao">
                         <div class="product__item">
@@ -174,7 +174,38 @@
                         </div>
                     </div>
                 }
+                else
+                {
+                    <div class="col-lg-3 col-md-4 col-sm-6 mix">
+                        <div class="product__item">
+                            <div class="product__item__pic set-bg" data-setbg="@item.ImageUrl">
+                                <ul class="product__hover">
+                                    <li><a href="@item.ImageUrl" class="image-popup"><span class="arrow_expand"></span></a></li>
+                                    <li><a asp-controller="ProductDetail" asp-action="Index" asp-route-id="@item.Id"><span class="icon_search"></span></a></li>
+                                    <li>
+                                        <form id="addToCartForm-@item.Id" asp-controller="Cart" asp-action="AddToCart" asp-route-itemId="@item.Id" method="post">
+                                            <a href="#" onclick="submitAddToCartForm('@item.Id'); return false;">
+                                                <span class="icon_bag_alt"></span>
+                                            </a>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="product__item__text">
+                                <h6>@item.Name</h6>
+                                <div class="rating">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                </div>
+                                <div class="product__price">@string.Format("{0:#,0}", item.Price)VNĐ</div>
+                            </div>
 
+                        </div>
+                    </div>
+                }
             }
         </div>
     </div>
