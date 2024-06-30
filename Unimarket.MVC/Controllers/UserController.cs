@@ -166,16 +166,14 @@ namespace Unimarket.MVC.Controllers
                 return View(model);
             }
 
+            string[] strings = model.Email.ToString().Split('@');
+            var isFptMail = strings.Length > 1 && strings[1].ToLower().Equals("fpt.edu.vn");
 
-            //string[] strings = model.Email.ToString().Split('@');
-            //var isFptMail = strings.Length > 1 && strings[1].ToLower().Equals("fpt.edu.vn");
-
-            //if(!isFptMail)
-            //{
-            //    TempData["ErrorMessage"] = "Bạn vui lòng sử dụng mail sinh viên của FPT";
-            //    return RedirectToAction("Login", "User");
-            //}
-
+            if (!isFptMail)
+            {
+                TempData["ErrorMessage"] = "Bạn vui lòng sử dụng mail sinh viên của FPT";
+                return RedirectToAction("Login", "User");
+            }
 
             var registerDTO = new RegisterDTO
             {
