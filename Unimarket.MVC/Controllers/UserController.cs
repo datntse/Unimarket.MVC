@@ -108,6 +108,15 @@ namespace Unimarket.MVC.Controllers
                 {
                     HttpContext.Session.SetString("UserId", userId);
                     HttpContext.Session.SetString("User_FullName", userFullName);
+
+                    ResponseCartVM cartItem = new ResponseCartVM();
+                    response = await _client.GetAsync(_client.BaseAddress + $"Cart/get/usercart?userId={userId}");
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var data = await response.Content.ReadAsStringAsync();
+                        cartItem = JsonConvert.DeserializeObject<ResponseCartVM>(data);
+                    }
+                    HttpContext.Session.SetInt32("Cart", cartItem.Total);
                 }
                 // Extract role claims
                 var roleClaims = token.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value).ToList();

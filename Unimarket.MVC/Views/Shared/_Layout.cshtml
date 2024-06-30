@@ -1,6 +1,7 @@
 ﻿@inject IHttpContextAccessor Accessor;
 @{
     var user = @Accessor.HttpContext.Session.GetString("User_FullName");
+    var cartSize = @Accessor.HttpContext.Session.GetInt32("Cart") != null ? @Accessor.HttpContext.Session.GetInt32("Cart") : 0;
 }
 @functions {
     public bool IsActive(string controller, params string[] actions)
@@ -151,7 +152,7 @@
                             <li>
                                 <a href="@Url.Action("Index", "Cart")">
                                     <span class="icon_bag_alt"></span>
-                                    <div class="tip">2</div>
+                                    <div class="tip">@cartSize</div>
                                 </a>
                             </li>
                         </ul>

@@ -35,14 +35,11 @@ passwordConfirm.addEventListener('keyup', (event) => {
     let isValid = true;
     passwordMessage.textContent = '';
 
-    if (!passwordRegex.test(passwordConfirm)) {
+    if (!passwordRegex.test(password)) {
         isValid = false;
         passwordMessage.textContent = 'Mật khẩu phải chứa ít nhất 8 kí tự và ít nhất một kí tự hoa,1 kí tự thường, 1 số, và 1 kí tự đặc biệt.';
-    }
-
-    if (!(password == passwordInput.value)) {
+    } else if (!(password == passwordInput.value)) {
         isValid = false;
-        console.log("123");
         passwordMessage.textContent = 'Mật khẩu không khớp với mật khẩu bạn đăng kí';
     }
 

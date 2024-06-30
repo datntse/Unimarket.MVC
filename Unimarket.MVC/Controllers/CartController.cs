@@ -134,6 +134,14 @@ namespace Unimarket.MVC.Controllers
                     "application/json"));
             if (response.IsSuccessStatusCode)
             {
+                ResponseCartVM cartItem = new ResponseCartVM();
+                response = await _client.GetAsync(_client.BaseAddress + $"Cart/get/usercart?userId={userId}");
+                if (response.IsSuccessStatusCode)
+                {
+                    var data = await response.Content.ReadAsStringAsync();
+                    cartItem = JsonConvert.DeserializeObject<ResponseCartVM>(data);
+                }
+                HttpContext.Session.SetInt32("Cart", cartItem.Total);
                 return Ok(response);
             }
             else
@@ -155,7 +163,15 @@ namespace Unimarket.MVC.Controllers
 					"application/json"));
 			if (response.IsSuccessStatusCode)
 			{
-				ViewBag.SuccessMessage = "Registration successful!";
+                ResponseCartVM cartItem = new ResponseCartVM();
+                response = await _client.GetAsync(_client.BaseAddress + $"Cart/get/usercart?userId={userId}");
+                if (response.IsSuccessStatusCode)
+                {
+                    var data = await response.Content.ReadAsStringAsync();
+                    cartItem = JsonConvert.DeserializeObject<ResponseCartVM>(data);
+                }
+                HttpContext.Session.SetInt32("Cart", cartItem.Total);
+                ViewBag.SuccessMessage = "Registration successful!";
 				return Ok(response);
 			}
 			else
@@ -181,6 +197,14 @@ namespace Unimarket.MVC.Controllers
 
             if (response.IsSuccessStatusCode)
             {
+                ResponseCartVM cartItem = new ResponseCartVM();
+                response = await _client.GetAsync(_client.BaseAddress + $"Cart/get/usercart?userId={userId}");
+                if (response.IsSuccessStatusCode)
+                {
+                    var data = await response.Content.ReadAsStringAsync();
+                    cartItem = JsonConvert.DeserializeObject<ResponseCartVM>(data);
+                }
+                HttpContext.Session.SetInt32("Cart", cartItem.Total);
                 ViewBag.SuccessMessage = "Deleted successfully!";
                 return Ok(response);
             }
