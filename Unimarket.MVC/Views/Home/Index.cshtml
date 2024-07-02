@@ -1,6 +1,17 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
+@{
+    var filteredItems = Model.Data
+    .Where(item => item.CategoryName.Contains("Văn phòng phẩm"))
+    .Take(3);
+    var quan = Model.Data
+    .Where(item => item.CategoryName.Contains("Thời trang nam"))
+    .Take(3);
+    var nu = Model.Data
+    .Where(item => item.CategoryName.Contains("Thời trang nữ"))
+    .Take(3);
+}
 @model Unimarket.MVC.Models.ViewModels.ResponseProductVM
 
 <section class="categories">
@@ -102,15 +113,15 @@
             <div class="col-lg-8 col-md-8">
                 <ul class="filter__controls">
                     <li class="active" data-filter="*">All</li>
-                    <li data-filter=".quan">Quần</li>
-                    <li data-filter=".ao">Áo</li>
+                    <li data-filter=".quan">Văn phòng phẩm</li>
+                    <li data-filter=".ao">Thời trang nữ</li>
                 </ul>
             </div>
         </div>
         <div class="row property__gallery">
             @foreach (var item in Model.Data)
             {
-                if (item.CategoryName.Contains("Thời trang nam"))
+                if (item.CategoryName.Contains("Văn phòng phẩm"))
                 {
                     <div class="col-lg-3 col-md-4 col-sm-6 mix quan">
                         <div class="product__item">
@@ -174,7 +185,7 @@
                         </div>
                     </div>
                 }
-                else
+                @* else
                 {
                     <div class="col-lg-3 col-md-4 col-sm-6 mix">
                         <div class="product__item">
@@ -205,7 +216,7 @@
 
                         </div>
                     </div>
-                }
+                } *@
             }
         </div>
     </div>
@@ -219,23 +230,25 @@
                 <div class="banner__slider owl-carousel">
                     <div class="banner__item">
                         <div class="banner__text">
-                            <span style="color:wheat;">The Chloe Collection</span>
-                            <h1>The Project Jacket</h1>
-                            <a style="color:#ca1515" href="#">Shop now</a>
+                            <span style="color:white;">Tháng 7 này!</span>
+                            <h1 style="color:#ca1515;">Back To Studies!</h1>
+                            <a style="color:#ca1515" href="@Url.Action("Index","Shop")">Đến ngay</a>
                         </div>
                     </div>
                     <div class="banner__item">
                         <div class="banner__text">
-                            <span style="color:wheat;">The Chloe Collection</span>
-                            <h1>The Project Jacket</h1>
-                            <a style="color:#ca1515" href="#">Shop now</a>
+                            <span style="color:white;">Mùa hè đã đến rồi!</span>
+                            <h1 style="color:#ca1515">
+                                Summer Fashion Now
+                            </h1>
+                            <a style="color:#ca1515" href="@Url.Action("Index","Shop")">Đến ngay</a>
                         </div>
                     </div>
                     <div class="banner__item">
                         <div class="banner__text">
-                            <span style="color:wheat;">The Chloe Collection</span>
-                            <h1>The Project Jacket</h1>
-                            <a style="color:#ca1515" href="#">Shop now</a>
+                            <span style="color:white;">Món đồ không thể thiếu?!</span>
+                            <h1 style="color:#ca1515">Alo Balo Come Here</h1>
+                            <a style="color:#ca1515" href="@Url.Action("Index","Shop")">Đến ngay</a>
                         </div>
                     </div>
                 </div>
@@ -250,34 +263,47 @@
         <div class="row">
             <div class="col-12">
                     <div class="section-title">
-                        <h4>Quần bán chạy</h4>
+                        <h4>Văn phòng phẩm bán chạy</h4>
                     </div>
                     <div class="row">
+                    @foreach (var item in filteredItems)
+                    {
+                        
                         <div class="col-lg-4 col-md-4 col-sm-6">
-                            <div class="trend__item">
-                                    <div class="trend__item__pic">
-                                        <img src="img/trend/ht-1.jpg" alt="">
-                                    </div>
-                                    <div class="trend__item__text">
-                                        <h6>Pendant earrings</h6>
-                                        <div class="rating">
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
+                                <div class="trend__item">
+                                        <div class="trend__item__pic">
+                                            <img src="@item.ImageUrl" width="90px" height="90px" alt="">
                                         </div>
-                                        <div class="product__price">$ 59.0</div>
-                                    </div>
+                                        <div class="trend__item__text">
+                                            <h6>@item.Name</h6>
+                                            <div class="rating">
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                            </div>
+                                    <div class="product__price">@string.Format("{0:#,0}", item.Price)VNĐ</div>
+                                        </div>
                                 </div>
-                        </div>
+                         </div>
+                    }
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="section-title">
+                    <h4>Thời trang nam bán chạy</h4>
+                </div>
+                <div class="row">
+                    @foreach(var item in quan)
+                    {
                         <div class="col-lg-4 col-md-4 col-sm-6">
                             <div class="trend__item">
                                 <div class="trend__item__pic">
-                                    <img src="img/trend/ht-2.jpg" alt="">
+                                    <img src="@item.ImageUrl" width="90px" height="90px" alt="">
                                 </div>
                                 <div class="trend__item__text">
-                                    <h6>Pendant earrings</h6>
+                                    <h6>@item.Name</h6>
                                     <div class="rating">
                                         <i class="fa fa-star"></i>
                                         <i class="fa fa-star"></i>
@@ -285,17 +311,28 @@
                                         <i class="fa fa-star"></i>
                                         <i class="fa fa-star"></i>
                                     </div>
-                                    <div class="product__price">$ 59.0</div>
+                                    <div class="product__price">@string.Format("{0:#,0}", item.Price)VNĐ</div>
                                 </div>
                             </div>
                         </div>
+                    }
+
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="section-title">
+                    <h4>Thời trang nữ bán chạy</h4>
+                </div>
+                <div class="row">
+                    @foreach(var item in nu)
+                    {
                         <div class="col-lg-4 col-md-4 col-sm-6">
                             <div class="trend__item">
                                 <div class="trend__item__pic">
-                                    <img src="img/trend/ht-3.jpg" alt="">
+                                    <img src="@item.ImageUrl" width="90px" height="90px" alt="">
                                 </div>
                                 <div class="trend__item__text">
-                                    <h6>Pendant earrings</h6>
+                                    <h6>@item.Name</h6>
                                     <div class="rating">
                                         <i class="fa fa-star"></i>
                                         <i class="fa fa-star"></i>
@@ -303,132 +340,11 @@
                                         <i class="fa fa-star"></i>
                                         <i class="fa fa-star"></i>
                                     </div>
-                                    <div class="product__price">$ 59.0</div>
+                                    <div class="product__price">@string.Format("{0:#,0}", item.Price)VNĐ</div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-            </div>
-            <div class="col-12">
-                <div class="section-title">
-                    <h4>Áo bán chạy</h4>
-                </div>
-                <div class="row">
-                    <div class="col-lg-4 col-md-4 col-sm-6">
-                        <div class="trend__item">
-                            <div class="trend__item__pic">
-                                <img src="img/trend/bs-1.jpg" alt="">
-                            </div>
-                            <div class="trend__item__text">
-                                <h6>Pendant earrings</h6>
-                                <div class="rating">
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                </div>
-                                <div class="product__price">$ 59.0</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-md-4 col-sm-6">
-                        <div class="trend__item">
-                            <div class="trend__item__pic">
-                                <img src="img/trend/bs-2.jpg" alt="">
-                            </div>
-                            <div class="trend__item__text">
-                                <h6>Pendant earrings</h6>
-                                <div class="rating">
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                </div>
-                                <div class="product__price">$ 59.0</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-md-4 col-sm-6">
-                        <div class="trend__item">
-                            <div class="trend__item__pic">
-                                <img src="img/trend/bs-3.jpg" alt="">
-                            </div>
-                            <div class="trend__item__text">
-                                <h6>Pendant earrings</h6>
-                                <div class="rating">
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                </div>
-                                <div class="product__price">$ 59.0</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12">
-                <div class="section-title">
-                    <h4>vòng tay hot</h4>
-                </div>
-                <div class="row">
-                    <div class="col-lg-4 col-md-4 col-sm-6">
-                        <div class="trend__item">
-                            <div class="trend__item__pic">
-                                <img src="img/trend/f-1.jpg" alt="">
-                            </div>
-                            <div class="trend__item__text">
-                                <h6>Pendant earrings</h6>
-                                <div class="rating">
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                </div>
-                                <div class="product__price">$ 59.0</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-md-4 col-sm-6">
-                        <div class="trend__item">
-                            <div class="trend__item__pic">
-                                <img src="img/trend/f-2.jpg" alt="">
-                            </div>
-                            <div class="trend__item__text">
-                                <h6>Pendant earrings</h6>
-                                <div class="rating">
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                </div>
-                                <div class="product__price">$ 59.0</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-md-4 col-sm-6">
-                        <div class="trend__item">
-                            <div class="trend__item__pic">
-                                <img src="img/trend/f-3.jpg" alt="">
-                            </div>
-                            <div class="trend__item__text">
-                                <h6>Pendant earrings</h6>
-                                <div class="rating">
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                </div>
-                                <div class="product__price">$ 59.0</div>
-                            </div>
-                        </div>
-                    </div>
+                    }
                 </div>
             </div>
         </div>
