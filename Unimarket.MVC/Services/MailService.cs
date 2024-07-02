@@ -20,7 +20,7 @@ namespace Unimarket.MVC.Services
         public Task SendEmailAsync(string email, string subject, string htmlMessage)
         {
             var emailToSend = new MimeMessage();
-            emailToSend.From.Add(new MailboxAddress("Unimarket", "minhtam250102@gmail.com"));
+            emailToSend.From.Add(new MailboxAddress("Unimarket", "dat.nt271102@gmail.com"));
             emailToSend.To.Add(MailboxAddress.Parse(email));
             emailToSend.Subject = subject;
 
@@ -99,7 +99,7 @@ namespace Unimarket.MVC.Services
             using (var emailClient = new SmtpClient())
             {
                 emailClient.Connect("smtp.gmail.com", 587, SecureSocketOptions.StartTls);
-                emailClient.Authenticate("minhtam250102@gmail.com", "ihrhvyplgkonevqy");
+                emailClient.Authenticate("dat.nt271102@gmail.com", "vtozcgeslnwbvxqw");
                 emailClient.Send(emailToSend);
                 emailClient.Disconnect(true);
             }
