@@ -53,6 +53,11 @@ namespace Unimarket.MVC.Controllers
                 ViewData["MaxPrice"] = defaultSearch.MaxPrice.Value;
             }
 
+            if (!string.IsNullOrEmpty(defaultSearch.Keyword))
+            {
+                queryParams.Add($"keyword={Uri.EscapeDataString(defaultSearch.Keyword)}");
+                ViewData["Keyword"] = defaultSearch.Keyword;
+            }
 
             var queryString = string.Join("&", queryParams);
             List<CategoryVM> listCate = new List<CategoryVM>();

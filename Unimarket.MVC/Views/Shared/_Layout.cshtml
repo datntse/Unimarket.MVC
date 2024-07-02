@@ -127,10 +127,13 @@
                 </div>
                 <div class ="col-xl-2 col-lg-2">
                     <div class="search-container">
-                        <input type="text" class="search-input" placeholder="Tìm kiếm...">
-                        <button type="submit" class="search-button">
-                            <i class="fas fa-search"></i>
-                        </button>
+                        <form method="get" action="@Url.Action("Index", "Shop")">
+                            <input type="text" name="keyword" class="search-input" placeholder="Tìm kiếm..." value="@ViewData["Keyword"]">
+                            <button type="submit" class="search-button">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </form>
+
                     </div>
                 </div>
                 <div class="col-lg-3">
