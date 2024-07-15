@@ -34,7 +34,7 @@ namespace Unimarket.MVC.Controllers
         {
 
             ResponseProductVM productList = new ResponseProductVM();
-            var response = await _client.GetAsync(_client.BaseAddress + $"Item?perPage={defaultSearch.perPage = 8}");
+            var response = await _client.GetAsync(_client.BaseAddress + $"Item?perPage={defaultSearch.perPage = 12}");
 
             if (response.IsSuccessStatusCode)
             {

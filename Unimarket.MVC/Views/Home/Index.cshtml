@@ -4,13 +4,20 @@
 @{
     var filteredItems = Model.Data
     .Where(item => item.CategoryName.Contains("Văn phòng phẩm"))
-    .Take(3);
+    .Take(3)
+    .ToList();
+
+
     var quan = Model.Data
-    .Where(item => item.CategoryName.Contains("Thời trang nam"))
-    .Take(3);
+        .Where(item => item.CategoryName.Contains("Giày dép"))
+        .Take(3)
+        .ToList();
+
     var nu = Model.Data
-    .Where(item => item.CategoryName.Contains("Thời trang nữ"))
-    .Take(3);
+        .Where(item => item.CategoryName.Contains("Thời trang nữ"))
+        .Take(3)
+        .ToList();
+
 }
 @model Unimarket.MVC.Models.ViewModels.ResponseProductVM
 
@@ -185,6 +192,37 @@
                         </div>
                     </div>
                 }
+                if (!item.CategoryName.Contains("Văn phòng phẩm") && !item.CategoryName.Contains("Thời trang nữ"))
+                {
+                    <div class="col-lg-3 col-md-4 col-sm-6 mix">
+                        <div class="product__item">
+                            <div class="product__item__pic set-bg" data-setbg="@item.ImageUrl">
+                                <ul class="product__hover">
+                                    <li><a href="@item.ImageUrl" class="image-popup"><span class="arrow_expand"></span></a></li>
+                                    <li><a asp-controller="ProductDetail" asp-action="Index" asp-route-id="@item.Id"><span class="icon_search"></span></a></li>
+                                    <li>
+                                        <form id="addToCartForm-@item.Id" asp-controller="Cart" asp-action="AddToCart" asp-route-itemId="@item.Id" method="post">
+                                            <a href="#" onclick="submitAddToCartForm('@item.Id'); return false;">
+                                                <span class="icon_bag_alt"></span>
+                                            </a>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="product__item__text">
+                                <h6>@item.Name</h6>
+                                <div class="rating">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                </div>
+                                <div class="product__price">@string.Format("{0:#,0}", item.Price)đ</div>
+                            </div>
+                        </div>
+                    </div>
+                }
                 @* else
                 {
                     <div class="col-lg-3 col-md-4 col-sm-6 mix">
@@ -270,50 +308,56 @@
                     {
                         
                         <div class="col-lg-4 col-md-4 col-sm-6">
+                            <a asp-controller="ProductDetail" asp-action="Index" asp-route-id="@item.Id">
+
                                 <div class="trend__item">
-                                        <div class="trend__item__pic">
-                                            <img src="@item.ImageUrl" width="90px" height="90px" alt="">
+                                    <div class="trend__item__pic">
+                                        <img src="@item.ImageUrl" width="90px" height="90px" alt="">
+                                    </div>
+                                    <div class="trend__item__text">
+                                        <h6>@item.Name</h6>
+                                        <div class="rating">
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
                                         </div>
-                                        <div class="trend__item__text">
-                                            <h6>@item.Name</h6>
-                                            <div class="rating">
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                            </div>
-                                    <div class="product__price">@string.Format("{0:#,0}", item.Price)VNĐ</div>
-                                        </div>
+                                        <div class="product__price">@string.Format("{0:#,0}", item.Price)VNĐ</div>
+                                    </div>
                                 </div>
+                            </a>
                          </div>
                     }
                 </div>
             </div>
             <div class="col-12">
                 <div class="section-title">
-                    <h4>Thời trang nam bán chạy</h4>
+                    <h4>Giày Dép bán chạy</h4>
                 </div>
                 <div class="row">
                     @foreach(var item in quan)
                     {
                         <div class="col-lg-4 col-md-4 col-sm-6">
-                            <div class="trend__item">
-                                <div class="trend__item__pic">
-                                    <img src="@item.ImageUrl" width="90px" height="90px" alt="">
-                                </div>
-                                <div class="trend__item__text">
-                                    <h6>@item.Name</h6>
-                                    <div class="rating">
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
+                            <a asp-controller="ProductDetail" asp-action="Index" asp-route-id="@item.Id">
+
+                                <div class="trend__item">
+                                    <div class="trend__item__pic">
+                                        <img src="@item.ImageUrl" width="90px" height="90px" alt="">
                                     </div>
-                                    <div class="product__price">@string.Format("{0:#,0}", item.Price)VNĐ</div>
+                                    <div class="trend__item__text">
+                                        <h6>@item.Name</h6>
+                                        <div class="rating">
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                        </div>
+                                        <div class="product__price">@string.Format("{0:#,0}", item.Price)VNĐ</div>
+                                    </div>
                                 </div>
-                            </div>
+                            </a>
                         </div>
                     }
 
@@ -327,22 +371,25 @@
                     @foreach(var item in nu)
                     {
                         <div class="col-lg-4 col-md-4 col-sm-6">
-                            <div class="trend__item">
-                                <div class="trend__item__pic">
-                                    <img src="@item.ImageUrl" width="90px" height="90px" alt="">
-                                </div>
-                                <div class="trend__item__text">
-                                    <h6>@item.Name</h6>
-                                    <div class="rating">
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
+                            <a asp-controller="ProductDetail" asp-action="Index" asp-route-id="@item.Id">
+
+                                <div class="trend__item">
+                                    <div class="trend__item__pic">
+                                        <img src="@item.ImageUrl" width="90px" height="90px" alt="">
                                     </div>
-                                    <div class="product__price">@string.Format("{0:#,0}", item.Price)VNĐ</div>
+                                    <div class="trend__item__text">
+                                        <h6>@item.Name</h6>
+                                        <div class="rating">
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                        </div>
+                                        <div class="product__price">@string.Format("{0:#,0}", item.Price)VNĐ</div>
+                                    </div>
                                 </div>
-                            </div>
+                            </a>
                         </div>
                     }
                 </div>
