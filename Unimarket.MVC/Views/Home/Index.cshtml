@@ -399,10 +399,7 @@
 </section>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 @section Scripts {
-  
-
     <script>
-
         function submitAddToCartForm(itemId) {
             $.ajax({
                 dataType: "json",
@@ -411,19 +408,40 @@
                 url: "Cart/AddToCart",
                 data: JSON.stringify(itemId),
                 success: function (response) {
-                    Swal.fire({
-                        position: "center",
-                        icon: "success",
-                        title: "Thêm vào giỏ hàng thành công!",
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
+                    if (response.requiresLogin) {
+                        Swal.fire({
+                            position: "center",
+                            icon: "warning",
+                            title: "Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng.",
+                            showConfirmButton: true,
+                            confirmButtonText: "Đăng nhập"
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.href = '/User/Login';
+                            }
+                        });
+                    } else if (response.success) {
+                        Swal.fire({
+                            position: "center",
+                            icon: "success",
+                            title: "Thêm vào giỏ hàng thành công!",
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    } else {
+                        Swal.fire({
+                            position: "center",
+                            icon: "error",
+                            title: "Vượt số lượng sản phẩm",
+                            showConfirmButton: true
+                        });
+                    }
                 },
                 error: function () {
                     Swal.fire({
                         position: "center",
                         icon: "error",
-                        title: "Vượt số lượng sản phẩm",
+                        title: "Đã xảy ra lỗi, vui lòng thử lại.",
                         showConfirmButton: true
                     });
                 }

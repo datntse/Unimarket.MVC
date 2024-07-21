@@ -245,7 +245,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach (var item in Model.Data)
+                                            @foreach (var item in Model.Data.OrderByDescending(c=>c.CreateAt))
                                             {
                                                
                                                 <tr>

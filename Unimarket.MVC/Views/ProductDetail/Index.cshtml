@@ -304,12 +304,11 @@
 		function submitAddToCartForm() {
 			var input = document.getElementById('quantity');
 			var itemId = document.getElementById('item-id');
-			console.log("ItemID", itemId);
 			var data = {
 				itemId: itemId.value,
 				quantity: parseInt(input.value)
 			};
-			console.log("Data", data);
+
 			$.ajax({
 				dataType: "json",
 				contentType: "application/json; charset=utf-8",
@@ -317,7 +316,7 @@
 				url: "/Cart/AddQuantityToCart",
 				data: JSON.stringify(data),
 				success: function (response) {
-					if (response.isSuccessStatusCode) {
+					if (response.success) {
 						Swal.fire({
 							position: "center",
 							icon: "success",
@@ -325,15 +324,36 @@
 							showConfirmButton: false,
 							timer: 1500
 						});
-					} 
+					} else {
+						Swal.fire({
+							position: "center",
+							icon: "error",
+							title: response.message,
+							showConfirmButton: true
+						});
+					}
 				},
-				error: function () {
-					Swal.fire({
-						position: "center",
-						icon: "error",
-						title: "Vượt số lượng sản phẩm",
-						showConfirmButton: true
-					});
+				error: function (response) {
+					if (response.status === 401) {
+						// User not logged in, redirect to login page
+						Swal.fire({
+							position: "center",
+							icon: "info",
+							title: "Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng.",
+							showConfirmButton: true
+						}).then((result) => {
+							if (result.isConfirmed) {
+								window.location.href = '/User/Login';
+							}
+						});
+					} else {
+						Swal.fire({
+							position: "center",
+							icon: "error",
+							title: "Vượt số lượng sản phẩm",
+							showConfirmButton: true
+						});
+					}
 				}
 			});
 

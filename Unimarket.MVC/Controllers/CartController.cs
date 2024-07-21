@@ -123,15 +123,59 @@ namespace Unimarket.MVC.Controllers
             var userId = HttpContext.Session.GetString("UserId");
             if (userId == null)
             {
-                return RedirectToAction("Login", "User");
+                return Json(new { success = false, requiresLogin = true });
             }
-            AddItemToCart item = new AddItemToCart();
-            item.UserId = userId;
-            item.ItemId = itemId;
+
+            AddItemToCart item = new AddItemToCart
+            {
+                UserId = userId,
+                ItemId = itemId
+            };
+
             var response = await _client.PostAsync(_client.BaseAddress + "Cart", new StringContent(
                     JsonConvert.SerializeObject(item),
                     Encoding.UTF8,
                     "application/json"));
+
+            if (response.IsSuccessStatusCode)
+            {
+                var responseData = await _client.GetAsync(_client.BaseAddress + $"Cart/get/usercart?userId={userId}");
+                if (responseData.IsSuccessStatusCode)
+                {
+                    var data = await responseData.Content.ReadAsStringAsync();
+                    var cartItem = JsonConvert.DeserializeObject<ResponseCartVM>(data);
+                    HttpContext.Session.SetInt32("Cart", cartItem.Total);
+                }
+                return Ok(new { success = true });
+            }
+            else
+            {
+                return BadRequest(new { success = false, message = "Failed to add item to cart. Please try again." });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddQuantityToCart([FromBody] AddToCarts item)
+        {
+            var userId = HttpContext.Session.GetString("UserId");
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized(new { success = false, message = "User not logged in." });
+            }
+
+            UpdateItemQuantityDTO _item = new UpdateItemQuantityDTO
+            {
+                UserId = userId,
+                ItemId = item.itemId,
+                Quantity = item.quantity
+            };
+
+            var response = await _client.PostAsync(_client.BaseAddress + "Cart/add-quantity", new StringContent(
+                    JsonConvert.SerializeObject(_item),
+                    Encoding.UTF8,
+                    "application/json"));
+
             if (response.IsSuccessStatusCode)
             {
                 ResponseCartVM cartItem = new ResponseCartVM();
@@ -142,43 +186,15 @@ namespace Unimarket.MVC.Controllers
                     cartItem = JsonConvert.DeserializeObject<ResponseCartVM>(data);
                 }
                 HttpContext.Session.SetInt32("Cart", cartItem.Total);
-                return Ok(response);
+                ViewBag.SuccessMessage = "Registration successful!";
+                return Ok(new { success = true, message = "Item added to cart successfully." });
             }
             else
             {
                 return BadRequest(new { success = false, message = "Failed to add item to cart. Please try again." });
             }
         }
-        [HttpPost]
-		public async Task<IActionResult> AddQuantityToCart([FromBody] AddToCarts item)
-		{
-			var userId = HttpContext.Session.GetString("UserId");
-			UpdateItemQuantityDTO _item = new UpdateItemQuantityDTO();
-			_item.UserId = userId;
-			_item.ItemId = item.itemId;
-			_item.Quantity = item.quantity;
-			var response = await _client.PostAsync(_client.BaseAddress + "Cart/add-quantity", new StringContent(
-					JsonConvert.SerializeObject(_item),
-					Encoding.UTF8,
-					"application/json"));
-			if (response.IsSuccessStatusCode)
-			{
-                ResponseCartVM cartItem = new ResponseCartVM();
-                response = await _client.GetAsync(_client.BaseAddress + $"Cart/get/usercart?userId={userId}");
-                if (response.IsSuccessStatusCode)
-                {
-                    var data = await response.Content.ReadAsStringAsync();
-                    cartItem = JsonConvert.DeserializeObject<ResponseCartVM>(data);
-                }
-                HttpContext.Session.SetInt32("Cart", cartItem.Total);
-                ViewBag.SuccessMessage = "Registration successful!";
-				return Ok(response);
-			}
-			else
-			{
-				return BadRequest(new { success = false, message = "Failed to add item to cart. Please try again." });
-			}
-		}
+
 
         [HttpGet] // Change to HttpPost to match the API controller
         public async Task<IActionResult> DeleteInCart([FromQuery]string itemId)

@@ -8,5 +8,10 @@ namespace Unimarket.MVC.Controllers
 		{
 			return View();
 		}
-	}
+
+        public IActionResult Welcome()
+        {
+            return View();
+        }
+    }
 }
