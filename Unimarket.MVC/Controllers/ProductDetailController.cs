@@ -25,16 +25,16 @@ namespace Unimarket.MVC.Controllers
 		[HttpGet]
 		public async Task<IActionResult> Index(string id)
         {
-			ProductVM productList = new ProductVM();
-			var response = await _client.GetAsync(_client.BaseAddress + $"Item/get/{id}");
+            ProductDetailResponseApi productList = new ProductDetailResponseApi();
+			var response = await _client.GetAsync(_client.BaseAddress + $"product/{id}");
 
 			if (response.IsSuccessStatusCode)
 			{
 				var data = await response.Content.ReadAsStringAsync();
-				productList = JsonConvert.DeserializeObject<ProductVM>(data);
+				productList = JsonConvert.DeserializeObject<ProductDetailResponseApi>(data);
 			}
 
-			return View(productList);
+			return View(productList.Data);
 		}
     }
 }

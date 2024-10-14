@@ -1,18 +1,18 @@
 ﻿@{
 	ViewData["Title"] = "Product Detail Page";
 }
-@model Unimarket.MVC.Models.ViewModels.ProductVM
+@model Unimarket.MVC.Models.ViewModels.ProductVM1
 <div class="breadcrumb-option">
 	<div class="container">
 		<div class="row">
 			<div class="col-lg-12">
 				<div class="breadcrumb__links">
 					<a href="@Url.Action("Index","Home")"><i class="fa fa-home"></i> Trang chủ</a>
-					<a href="#">@foreach (var item in Model.CategoryName)
+					@* <a href="#">@foreach (var item in Model.CategoryName)
 						{
 							@item
 						}</a>
-					<span>@Model.Name</span>
+					<span>@Model.Name</span> *@
 				</div>
 			</div>
 		</div>
@@ -27,16 +27,16 @@
 				<div class="product__details__pic">
 					<div class="product__details__pic__left product__thumb nice-scroll">
 						<a class="pt active" href="#product-1">
-							<img src="@Model.ImageUrl" alt="">
+							<img src="@Model.Images.First().imageUrl" alt="">
 						</a>
 						@{
 							int productImage = 2;
 							int productImage_link = 2;
 						}
-						@foreach (var item in Model.SubImageUrl)
+						@foreach (var item in Model.Images.Skip(1))
 						{
 							<a class="pt" href="#product-@productImage">
-								<img src="@item" alt="">
+								<img src="@item.imageUrl" alt="">
 							</a>
 							productImage++;
 
@@ -44,8 +44,8 @@
 					</div>
 					<div class="product__details__slider__content">
 						<div class="product__details__pic__slider owl-carousel">
-							<img data-hash="product-1" class="product__big__img" src="@Model.ImageUrl" alt="">
-							@foreach (var item in Model.SubImageUrl)
+							<img data-hash="product-1" class="product__big__img" src="@Model.Images.First().imageUrl" alt="">
+							@foreach (var item in Model.Images.Skip(1))
 							{
 								<img data-hash="product-@productImage_link" class="product__big__img" src="@item" alt="">
 								productImage_link++;
@@ -57,14 +57,14 @@
 			</div>
 			<div class="col-lg-6">
 				<div class="product__details__text">
-					<h3>@Model.Name <span>Loại sản phẩm: @foreach (var item in Model.CategoryName)
+			@* 		<h3>@Model.Name <span>Loại sản phẩm: @foreach (var item in Model.CategoryName)
 							{
 								@item
-							}</span></h3>
+							}</span></h3> *@
 					@* <div class="product__details__price">$ 75.0 <span>$ 83.0</span></div> *@
 					<div class="product__details__price">@string.Format("{0:#,0}", Model.Price)VNĐ</div>
 					<p>
-						@Model.ProductDetail
+						@Model.Description
 					</p>
 					<div class="product__details__button">
 						<div class="quantity">

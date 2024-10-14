@@ -33,16 +33,16 @@ namespace Unimarket.MVC.Controllers
         public async Task<IActionResult> Index(DefaultSearch defaultSearch) 
         {
 
-            ResponseProductVM productList = new ResponseProductVM();
-            var response = await _client.GetAsync(_client.BaseAddress + $"Item?perPage={defaultSearch.perPage = 12}");
+            ProductResponseApi productList = new ProductResponseApi();
+            var response = await _client.GetAsync(_client.BaseAddress + $"product/all?page={0}&size={defaultSearch.perPage = 12}");
 
             if (response.IsSuccessStatusCode)
             {
                 var data = await response.Content.ReadAsStringAsync();
-                productList = JsonConvert.DeserializeObject<ResponseProductVM>(data);
+                productList = JsonConvert.DeserializeObject<ProductResponseApi>(data);
             }
 
-            return View(productList);
+            return View(productList.Data);
         }
 
 
