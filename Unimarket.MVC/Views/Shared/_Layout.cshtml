@@ -103,10 +103,10 @@
             <div class="row align-items-center">
                 <div class="col-xl-2 col-lg-1">
                     <div class="header__logo">
-                        <a href="@Url.Action("Index", "Home")"><img src="~/img/Logo_1.png" style="width : 100px; margin-left: 100px" alt=""></a>
+                        <a href="@Url.Action("Index", "Home")"><img src="~/img/Logo_1.png" style="width : 100px; margin-left: 150px" alt=""></a>
                     </div>
                 </div>
-                <div class="col-xl-4 col-lg-5">
+                <div class="col-xl-2 col-lg-3">
                     <nav class="header__menu" style="margin-left:30px;">
                         <ul>
                             <li class="@(IsActive("Home", "Index") ? "active" : "")">
@@ -115,12 +115,7 @@
                             <li class="@(IsActive("Shop", "Index") ? "active" : "")">
                                 <a href="@Url.Action("Index", "Shop")">Sản phẩm</a>
                             </li>
-                            <li class="@(IsActive("Blog", "Index") ? "active" : "")">
-                                <a href="@Url.Action("Index", "Blog")">Tin Tức</a>
-                            </li>
-                            <li class="@(IsActive("Contact", "Index") ? "active" : "")">
-                                <a href="@Url.Action("Index", "Contact")">Liên hệ</a>
-                            </li>
+                            
                         </ul>
                     </nav>
                 </div>
@@ -135,7 +130,7 @@
 
                     </div>
                 </div>
-                <div class="col-lg-4">
+                <div class="col-lg-5">
                     <div class="header__right">
                         <div class="header__right__auth">
                             @if (user != null)

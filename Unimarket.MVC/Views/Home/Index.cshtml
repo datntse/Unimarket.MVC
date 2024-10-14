@@ -24,84 +24,14 @@
 <section class="categories">
     <div class="container-fluid">
         <div class="row">
-            <div class="col-lg-6">
+            <div class="col-lg-12">
                 <div class="row">
-                    <div class="col-lg-6 col-md-6 col-sm-6 p-0">
-                        <div class="categories__item set-bg" data-setbg="img/categories/quanaonam.jpg">
-                            <div class="categories__text">
-                                <h4>Thời trang nam</h4>
-                                <p></p>
-                                <a href="@Url.Action("Index", "Shop", new { categoryNames = "Thời trang nam" })">Mua ngay</a>
-                            </div>
+                    <div class="col-lg-12 col-md-6 col-sm-6 p-0">
+                        <div class="categories__item set-bg" data-setbg="img/banner/banban.jpg" style="height : 500px">
+                            
                         </div>
                     </div>
-                    <div class="col-lg-6 col-md-6 col-sm-6 p-0">
-                        <div class="categories__item set-bg" data-setbg="img/categories/1.jpg">
-                            <div class="categories__text">
-                                <h4>Thời trang nữ</h4>
-                                <p></p>
-                                <a href="@Url.Action("Index", "Shop", new { categoryNames = "Thời trang nữ" })">Mua ngay</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-6 col-md-6 col-sm-6 p-0">
-                        <div class="categories__item set-bg" data-setbg="img/categories/3.jpg">
-                            <div class="categories__text">
-                                <h4>Giày dép</h4>
-                                <p></p>
-                                <a href="@Url.Action("Index", "Shop", new { categoryNames = "Giày dép" })">Mua ngay</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-6 col-md-6 col-sm-6 p-0">
-                        <div class="categories__item set-bg" data-setbg="img/categories/4.jpg">
-                            <div class="categories__text">
-                                <h4>Phụ kiện</h4>
-                                <p></p>
-                                <a href="@Url.Action("Index", "Shop", new { categoryNames = "Phụ kiện" })">Mua ngay</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-6">
-                <div class="row">
-                    <div class="col-lg-6 col-md-6 col-sm-6 p-0">
-                        <div class="categories__item set-bg" data-setbg="img/categories/5.png">
-                            <div class="categories__text">
-                                <h4>Trang sức</h4>
-                                <p></p>
-                                <a href="@Url.Action("Index", "Shop", new { categoryNames = "Trang sức" })">Mua ngay</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-6 col-md-6 col-sm-6 p-0">
-                        <div class="categories__item set-bg" data-setbg="img/categories/6.png">
-                            <div class="categories__text">
-                                <h4>Văn phòng phẩm</h4>
-                                <p></p>
-                                <a href="@Url.Action("Index", "Shop", new { categoryNames = "Văn phòng phẩm" })">Mua ngay</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-6 col-md-6 col-sm-6 p-0">
-                        <div class="categories__item set-bg" data-setbg="img/categories/7.png">
-                            <div class="categories__text">
-                                <h4>Đồ gia dụng</h4>
-                                <p></p>
-                                <a href="@Url.Action("Index", "Shop", new { categoryNames = "Đồ gia dụng" })">Mua ngay</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-6 col-md-6 col-sm-6 p-0">
-                        <div class="categories__item set-bg" data-setbg="img/categories/8.png">
-                            <div class="categories__text">
-                                <h4>Đồ điện tử</h4>
-                                <p></p>
-                                <a href="@Url.Action("Index", "Shop", new { categoryNames = "Đồ điện tử" })">Mua ngay</a>
-                            </div>
-                        </div>
-                    </div>
+                    
                 </div>
             </div>
         </div>
@@ -117,13 +47,7 @@
                     <h4>Sản phẩm mới</h4>
                 </div>
             </div>
-            <div class="col-lg-8 col-md-8">
-                <ul class="filter__controls">
-                    <li class="active" data-filter="*">All</li>
-                    <li data-filter=".quan">Văn phòng phẩm</li>
-                    <li data-filter=".ao">Thời trang nữ</li>
-                </ul>
-            </div>
+           
         </div>
         <div class="row property__gallery">
             @foreach (var item in Model.Data)
@@ -157,6 +81,52 @@
 
                         </div>
                     </div>
+            }
+        </div>
+    </div>
+</section>
+<section class="product spad">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4 col-md-4">
+                <div class="section-title">
+                    <h4>Sản phẩm bán chạy</h4>
+                </div>
+            </div>
+            
+        </div>
+        <div class="row property__gallery">
+            @foreach (var item in Model.Data)
+            {
+                <div class="col-lg-3 col-md-4 col-sm-6 mix quan">
+                    <div class="product__item">
+                        <div class="product__item__pic set-bg" data-setbg="@item.Images.First().imageUrl">
+                            <ul class="product__hover">
+                                <li><a href="@item.@item.Images.First().imageUrl" class="image-popup"><span class="arrow_expand"></span></a></li>
+                                <li><a asp-controller="ProductDetail" asp-action="Index" asp-route-id="@item.Id"><span class="icon_search"></span></a></li>
+                                <li>
+                                    <form id="addToCartForm-@item.Id" asp-controller="Cart" asp-action="AddToCart" asp-route-itemId="@item.Id" method="post">
+                                        <a href="#" onclick="submitAddToCartForm('@item.Id'); return false;">
+                                            <span class="icon_bag_alt"></span>
+                                        </a>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="product__item__text">
+                            <h6>@item.ProductName</h6>
+                            <div class="rating">
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                                <i class="fa fa-star"></i>
+                            </div>
+                            <div class="product__price">@string.Format("{0:#,0}", item.Price)đ</div>
+                        </div>
+
+                    </div>
+                </div>
             }
         </div>
     </div>
