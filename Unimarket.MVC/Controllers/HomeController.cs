@@ -34,7 +34,7 @@ namespace Unimarket.MVC.Controllers
         {
 
             ProductResponseApi productList = new ProductResponseApi();
-            var response = await _client.GetAsync(_client.BaseAddress + $"product/all?page={0}&size={defaultSearch.perPage = 12}");
+            var response = await _client.GetAsync(_client.BaseAddress + $"product/all?page={0}&size={defaultSearch.perPage = 4}");
 
             if (response.IsSuccessStatusCode)
             {

@@ -3779,3 +3779,15 @@ ol {
         font-size: 24px;
     }
 }
+.seemore a {
+    border: 1px solid black;
+    color: black;
+    padding: 10px 40px;
+    border-radius: 25px;
+    font-weight: 500;
+
+}
+.seemore a:hover{
+    font-weight:bold;
+   
+}
