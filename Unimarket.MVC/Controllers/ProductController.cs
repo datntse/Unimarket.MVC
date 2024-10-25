@@ -25,19 +25,31 @@ namespace Unimarket.MVC.Controllers
             _client = _factory.CreateClient("ServerApi");
             _client.BaseAddress = new Uri(configuration["Cron:localhost"]);
         }
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(DefaultSearch defaultSearch)
         {
-            ProductManageVM roductManageVM = new ProductManageVM();
-            var responseProduct = await _client.GetAsync(_client.BaseAddress + "Item");
-            var responseProductCategory = await _client.GetAsync(_client.BaseAddress + "category");
-            if (responseProduct.IsSuccessStatusCode && responseProductCategory.IsSuccessStatusCode)
-            {
-                var dataProduct = await responseProduct.Content.ReadAsStringAsync();
-                var dataCategory = await responseProductCategory.Content.ReadAsStringAsync();
-                roductManageVM.Product = JsonConvert.DeserializeObject<ResponseProductVM>(dataProduct);
-                roductManageVM.Categories = JsonConvert.DeserializeObject<List<CategoryVM>>(dataCategory);
-            }
-            return View(roductManageVM);
+			ProductResponseApi productList = new ProductResponseApi();
+			var response = await _client.GetAsync(_client.BaseAddress + $"product/all?page={0}&size={defaultSearch.perPage = 10}");
+
+			if (response.IsSuccessStatusCode)
+			{
+				var data = await response.Content.ReadAsStringAsync();
+				productList = JsonConvert.DeserializeObject<ProductResponseApi>(data);
+			}
+
+			//return View(productList.Data);
+
+			//ProductListManageVM roductManageVM = new ProductListManageVM();
+   //         var responseProduct = await _client.GetAsync(_client.BaseAddress + $"product/all?page={0}&size={defaultSearch.perPage = 10}");
+
+			//var responseProductCategory = await _client.GetAsync(_client.BaseAddress + "category");
+   //         if (responseProduct.IsSuccessStatusCode && responseProductCategory.IsSuccessStatusCode)
+   //         {
+   //             var dataProduct = await responseProduct.Content.ReadAsStringAsync();
+   //             var dataCategory = await responseProductCategory.Content.ReadAsStringAsync();
+   //             //roductManageVM.Product = JsonConvert.DeserializeObject<ProductResponseApi>(dataProduct);
+   //             roductManageVM.Categories = JsonConvert.DeserializeObject<List<CategoryVM>>(dataCategory);
+   //         }
+            return View(productList.Data);
         }
         [HttpGet]
         public async Task<IActionResult> AddProduct()

@@ -47,7 +47,7 @@
 							<img data-hash="product-1" class="product__big__img" src="@Model.Images.First().imageUrl" alt="">
 							@foreach (var item in Model.Images.Skip(1))
 							{
-								<img data-hash="product-@productImage_link" class="product__big__img" src="@item" alt="">
+								<img data-hash="product-@productImage_link" class="product__big__img" src="@item.imageUrl" alt="">
 								productImage_link++;
 							}
 

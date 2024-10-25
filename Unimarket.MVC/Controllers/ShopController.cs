@@ -26,53 +26,15 @@ namespace Unimarket.MVC.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(DefaultSearch defaultSearch)
         {
-            ResponseProductVM productList = new ResponseProductVM();
+            ProductResponseApi productList = new ProductResponseApi();
+            var response = await _client.GetAsync(_client.BaseAddress + $"product/all?page={0}&size={defaultSearch.perPage = 10}");
 
-            var queryParams = new List<string>
-            {
-                $"perPage={9}", // Số sản phẩm trên mỗi trang, có thể điều chỉnh
-                $"currentPage={defaultSearch.currentPage}",
-                $"sortBy={defaultSearch.sortBy}",
-                $"isAscending={defaultSearch.isAscending}"
-            };
-
-            if (defaultSearch.categoryNames != null && defaultSearch.categoryNames.Any())
-            {
-                queryParams.AddRange(defaultSearch.categoryNames.Select(c => $"categoryNames={Uri.EscapeDataString(c)}"));
-                ViewData["categoryNames"] = defaultSearch.categoryNames;
-            }
-
-            if (defaultSearch.MinPrice.HasValue)
-            {
-                queryParams.Add($"minPrice={defaultSearch.MinPrice.Value}");
-                ViewData["MinPrice"] = defaultSearch.MinPrice.Value;
-            }
-            if (defaultSearch.MaxPrice.HasValue)
-            {
-                queryParams.Add($"maxPrice={defaultSearch.MaxPrice.Value}");
-                ViewData["MaxPrice"] = defaultSearch.MaxPrice.Value;
-            }
-
-            if (!string.IsNullOrEmpty(defaultSearch.Keyword))
-            {
-                queryParams.Add($"keyword={Uri.EscapeDataString(defaultSearch.Keyword)}");
-                ViewData["Keyword"] = defaultSearch.Keyword;
-            }
-
-            var queryString = string.Join("&", queryParams);
-            List<CategoryVM> listCate = new List<CategoryVM>();
-            var response = await _client.GetAsync(_client.BaseAddress + $"Item?{queryString}");
             if (response.IsSuccessStatusCode)
             {
                 var data = await response.Content.ReadAsStringAsync();
-                productList = JsonConvert.DeserializeObject<ResponseProductVM>(data);
-                var responseCategory = await _client.GetAsync(_client.BaseAddress + "category");
-                var dateCate = await responseCategory.Content.ReadAsStringAsync();
-                listCate = JsonConvert.DeserializeObject<List<CategoryVM>>(dateCate);
-                ViewData["ListCate"] = listCate;
+                productList = JsonConvert.DeserializeObject<ProductResponseApi>(data);
             }
-
-            return View(productList);
+            return View(productList.Data);
         }
     }
 }

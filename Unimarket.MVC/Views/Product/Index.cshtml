@@ -2,7 +2,7 @@
     ViewData["Title"] = "Product Manager";
     Layout = "_DashboardLayout"; // Chỉ định layout nếu layout mặc định không được sử dụng
 }
-@model Unimarket.MVC.Models.ViewModels.ProductManageVM
+@model Unimarket.MVC.Models.ViewModels.ResponseProductVM1
 <div class="container mt-5">
     <div class="row tm-content-row">
         <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8 tm-block-col">
@@ -20,19 +20,19 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach(var product in Model.Product.Data)
+                            @foreach(var product in Model.Data)
                             {
                                 <tr>
                                     <th scope="row">
-                                        <img id="imageMain-display" src="@product.ImageUrl class="tm-product-img-dummy mx-auto" style="height: 100px; max-width:150px;" />
+                                        <img id="imageMain-display" src="@product.Images.First().imageUrl" class="tm-product-img-dummy mx-auto" style="height: 100px; max-width:150px;" />
                                     </th>
-                                    <td class="tm-product-name">@product.Name</td>
+                                    <td class="tm-product-name">@product.ProductName</td>
                                     <td>@product.Quantity</td>
-                                    <td>@foreach (var cate in product.CategoryName)
+                                @*     <td>@foreach (var cate in product.CategoryName)
                                         {
                                            @cate
                                         }
-                                    </td>
+                                    </td> *@
                                     <td>
                                         <a asp-action="UpdateProduct" asp-controller="Product" asp-route-itemId="@product.Id" class="tm-product-delete-link">
                                             <i class="fas fa-search tm-product-delete-icon" aria-hidden="true"></i>
@@ -58,7 +58,7 @@
             <div class="tm-bg-primary-dark tm-block tm-block-product-categories">
                 <h2 class="tm-block-title">Product Categories</h2>
                 <div class="tm-product-table-container">
-                    <table class="table tm-table-small tm-product-table">
+                 @*    <table class="table tm-table-small tm-product-table">
                         <tbody>
                             @foreach (var cate in Model.Categories)
                             {
@@ -99,7 +99,7 @@
                                 </div>
                             </div>
                         </tbody>
-                    </table>
+                    </table> *@
                 </div>
                 <!-- table container -->
                 <button class="btn btn-primary btn-block text-uppercase mb-3" data-bs-toggle="modal" data-bs-target="#exampleModal">

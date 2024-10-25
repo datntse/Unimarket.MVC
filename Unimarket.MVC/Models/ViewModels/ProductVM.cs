@@ -46,6 +46,7 @@
         public List<ProductVM> Data { get; set; }
         public int CurrentPage { get; set; }
     }
+    
     public class ProductVM
     {
 		public string Id { get; set; }
@@ -60,6 +61,12 @@
 		public List<string> SubImageUrl { get; set; }
 	}
 
+
+	public class ProductListManageVM
+	{
+		public ResponseProductVM Product { get; set; }
+		public List<CategoryVM> Categories { get; set; }
+	}
 	public class ProductManageVM
 	{
 		public ResponseProductVM Product { get; set; }
