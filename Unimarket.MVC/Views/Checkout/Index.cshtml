@@ -1,9 +1,9 @@
-﻿@{
+﻿@model Unimarket.MVC.Models.ViewModels.CheckOutVM
+@{
     ViewData["Title"] = "Checkout Page";
-    decimal totalPrice = 0;
     int productNumber = 0;
+    float totalPrice = Model.Cart.Data.totalPrice;
 }
-@model Unimarket.MVC.Models.ViewModels.CheckOutVM
 <div class="breadcrumb-option">
     <div class="container">
         <div class="row">
@@ -81,11 +81,10 @@
                                     <span class="top__text">Sản phẩm</span>
                                     <span class="top__text__right">Giá tiền</span>
                                 </li>
-                                @foreach(var item in Model.Cart.Data)
+                                @foreach(var item in Model.Cart.Data.orderDetails)
                                 {
                                     productNumber++;
-                                    totalPrice += item.Item.Price * item.Quantity;
-                                    <li>0.@productNumber@item.Item.Name<span>@string.Format("{0:#,0}", item.Item.Price)đ</span></li>
+                                    <li>0.@productNumber@item.productName<span>@string.Format("{0:#,0}", item.price)đ</span></li>
                                 }
                             </ul>
                         </div>

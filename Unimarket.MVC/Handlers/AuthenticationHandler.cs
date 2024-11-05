@@ -23,7 +23,7 @@ namespace Unimarket.MVC.Handlers
                 var isToServer = request.RequestUri?.AbsoluteUri.StartsWith(_configuration["Cron:localhost"] ?? "") ?? false;
 
                 if (isToServer && !string.IsNullOrEmpty(jwt))
-                    request.Headers.Authorization = new AuthenticationHeaderValue(jwt);
+                    request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", jwt);
 
                 var response = await base.SendAsync(request, cancellationToken);
 

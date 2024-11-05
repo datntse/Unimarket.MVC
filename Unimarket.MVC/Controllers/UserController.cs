@@ -100,15 +100,15 @@ namespace Unimarket.MVC.Controllers
 
                 HttpContext.Session.SetString("User_FullName", userName);
 
-                ResponseCartVM cartItem = new ResponseCartVM();
-                response = await _client.GetAsync(_client.BaseAddress + $"Cart/get/usercart?userId={tokenResponse.data.userId}");
+                UserCartResponse cartItem = new UserCartResponse();
+                 response = await _client.GetAsync(_client.BaseAddress + $"order/cart");
                 if (response.IsSuccessStatusCode)
                 {
                     var data = await response.Content.ReadAsStringAsync();
-                    cartItem = JsonConvert.DeserializeObject<ResponseCartVM>(data);
-                    HttpContext.Session.SetInt32("Cart", cartItem.Total);
+                    cartItem = JsonConvert.DeserializeObject<UserCartResponse>(data);
+                    HttpContext.Session.SetInt32("Cart", cartItem.Data.orderDetails.Count());
                 }
-            
+
                 if (tokenResponse.data.role.Equals("ADMIN"))
                 {
                     return RedirectToAction("Index", "Dashboard");

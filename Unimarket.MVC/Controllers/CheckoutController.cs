@@ -26,21 +26,15 @@ namespace Unimarket.MVC.Controllers
 		[HttpGet]
 		public async Task<IActionResult> Index()
         {
-			var userId = HttpContext.Session.GetString("UserId");
-			var response = await _client.GetAsync(_client.BaseAddress + $"Cart/get/usercart?userId={userId}");
-			if (response.IsSuccessStatusCode) {
-				ResponseCartVM cartItem = new ResponseCartVM();
-				var data = await response.Content.ReadAsStringAsync();
-				cartItem = JsonConvert.DeserializeObject<ResponseCartVM>(data);
-
-				response = await _client.GetAsync(_client.BaseAddress + $"auth/profile/{userId}");
-				data = await response.Content.ReadAsStringAsync();
-				UserVM user = JsonConvert.DeserializeObject<UserVM>(data);
-
+            UserCartResponse cartItem = new UserCartResponse();
+            var response = await _client.GetAsync(_client.BaseAddress + $"order/cart");
+            if (response.IsSuccessStatusCode)
+            {
+                var data = await response.Content.ReadAsStringAsync();
+                cartItem = JsonConvert.DeserializeObject<UserCartResponse>(data);
 				CheckOutVM CheckOutVM = new CheckOutVM
 				{
 					Cart = cartItem,
-					User = user,
 				};
 				return View(CheckOutVM);
 			}
