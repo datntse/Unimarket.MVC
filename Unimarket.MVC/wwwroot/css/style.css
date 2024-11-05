@@ -510,7 +510,7 @@ ol {
 -----------------------*/
 
 .banner {
-    height: 500px;
+    height: 800px;
 }
 
 .banner__text span {
@@ -1041,7 +1041,7 @@ ol {
     }
 
 .categories__item {
-    height: 314px;
+    height: 1000px;
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
