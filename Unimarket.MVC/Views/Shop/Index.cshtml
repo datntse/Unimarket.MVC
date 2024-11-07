@@ -76,7 +76,7 @@
                             <div class="product__item">
                                 <div class="product__item__pic set-bg" data-setbg="@item.Images.First().imageUrl">
                                     <ul class="product__hover">
-                                        <li><a href="@item.Images.First().imageUrl" class="image-popup"><span class="arrow_expand"></span></a></li>
+                                        
                                         <li><a asp-controller="ProductDetail" asp-action="Index" asp-route-id="@item.Id"><span class="icon_search"></span></a></li>
                                         <li>
                                             <form id="addToCartForm-@item.Id" asp-controller="Cart" asp-action="AddToCart" asp-route-itemId="@item.Id" method="post">
