@@ -67,15 +67,15 @@ namespace Unimarket.MVC.Controllers
 
             var loginDTO = new LoginDTO
             {
-                UserName = model.UserName,
-                Password = model.Password
+                username = model.UserName,
+                password = model.Password
             };
 
             // Send login request to Web API
             var response = await _client.PostAsync(
-                _client.BaseAddress + "auth/signIn",
+                _client.BaseAddress + "auth/authenticate",
                 new StringContent(
-                    JsonConvert.SerializeObject(model),
+                    JsonConvert.SerializeObject(loginDTO),
                     Encoding.UTF8,
                     "application/json"));
 
@@ -83,52 +83,35 @@ namespace Unimarket.MVC.Controllers
             {
                 // Read response content
                 var responseContent = await response.Content.ReadAsStringAsync();
-                var tokenResponse = JsonConvert.DeserializeObject<TokenResponse>(responseContent);
+                var tokenResponse = JsonConvert.DeserializeObject<LoginResponseResult>(responseContent);
 
                 // Store token in session, cookie, or local storage
-                HttpContext.Session.SetString("AccessToken", tokenResponse.Token);
-                HttpContext.Session.SetString("RefeshToken", tokenResponse.RefreshToken);
+                HttpContext.Session.SetString("AccessToken", tokenResponse.data.accessToken);
+                HttpContext.Session.SetString("RefeshToken", tokenResponse.data.accessToken);
                 //HttpContext.Session.SetString("UserEmail", model.Email);
                 // Redirect user to the home page or another appropriate page
 
-                _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenResponse.Token);
+                _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenResponse.data.accessToken);
 
                 var handler = new JwtSecurityTokenHandler();
-                var token = handler.ReadJwtToken(tokenResponse.Token);
+                var token = handler.ReadJwtToken(tokenResponse.data.accessToken);
 
-                //var userId = await _currentUserService.User();
-                //if (userId != null)
-                //{
-                //	HttpContext.Session.SetString("UserId", userId);
-                //}
-                var userId = token.Claims.Where(c => c.Type == ClaimTypes.UserData).Select(c => c.Value).FirstOrDefault();
-                var userFullName = token.Claims.Where(c => c.Type == ClaimTypes.Name).Select(c => c.Value).FirstOrDefault();
+                var userName = token.Claims.Where(c => c.Type.Equals("sub")).Select(c => c.Value).FirstOrDefault();
 
-                if (userId != null)
+                HttpContext.Session.SetString("User_FullName", userName);
+
+                UserCartResponse cartItem = new UserCartResponse();
+                 response = await _client.GetAsync(_client.BaseAddress + $"order/cart");
+                if (response.IsSuccessStatusCode)
                 {
-                    HttpContext.Session.SetString("UserId", userId);
-                    HttpContext.Session.SetString("User_FullName", userFullName);
-
-                    ResponseCartVM cartItem = new ResponseCartVM();
-                    response = await _client.GetAsync(_client.BaseAddress + $"Cart/get/usercart?userId={userId}");
-                    if (response.IsSuccessStatusCode)
-                    {
-                        var data = await response.Content.ReadAsStringAsync();
-                        cartItem = JsonConvert.DeserializeObject<ResponseCartVM>(data);
-                    }
-                    HttpContext.Session.SetInt32("Cart", cartItem.Total);
+                    var data = await response.Content.ReadAsStringAsync();
+                    cartItem = JsonConvert.DeserializeObject<UserCartResponse>(data);
+                    HttpContext.Session.SetInt32("Cart", cartItem.Data.orderDetails.Count());
                 }
-                // Extract role claims
-                var roleClaims = token.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value).ToList();
-                foreach (var role in roleClaims)
+
+                if (tokenResponse.data.role.Equals("ADMIN"))
                 {
-                    if (role.Equals(AppRole.Admin))
-                    {
-                        return RedirectToAction("Index", "Dashboard");
-                    } else if (role.Equals(AppRole.Staff))
-                    {
-                        return RedirectToAction("Index", "Order");
-                    } 
+                    return RedirectToAction("Index", "Dashboard");
                 }
                 return RedirectToAction("Index", "Home");
             }
@@ -142,11 +125,11 @@ namespace Unimarket.MVC.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> ConfirmEmail(string email)
+        public async Task<IActionResult> ConfirmEmail(string token)
         {
             // Send login request to Web API
             var response = await _client.GetAsync(
-                _client.BaseAddress + $"auth/confirm?email={email}");
+                _client.BaseAddress + $"auth/verify-email?token={token}");
             if (response.IsSuccessStatusCode)
             {
                 ViewData["Message"] = "Xác thực tài khoản thành công!";
@@ -166,33 +149,16 @@ namespace Unimarket.MVC.Controllers
                 return View(model);
             }
 
-            string[] strings = model.Email.ToString().Split('@');
-            var isFptMail = strings.Length > 1 && strings[1].ToLower().Equals("fpt.edu.vn");
-
-            if (!isFptMail)
-            {
-                TempData["ErrorMessage"] = "Bạn vui lòng sử dụng mail sinh viên của FPT";
-                return RedirectToAction("Login", "User");
-            }
-
             var registerDTO = new RegisterDTO
             {
-                FirstName = model.FirstName,
-                LastName = model.LastName,
-                Email = model.Email,
-                UserName = model.UserName,
+                FullName = model.FullName,
+                UserName = model.Email,
                 Password = model.Password,
                 PhoneNumber = model.Phone,
-                IsAdmin = false,
-                DOB = model.DOB,
-                Gender = model.Gender,
-                Status = 1,
-                StudentId = model.MSSV,
-                Avatar = "unset",
-                CCCDNumber = "unset",
             };
+
             var data = JsonConvert.SerializeObject(registerDTO);
-            var response = await _client.PostAsync(_client.BaseAddress + "auth/signUp",
+            var response = await _client.PostAsync(_client.BaseAddress + "auth/register",
                 new StringContent(
                     data,
                     Encoding.UTF8,
@@ -205,12 +171,8 @@ namespace Unimarket.MVC.Controllers
                 TempData["Message"] = "Đến email dể xác nhận tài khoản";
                 return RedirectToAction("Login", "User");
             }
-            else
-            {
-                var errorResponse = await response.Content.ReadAsStringAsync();
-                TempData["ErrorMessage"] = errorResponse;
-                return RedirectToAction("Login", "User");
-            }
+            return RedirectToAction("Login", "User");
+
         }
         //[AllowAnonymous]
         //public async Task<ActionResult> ExternalLogin()

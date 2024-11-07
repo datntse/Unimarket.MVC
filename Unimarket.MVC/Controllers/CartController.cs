@@ -9,43 +9,45 @@ using Unimarket.MVC.Helpers;
 using Unimarket.MVC.Models.CreateModels;
 using Unimarket.MVC.Models.ViewModels;
 using Unimarket.MVC.Services;
+using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
 
 namespace Unimarket.MVC.Controllers
 {
 
     public class CartController : Controller
     {
-		private readonly IHttpClientFactory _factory;
-		private readonly ILogger<CartController> _logger;
-		private readonly HttpClient _client;
-		private readonly IHttpClientFactory _httpClientFactory;
-		private readonly ICurrentUserService _currentUserService;
-		public CartController(ILogger<CartController> logger, IHttpClientFactory httpClientFactory,
-			IConfiguration configuration, ICurrentUserService currentUserService)
-		{
-			_factory = httpClientFactory;
-			_client = new HttpClient();
-			_currentUserService = currentUserService;
-			_client = _factory.CreateClient("ServerApi");
-			_client.BaseAddress = new Uri(configuration["Cron:localhost"]);
-		}
+        private readonly IHttpClientFactory _factory;
+        private readonly ILogger<CartController> _logger;
+        private readonly HttpClient _client;
+        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly ICurrentUserService _currentUserService;
+        public CartController(ILogger<CartController> logger, IHttpClientFactory httpClientFactory,
+            IConfiguration configuration, ICurrentUserService currentUserService)
+        {
+            _factory = httpClientFactory;
+            _client = new HttpClient();
+            _currentUserService = currentUserService;
+            _client = _factory.CreateClient("ServerApi");
+            _client.BaseAddress = new Uri(configuration["Cron:localhost"]);
+        }
 
-		[HttpGet]
-		public async Task<IActionResult> Index(DefaultSearch defaultSearch)
-		{
-			var userId = HttpContext.Session.GetString("UserId");
-			ResponseCartVM cartItem = new ResponseCartVM();
-			var response = await _client.GetAsync(_client.BaseAddress + $"Cart/get/usercart?userId={userId}");
-			if (response.IsSuccessStatusCode)
-			{
-				var data = await response.Content.ReadAsStringAsync();
-				cartItem = JsonConvert.DeserializeObject<ResponseCartVM>(data);
-			}
-			//else
-			//{
-			//	return RedirectToAction("Login", "User");
-			//}
-			return View(cartItem);
+        [HttpGet]
+        public async Task<IActionResult> Index(DefaultSearch defaultSearch)
+        {
+            var userId = HttpContext.Session.GetString("UserId");
+            UserCartResponse cartItem = new UserCartResponse();
+            var response = await _client.GetAsync(_client.BaseAddress + $"order/cart");
+            if (response.IsSuccessStatusCode)
+            {
+                var data = await response.Content.ReadAsStringAsync();
+                cartItem = JsonConvert.DeserializeObject<UserCartResponse>(data);
+            }
+            if (cartItem.Data == null)
+            {
+                cartItem.Data = new CartDTO();
+                cartItem.Data.orderDetails = new List<OrderDetails>();
+            }
+            return View(cartItem.Data);
         }
         public async Task<string> RenderViewAsync<TModel>(string viewName, TModel model, bool partial = false)
         {
@@ -80,35 +82,59 @@ namespace Unimarket.MVC.Controllers
             }
         }
         [HttpPost]
-		public async Task<IActionResult> UpdateCart([FromBody] UpdateCart model)
-		{
-            var userId = HttpContext.Session.GetString("UserId");
-            AddItemToCart item = new AddItemToCart();
-            item.UserId = userId;
-            item.ItemId = model.ItemId;
-			HttpResponseMessage response = null;
-			if(model.Status.Equals("up")) {
-                 response = await _client.PostAsync(_client.BaseAddress + "Cart", new StringContent(
-                  JsonConvert.SerializeObject(item),
-                  Encoding.UTF8,
-                  "application/json"));
-            } else
-			{
-                 response = await _client.PostAsync(_client.BaseAddress + "Cart/descrease", new StringContent(
-                  JsonConvert.SerializeObject(item),
-                  Encoding.UTF8,
-                  "application/json"));
+        public async Task<IActionResult> UpdateCart([FromBody] UpdateCart model)
+        {
+            UserCartResponse cartItem = new UserCartResponse();
+            var response = await _client.GetAsync(_client.BaseAddress + $"order/cart");
+            if (response.IsSuccessStatusCode)
+            {
+                var data = await response.Content.ReadAsStringAsync();
+                cartItem = JsonConvert.DeserializeObject<UserCartResponse>(data);
+            }
+            var quantity = cartItem.Data.orderDetails.Where(_ => _.id.Equals(model.ItemId)).Select(_ => _.quantity).FirstOrDefault();
+            if (model.Status.Equals("up"))
+            {
+                quantity += 1;
+                var quantityObject = new
+                {
+                    quantity,
+                };
+                response = await _client.PutAsync(_client.BaseAddress + $"details/{model.ItemId}", new StringContent(
+                     JsonConvert.SerializeObject(quantityObject),
+                     Encoding.UTF8,
+                     "application/json"));
+
+            }
+            else
+            {
+                quantity -= 1;
+                if (quantity == 0)
+                {
+                    response = await _client.DeleteAsync(_client.BaseAddress + $"details/{model.ItemId}");
+                }
+                else
+                {
+                    var quantityObject = new
+                    {
+                        quantity,
+                    };
+                    response = await _client.PutAsync(_client.BaseAddress + $"details/{model.ItemId}", new StringContent(
+                          JsonConvert.SerializeObject(quantityObject),
+                          Encoding.UTF8,
+                          "application/json"));
+                }
+
             }
             if (response.IsSuccessStatusCode)
             {
-				ResponseCartVM cartItem = new ResponseCartVM();
-				response = await _client.GetAsync(_client.BaseAddress + $"Cart/get/usercart?userId={userId}");
-				if (response.IsSuccessStatusCode)
-				{
-					var data = await response.Content.ReadAsStringAsync();
-					cartItem = JsonConvert.DeserializeObject<ResponseCartVM>(data);
-				}
-                string htmlContent = await RenderViewAsync("UpdateCart", cartItem, true);
+
+                response = await _client.GetAsync(_client.BaseAddress + $"order/cart");
+                if (response.IsSuccessStatusCode)
+                {
+                    var data = await response.Content.ReadAsStringAsync();
+                    cartItem = JsonConvert.DeserializeObject<UserCartResponse>(data);
+                }
+                string htmlContent = await RenderViewAsync("UpdateCart", cartItem.Data, true);
                 return Json(htmlContent);
             }
             else
@@ -120,31 +146,30 @@ namespace Unimarket.MVC.Controllers
         [HttpPost]
         public async Task<IActionResult> AddToCart([FromBody] string itemId)
         {
-            var userId = HttpContext.Session.GetString("UserId");
-            if (userId == null)
+            var user = HttpContext.Session.GetString("User_FullName");
+            if (user == null)
             {
                 return Json(new { success = false, requiresLogin = true });
             }
 
-            AddItemToCart item = new AddItemToCart
+            var cartQuantity = new
             {
-                UserId = userId,
-                ItemId = itemId
+                quantity = 1
             };
 
-            var response = await _client.PostAsync(_client.BaseAddress + "Cart", new StringContent(
-                    JsonConvert.SerializeObject(item),
+            var response = await _client.PostAsync(_client.BaseAddress + $"details/{itemId}", new StringContent(
+                    JsonConvert.SerializeObject(cartQuantity),
                     Encoding.UTF8,
                     "application/json"));
 
             if (response.IsSuccessStatusCode)
             {
-                var responseData = await _client.GetAsync(_client.BaseAddress + $"Cart/get/usercart?userId={userId}");
+                var responseData = await _client.GetAsync(_client.BaseAddress + $"order/cart");
                 if (responseData.IsSuccessStatusCode)
                 {
                     var data = await responseData.Content.ReadAsStringAsync();
-                    var cartItem = JsonConvert.DeserializeObject<ResponseCartVM>(data);
-                    HttpContext.Session.SetInt32("Cart", cartItem.Total);
+                    var cartItem = JsonConvert.DeserializeObject<UserCartResponse>(data);
+                    HttpContext.Session.SetInt32("Cart", cartItem.Data.orderDetails.Count());
                 }
                 return Ok(new { success = true });
             }
@@ -157,36 +182,53 @@ namespace Unimarket.MVC.Controllers
         [HttpPost]
         public async Task<IActionResult> AddQuantityToCart([FromBody] AddToCarts item)
         {
-            var userId = HttpContext.Session.GetString("UserId");
+            var userId = HttpContext.Session.GetString("User_FullName");
 
             if (string.IsNullOrEmpty(userId))
             {
                 return Unauthorized(new { success = false, message = "User not logged in." });
             }
-
-            UpdateItemQuantityDTO _item = new UpdateItemQuantityDTO
+            UserCartResponse cartItem = new UserCartResponse();
+            var response = await _client.GetAsync(_client.BaseAddress + $"order/cart");
+            if (response.IsSuccessStatusCode)
             {
-                UserId = userId,
-                ItemId = item.itemId,
-                Quantity = item.quantity
+                var data = await response.Content.ReadAsStringAsync();
+                cartItem = JsonConvert.DeserializeObject<UserCartResponse>(data);
+            }
+            var quantity = cartItem.Data.orderDetails.Where(_ => _.id.Equals(item.itemId)).Select(_ => _.quantity).FirstOrDefault();
+
+            if (quantity > 0)
+            {
+                quantity += item.quantity;
+                var quantityObject = new
+                {
+                    quantity,
+                };
+                response = await _client.PutAsync(_client.BaseAddress + $"details/{item.itemId}", new StringContent(
+                     JsonConvert.SerializeObject(quantityObject),
+                     Encoding.UTF8,
+                     "application/json"));
+            }
+
+            var cartQuantity = new
+            {
+                quantity = item.quantity,
             };
 
-            var response = await _client.PostAsync(_client.BaseAddress + "Cart/add-quantity", new StringContent(
-                    JsonConvert.SerializeObject(_item),
-                    Encoding.UTF8,
-                    "application/json"));
+            response = await _client.PostAsync(_client.BaseAddress + $"details/{item.itemId}", new StringContent(
+                   JsonConvert.SerializeObject(cartQuantity),
+                   Encoding.UTF8,
+                   "application/json"));
 
             if (response.IsSuccessStatusCode)
             {
-                ResponseCartVM cartItem = new ResponseCartVM();
-                response = await _client.GetAsync(_client.BaseAddress + $"Cart/get/usercart?userId={userId}");
-                if (response.IsSuccessStatusCode)
+                var responseData = await _client.GetAsync(_client.BaseAddress + $"order/cart");
+                if (responseData.IsSuccessStatusCode)
                 {
-                    var data = await response.Content.ReadAsStringAsync();
-                    cartItem = JsonConvert.DeserializeObject<ResponseCartVM>(data);
+                    var data = await responseData.Content.ReadAsStringAsync();
+                    cartItem = JsonConvert.DeserializeObject<UserCartResponse>(data);
+                    HttpContext.Session.SetInt32("Cart", cartItem.Data.orderDetails.Count());
                 }
-                HttpContext.Session.SetInt32("Cart", cartItem.Total);
-                ViewBag.SuccessMessage = "Registration successful!";
                 return Ok(new { success = true, message = "Item added to cart successfully." });
             }
             else
@@ -197,30 +239,22 @@ namespace Unimarket.MVC.Controllers
 
 
         [HttpGet] // Change to HttpPost to match the API controller
-        public async Task<IActionResult> DeleteInCart([FromQuery]string itemId)
+        public async Task<IActionResult> DeleteInCart([FromQuery] string itemId)
         {
-            var userId = HttpContext.Session.GetString("UserId");
-
-            var deleteItem = new AddItemToCart
-            {
-                UserId = userId,
-                ItemId = itemId
-            };
-            var request = new HttpRequestMessage(HttpMethod.Delete, _client.BaseAddress + "Cart/delete-item-in-cart");
-            var jsonContent = JsonConvert.SerializeObject(deleteItem);
+            var request = new HttpRequestMessage(HttpMethod.Delete, _client.BaseAddress + $"details/{itemId}");
+            var jsonContent = JsonConvert.SerializeObject(itemId);
             request.Content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
             HttpResponseMessage response = await _client.SendAsync(request);
-
             if (response.IsSuccessStatusCode)
             {
-                ResponseCartVM cartItem = new ResponseCartVM();
-                response = await _client.GetAsync(_client.BaseAddress + $"Cart/get/usercart?userId={userId}");
-                if (response.IsSuccessStatusCode)
+                UserCartResponse cartItem = new UserCartResponse();
+                var responseData = await _client.GetAsync(_client.BaseAddress + $"order/cart");
+                if (responseData.IsSuccessStatusCode)
                 {
-                    var data = await response.Content.ReadAsStringAsync();
-                    cartItem = JsonConvert.DeserializeObject<ResponseCartVM>(data);
+                    var data = await responseData.Content.ReadAsStringAsync();
+                    cartItem = JsonConvert.DeserializeObject<UserCartResponse>(data);
+                    HttpContext.Session.SetInt32("Cart", cartItem.Data.orderDetails.Count());
                 }
-                HttpContext.Session.SetInt32("Cart", cartItem.Total);
                 ViewBag.SuccessMessage = "Deleted successfully!";
                 return Ok(response);
             }

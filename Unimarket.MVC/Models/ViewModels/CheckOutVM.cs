@@ -2,7 +2,7 @@
 {
 	public class CheckOutVM
 	{
-		public ResponseCartVM Cart { get; set; }
-		public UserVM User { get; set; }
+		public UserCartResponse Cart { get; set; }
+		public UserVM? User { get; set; }
 	}
 }

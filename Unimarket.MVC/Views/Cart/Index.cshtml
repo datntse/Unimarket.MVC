@@ -1,7 +1,8 @@
-﻿@{
-    decimal totalMoney = 0;
+﻿@model Unimarket.MVC.Models.ViewModels.CartDTO
+@{
+    float totalMoney = Model.totalPrice != null ? Model.totalPrice : 0;
+    float totalCart = 0;
 }
-@model Unimarket.MVC.Models.ViewModels.ResponseCartVM
 <div class="cart-content">
     <div class="breadcrumb-option">
         <div class="container">
@@ -16,7 +17,7 @@
         </div>
     </div>
 
-    @if (Model.Data == null)
+    @if (Model.orderDetails.Count == 0)
     {
         <div style="background-image: url('/img/empty_cart.svg'); background-size: contain; width: 800px; height: 80vh; background-repeat: no-repeat; background-position:center; margin: 0 auto;">
             <div class="pt-5">
@@ -46,28 +47,30 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach (var item in Model.Data)
+                                  
+                                    @foreach (var item in Model.orderDetails)
                                     {
-                                        totalMoney += item.Quantity * item.Item.Price;
+                                        var basePrice = item.price / item.quantity;
+                                        totalCart += item.price;
                                         <tr>
                                             <td class="cart__product__item">
-                                                <img src="@item.Item.ImageUrl" width="90px" height="90px" alt="">
+                                                <img src="@item.image" width="90px" height="90px" alt="">
                                                 <div class="cart__product__item__title">
-                                                    <h6>@item.Item.Name</h6>
+                                                    <h6>@item.productName</h6>
                                                 </div>
                                             </td>
-                                            <td class="cart__price">@string.Format("{0:#,0}", item.Item.Price)VNĐ</td>
+                                            <td class="cart__price">@string.Format("{0:#,0}", basePrice)VNĐ</td>
                                             <td class="cart__quantity">
                                                 <div class="pro-qty">
-                                                    <span class="dec qtybtn" onclick="descreaseQuantity('@item.ItemId')">-</span>
-                                                    <input type="text" value="@item.Quantity" />
-                                                    <span class="inc qtybtn" onclick="increaseQuantity('@item.ItemId')">+</span>
+                                                    <span class="dec qtybtn" onclick="descreaseQuantity('@item.id')">-</span>
+                                                    <input type="text" value="@item.quantity" />
+                                                    <span class="inc qtybtn" onclick="increaseQuantity('@item.id')">+</span>
                                                 </div>
                                             </td>
-                                            <td class="cart__total">@string.Format("{0:#,0}", item.Item.Price * item.Quantity)VNĐ</td>
+                                            <td class="cart__total">@string.Format("{0:#,0}", item.price)VNĐ</td>
                                             <td class="cart__close">
                                                 @* <a class="delete-item" id="delete-btn" data-itemid="@item.ItemId" asp-controller="Cart" asp-action="DeleteInCart" asp-route-itemId="@item.ItemId"> *@
-                                                <a class="delete-item" onclick="removeItemFromCart('@item.ItemId')" data-itemid="@item.ItemId">
+                                                <a class="delete-item" onclick="removeItemFromCart('@item.id')" data-itemid="@item.id">
                                                     <span class="icon_close"></span>
                                                 </a>
                                             </td>
@@ -100,8 +103,8 @@
                         <div class="cart__total__procced">
                             <h6>Chi tiết thanh toán</h6>
                             <ul>
-                                <li>Tổng tiền hàng <span>@string.Format("{0:#,0}", totalMoney)VNĐ</span></li>
-                                <li>Chi phí vận chuyển <span>0đ</span></li>
+                                <li>Tổng tiền hàng <span>@string.Format("{0:#,0}", totalCart)VNĐ</span></li>
+                                <li>Chi phí vận chuyển <span>@string.Format("{0:#,0}", Model.shippingFee)VNĐ</span></li>
                                 <li><strong>Tổng <span>@string.Format("{0:#,0}", totalMoney)VNĐ</span></strong></li>
                             </ul>
                             <a href="@Url.Action("Index", "Checkout")" class="primary-btn">Tiến hành đặt hàng</a>
@@ -167,7 +170,6 @@
                 /* Read more about isConfirmed, isDenied below */
                 if (result.isConfirmed) {
                     //send request to delete item
-                    console.log("Item", itemId);
                     $.ajax({
                         // dataType: "json",
                         // contentType: "application/json; charset=utf-8",

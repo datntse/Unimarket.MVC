@@ -31,14 +31,15 @@
     <div class="container" id="container">
         <div class="form-container sign-up-container">
             <form action="Register" method="post">
-                <input class="form-control" type="text" placeholder="FullName" id="firstName" name="firstName" required />
+                <input class="form-control" type="text" placeholder="FullName" id="firstName" name="fullName" required />
                 <div id="name-message" style="color:red;font-size:11px"></div>
-                <input type="text" placeholder="Email" id="userName" name="userName" required />
-                <input type="password" id="password" placeholder="Password" name="password" id="password" required />
+                <input type="text" placeholder="Email" id="name" name="email" required />
+                <input type="password" id="password" placeholder="Password" name="password" required />
                 <div id="password-message" style="color:red;font-size:11px"></div>
                 <input type="password" placeholder="Confirm password" name="repass" id="confirmpassword-1" required />
                 <input type="text" id="phone" placeholder="Phone" name="phone" required />
-                <button onclick="register()" disabled="true">Đăng ký</button>
+                <div id="phone-message" style="color:red;font-size:11px"></div>
+                <button type="submit" disabled="true">Đăng ký</button>
             </form>
         </div>
         <div class="form-container sign-in-container">
@@ -54,17 +55,8 @@
                         <a href="https://mail.google.com/">Mail</a>
                     </div>
                 }
-
                 <div class="social-container" style="color: red">
-                    @*          <a href="https://www.facebook.com/dialog/oauth?client_id=1509092289871952&redirect_uri=http://localhost:8080/FBK74/login-facebook" class="social"
-                    style="
-                    background-color: navy;
-                    color: white;
-                    "><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" class="social" style="
-                    background-color: red;
-                    color: white;
-                    "><i class="fab fa-google-plus-g"></i></a> *@
+      
                     @if (message != null)
                     {
                         <span>@message</span>
@@ -77,7 +69,6 @@
                 <button type="submit">Đăng nhập</button>
             </form>
         </div>
-        @* <h5 style="color:red">${errorMessage}</h5> *@
 
         <div class="overlay-container">
             <div class="overlay">
@@ -112,9 +103,5 @@
 <script src="~/js/validate.js"></script>
 
 <script>
-    function register() {
-        var userName = $('#userName');
-        console.log("userName", userName);
-    }
 </script>
 </html>
