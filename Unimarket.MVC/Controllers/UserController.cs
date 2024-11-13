@@ -106,7 +106,12 @@ namespace Unimarket.MVC.Controllers
                 {
                     var data = await response.Content.ReadAsStringAsync();
                     cartItem = JsonConvert.DeserializeObject<UserCartResponse>(data);
-                    HttpContext.Session.SetInt32("Cart", cartItem.Data.orderDetails.Count());
+                    if (cartItem.Data != null) { 
+                        HttpContext.Session.SetInt32("Cart", cartItem.Data.orderDetails.Count());
+                    } else
+                    {
+                        HttpContext.Session.SetInt32("Cart", 0);
+                    }
                 }
 
                 if (tokenResponse.data.role.Equals("ADMIN"))
@@ -151,12 +156,11 @@ namespace Unimarket.MVC.Controllers
 
             var registerDTO = new RegisterDTO
             {
-                FullName = model.FullName,
-                UserName = model.Email,
-                Password = model.Password,
-                PhoneNumber = model.Phone,
+                fullName = model.FullName,
+                username = model.Email,
+                password = model.Password,
+                phone = model.Phone,
             };
-
             var data = JsonConvert.SerializeObject(registerDTO);
             var response = await _client.PostAsync(_client.BaseAddress + "auth/register",
                 new StringContent(
@@ -166,91 +170,12 @@ namespace Unimarket.MVC.Controllers
 
             if (response.IsSuccessStatusCode)
             {
-                var url = Url.Action("ConfirmEmail", "User", new { email = model.Email }, protocol: Request.Scheme);
-                await _mailService.SendEmailAsync(model.Email, "Xác thực tài khoản của bạn", url);
                 TempData["Message"] = "Đến email dể xác nhận tài khoản";
                 return RedirectToAction("Login", "User");
             }
             return RedirectToAction("Login", "User");
 
         }
-        //[AllowAnonymous]
-        //public async Task<ActionResult> ExternalLogin()
-        //{
-        //    var props = new AuthenticationProperties { RedirectUri = "/user/GoogleLogin" };
-        //    return Challenge(props, GoogleDefaults.AuthenticationScheme);
-        //}
-
-        //public async Task<ActionResult> GoogleLogin()
-        //{
-        //    var responseGoogle = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-        //    if (responseGoogle.Principal == null) return BadRequest();
-        //    var name = responseGoogle.Principal.FindFirstValue(ClaimTypes.Name);
-        //    var givenName = responseGoogle.Principal.FindFirstValue(ClaimTypes.GivenName);
-        //    var email = responseGoogle.Principal.FindFirstValue(ClaimTypes.Email);
-        //    //Do something with the claims
-        //    // var user = await UserService.FindOrCreate(new { name, givenName, email});
-        //    var user = new RegisterDTO
-        //    {
-        //        FirstName = name,
-        //        LastName = name,
-        //        Email = email,
-        //        Password = email
-        //    };
-
-        //    // Send login request to Web API
-        //    var response = await _client.PostAsync(
-        //        _client.BaseAddress + "User/GoogleLogin",
-        //        new StringContent(
-        //            JsonConvert.SerializeObject(user),
-        //            Encoding.UTF8,
-        //            "application/json"));
-
-        //    if (response.IsSuccessStatusCode)
-        //    {
-        //        // Read response content
-        //        var responseContent = await response.Content.ReadAsStringAsync();
-        //        var tokenResponse = JsonConvert.DeserializeObject<TokenResponse>(responseContent);
-
-        //        // Store token in session, cookie, or local storage
-        //        HttpContext.Session.SetString("AccessToken", tokenResponse.Token);
-        //        HttpContext.Session.SetString("RefeshToken", tokenResponse.RefreshToken);
-        //        HttpContext.Session.SetString("UserEmail", email);
-        //        HttpContext.Session.SetString("FirstName", name);
-        //        // Redirect user to the home page or another appropriate page
-
-        //        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenResponse.Token);
-        //        var currentUser = await _currentUserService.User();
-        //        if (user != null)
-        //        {
-        //            HttpContext.Session.SetString("UserId", currentUser.Id.ToString());
-        //        }
-
-        //        var handler = new JwtSecurityTokenHandler();
-        //        var token = handler.ReadJwtToken(tokenResponse.Token);
-
-        //        // Extract role claims
-        //        var roleClaims = token.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value).ToList();
-        //        foreach (var role in roleClaims)
-        //        {
-        //            if (role.Equals(AppRole.Admin))
-        //            {
-        //                // Dashboard
-        //                return RedirectToAction("Index", "Dashbroad");
-        //            }
-        //        }
-
-        //        return RedirectToAction("Index", "Home");
-        //    }
-        //    else
-        //    {
-        //        ViewData["ErrorMessage"] = "not validate";
-        //        //ModelState.AddModelError(string.Empty, "Invalid username or password");
-        //        return RedirectToAction("Index", "Home");
-        //    }
-
-        //    return RedirectToAction("Login", "User");
-        //}
 
         [HttpGet]
         public async Task<IActionResult> Logout()

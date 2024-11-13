@@ -12,9 +12,9 @@ namespace Unimarket.MVC.Models.ViewModels
 
 	public class RegisterDTO
 	{
-        public string FullName { get; set; }
-        public string UserName { get; set; }
-        public string Password { get; set; }
-        public String? PhoneNumber { get; set; }
+        public string fullName { get; set; }
+        public string username { get; set; }
+        public string password { get; set; }
+        public String? phone { get; set; }
     }
 }
