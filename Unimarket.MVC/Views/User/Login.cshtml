@@ -45,7 +45,7 @@
         <div class="form-container sign-in-container">
             <form asp-action="Login" method="post">
                 <div>
-                    <img src="~/img//logo.png" width="100%" height="50px">
+                    <a href="/"><img src="~/img/banner/logovip.png" width="100%" height="50px"> </a>
                     <h1>Đăng nhập</h1>
                 </div>
                 @if (successmessage != null)
@@ -73,6 +73,9 @@
         <div class="overlay-container">
             <div class="overlay">
                 <div class="overlay-panel overlay-left">
+                    <div>
+                        <a href="/"><img src="~/img/banner/logovip.png" width="100%" height="50px"> </a>
+                    </div>
                     <h1>GreenViet - Kết nối ưng ý. Mua bán dễ dàng</h1>
                     <p>Nhập thông tin cá nhân của bạn và bắt đầu hành trình với chúng tôi</p>
                     <button class="ghost" id="signIn">Đăng Nhập</button>
