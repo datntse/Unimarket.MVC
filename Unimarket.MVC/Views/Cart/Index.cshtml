@@ -47,7 +47,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                  
+
                                     @foreach (var item in Model.orderDetails)
                                     {
                                         var basePrice = item.price / item.quantity;
@@ -169,26 +169,23 @@
             }).then((result) => {
                 /* Read more about isConfirmed, isDenied below */
                 if (result.isConfirmed) {
-                    //send request to delete item
-                    $.ajax({
-                        // dataType: "json",
-                        // contentType: "application/json; charset=utf-8",
-                        type: "GET",
-                        url: "Cart/DeleteInCart",
-                        data: itemId,
-                        success: function (response) {
-                            Swal.fire({
-                                position: "center",
-                                icon: "success",
-                                title: "Loại bỏ sản phẩm thành công!",
-                                showConfirmButton: false,
-                                timer: 1500
-                            });
-                        },
-                        error: function () {
-                            window.location.replace('/User/Login');
-                        }
-                    });
+                   var action = {
+                itemId,
+                status: "remove",
+            }
+            $.ajax({
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                type: "POST",
+                url: "Cart/UpdateCart",
+                data: JSON.stringify(action),
+                success: function (response) {
+                    $('.cart-content').html(response);
+                },
+                error: function () {
+                    window.location.replace('/User/Login');
+                }
+            });
                 }
             });
         }
