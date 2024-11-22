@@ -101,14 +101,16 @@ namespace Unimarket.MVC.Controllers
                 HttpContext.Session.SetString("User_FullName", userName);
 
                 UserCartResponse cartItem = new UserCartResponse();
-                 response = await _client.GetAsync(_client.BaseAddress + $"order/cart");
+                response = await _client.GetAsync(_client.BaseAddress + $"order/cart");
                 if (response.IsSuccessStatusCode)
                 {
                     var data = await response.Content.ReadAsStringAsync();
                     cartItem = JsonConvert.DeserializeObject<UserCartResponse>(data);
-                    if (cartItem.Data != null) { 
+                    if (cartItem.Data != null)
+                    {
                         HttpContext.Session.SetInt32("Cart", cartItem.Data.orderDetails.Count());
-                    } else
+                    }
+                    else
                     {
                         HttpContext.Session.SetInt32("Cart", 0);
                     }
@@ -180,15 +182,10 @@ namespace Unimarket.MVC.Controllers
         [HttpGet]
         public async Task<IActionResult> Logout()
         {
-            var response = await _client.DeleteAsync(_client.BaseAddress + "auth/signOut");
-            if (response.IsSuccessStatusCode)
-            {
-                HttpContext.Session?.Remove("AccessToken");
-                HttpContext.Session?.Remove("RefeshToken");
-                HttpContext.Session?.Remove("UserId");
-                return RedirectToAction("Login");
-            }
-            return Unauthorized();
+            HttpContext.Session?.Remove("AccessToken");
+            HttpContext.Session?.Remove("RefeshToken");
+            HttpContext.Session?.Remove("User_FullName");
+            return RedirectToAction("Login");
         }
     }
 }

@@ -105,6 +105,26 @@ namespace Unimarket.MVC.Controllers
                      "application/json"));
 
             }
+            else if (model.Status.Equals("remove"))
+            {
+                quantity = 0;
+                if (quantity == 0)
+                {
+                    response = await _client.DeleteAsync(_client.BaseAddress + $"details/{model.ItemId}");
+                }
+                else
+                {
+                    var quantityObject = new
+                    {
+                        quantity,
+                    };
+                    response = await _client.PutAsync(_client.BaseAddress + $"details/{model.ItemId}", new StringContent(
+                          JsonConvert.SerializeObject(quantityObject),
+                          Encoding.UTF8,
+                          "application/json"));
+                }
+
+            }
             else
             {
                 quantity -= 1;
