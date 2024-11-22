@@ -2,7 +2,11 @@
 @{
     ViewData["Title"] = "Checkout Page";
     int productNumber = 0;
-    float totalPrice = Model.Cart.Data.totalPrice;
+    float shippingFee = Model.Cart.Data.shippingFee != null ? Model.Cart.Data.shippingFee : 0; ;
+    float totalPrice = Model.Cart.Data.totalPrice != null ? Model.Cart.Data.totalPrice - shippingFee : 0;
+    float finalPrice = totalPrice + shippingFee;
+
+
 }
 <div class="breadcrumb-option">
     <div class="container">
@@ -35,34 +39,34 @@
                     <div class="row">
                         <div class="col-lg-6 col-md-6 col-sm-6">
                             <div class="checkout__form__input">
-                                <p>Họ <span>*</span></p>
-                                <input type="text" value="@Model.User.FirstName" readonly>
-                            </div>
-                        </div>
-                        <div class="col-lg-6 col-md-6 col-sm-6">
-                            <div class="checkout__form__input">
-                                <p>Tên <span>*</span></p>
-                                <input type="text" value="@Model.User.LastName" readonly>
-                            </div>
-                        </div>
-                        <div class="col-lg-6 col-md-6 col-sm-6">
-                            <div class="checkout__form__input">
-                                <p>Số điện thoại <span>*</span></p>
-                                <input type="text" value="@Model.User.PhoneNumber" readonly>
-                            </div>
-                        </div>
-                        <div class="col-lg-6 col-md-6 col-sm-6">
-                            <div class="checkout__form__input">
                                 <p>Email <span>*</span></p>
-                                <input type="text" value="@Model.User.Email" readonly>
+                                <input type="text" value="@Model.User.FirstName" readonly>
                             </div>
                         </div>
                         <div class="col-lg-12">
                             <div class="checkout__form__input">
                                 <p>Địa chỉ <span>*</span></p>
-                                <input  type="text" id="Address" placeholder="Nhập địa chỉ nhận hàng của bạn" required>
+                                <input type="text" id="street" placeholder="Địa chỉ cụ thể" required>
                             </div>
+
+                            <select class="checkout__form__input form-select form-select-sm mb-3" id="city" aria-label=".form-select-sm">
+                                <option value="" selected>Chọn tỉnh thành</option>
+                            </select>
+
+                            <select class="checkout__form__input form-select form-select-sm mb-3" id="district" aria-label=".form-select-sm">
+                                <option value="" selected>Chọn quận huyện</option>
+                            </select>
+
+                            <select class="checkout__form__input form-select form-select-sm" id="ward" aria-label=".form-select-sm">
+                                <option value="" selected>Chọn phường xã</option>
+                            </select>
+
                         </div>
+
+
+
+
+
                         <div class="col-lg-12">
                             <div class="checkout__form__input">
                                 <p>Ghi chú cho đơn hàng</p>
@@ -81,7 +85,7 @@
                                     <span class="top__text">Sản phẩm</span>
                                     <span class="top__text__right">Giá tiền</span>
                                 </li>
-                                @foreach(var item in Model.Cart.Data.orderDetails)
+                                @foreach (var item in Model.Cart.Data.orderDetails)
                                 {
                                     productNumber++;
                                     <li>0.@productNumber@item.productName<span>@string.Format("{0:#,0}", item.price)đ</span></li>
@@ -91,8 +95,8 @@
                         <div class="checkout__order__total">
                             <ul>
                                 <li>Tổng tiền hàng <span>@string.Format("{0:#,0}", @totalPrice)đ</span></li>
-                                <li>Chi phí vận chuyển <span>0đ</span></li>
-                                <li><strong>Tổng <span>@string.Format("{0:#,0}", @totalPrice)đ</span></strong></li>
+                                <li>Chi phí vận chuyển <span>@string.Format("{0:#,0}", shippingFee)đ</span></li>
+                                <li><strong>Tổng <span>@string.Format("{0:#,0}", @finalPrice)đ</span></strong></li>
                             </ul>
                         </div>
                         <div class="checkout__order__widget">
@@ -105,39 +109,93 @@
     </div>
 </section>
 
-@section Scripts { 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+@section Scripts {
     <script>
-        function checkOut(itemId) {
-            event.preventDefault();
 
-            var Address = $('#Address').val();
+        var citis = document.getElementById("city");
+        var districts = document.getElementById("district");
+        var wards = document.getElementById("ward");
+
+        var Parameter = {
+          url: "https://raw.githubusercontent.com/kenzouno1/DiaGioiHanhChinhVN/master/data.json",
+          method: "GET",
+          responseType: "application/json",
+        };
+        var promise = axios(Parameter);
+        promise.then(function (result) {
+          renderCity(result.data);
+        });
+
+        function renderCity(data) {
+          for (const x of data) {
+            citis.options[citis.options.length] = new Option(x.Name, x.Id);
+          }
+          citis.onchange = function () {
+            district.length = 1;
+            ward.length = 1;
+            if(this.value != ""){
+              const result = data.filter(n => n.Id === this.value);
+
+              for (const k of result[0].Districts) {
+                district.options[district.options.length] = new Option(k.Name, k.Id);
+              }
+            }
+          };
+          district.onchange = function () {
+            ward.length = 1;
+            const dataCity = data.filter((n) => n.Id === citis.value);
+            if (this.value != "") {
+              const dataWards = dataCity[0].Districts.filter(n => n.Id === this.value)[0].Wards;
+
+              for (const w of dataWards) {
+                wards.options[wards.options.length] = new Option(w.Name, w.Id);
+              }
+            }
+          };
+        }
+
+        function checkOut() {
+            var diachichitiet = $('#street').val();
             var Note = $('#order-note').val();
-            if (Address.length == 0) {
+            if (diachichitiet.length == 0) {
                 Swal.fire({
                     icon: "error",
                     title: "Oops...",
                     text: "Vui lòng nhập địa chỉ để chúng tớ có thể giao hàng tới tới tay cậu nhé!",
                 });
             } else {
-                var action = {
-                    Address,
-                    Note
+                 var address = {
+                    street : diachichitiet,
+                    Ward : $("#ward option:selected").text(),
+                    District : $("#district option:selected").text(),
+                    Citi : $("#city option:selected").text()
                 }
                 $.ajax({
                     dataType: "json",
                     contentType: "application/json; charset=utf-8",
-                    url: "CheckOut/Checkout",
+                    url: "CheckOut/CreateAddress",
                     type: "POST",
-                    data: JSON.stringify(action),
+                    data: JSON.stringify(address),
                     success: function (response) {
-                        window.location.replace('/Profile/History');
+                        console.log(response);
                     },
-                    error: function () {
-                        window.location.replace('/User/Login');
-                    }
-                });
+                     error: function(xhr, status, error) {
+            // Kiểm tra mã lỗi
+            if (xhr.status === 405) {
+                // Nếu mã lỗi là 405, điều hướng về trang Index của Home
+                window.location.replace('/Home');
+            } else {
+                // Xử lý lỗi khác nếu cần
+                console.error("Error occurred: " + error);
             }
-       
+        }
+                });
+                window.location.replace('/Home');
+
+            }
+
         }
     </script>
 }
+

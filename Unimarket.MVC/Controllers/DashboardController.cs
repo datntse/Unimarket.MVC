@@ -26,9 +26,10 @@ namespace Unimarket.MVC.Controllers
         public async Task<IActionResult> Index(DefaultSearch defaultSearch)
         {
             ResponseOrder cartItem = new ResponseOrder();
-            var response = await _client.GetAsync(_client.BaseAddress + "Order/getall");
+            var response = await _client.GetAsync(_client.BaseAddress + $"order/all?status=BOOKED&page={defaultSearch.currentPage}&size={defaultSearch.perPage}");
             if (response.IsSuccessStatusCode)
             {
+
                 var data = await response.Content.ReadAsStringAsync();
                 cartItem = JsonConvert.DeserializeObject<ResponseOrder>(data);
             }
@@ -36,7 +37,7 @@ namespace Unimarket.MVC.Controllers
             {
                 return RedirectToAction("Login", "User");
             }
-            return View(cartItem);
+            return View(cartItem.data);
         }
 
     }
