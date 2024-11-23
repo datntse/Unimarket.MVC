@@ -61,4 +61,11 @@
 		public string itemId { get; set; }
 		public int quantity { get; set; }
 	}
+
+    public class UpdateOrderModel
+    {
+        public int orderId { get; set; }
+        public int type { get; set; }
+    }
+
 }

@@ -135,7 +135,7 @@
                         <div class="header__right__auth">
                             @if (user != null)
                             {
-                                <a href="@Url.Action("Index", "Profile")">Chào, <b>@user</b> </a>
+                                <a>Chào, <b>@user</b> </a>
                                 <a href="@Url.Action("Logout", "User")"><b>Log out</b></a>
                             }
                             else

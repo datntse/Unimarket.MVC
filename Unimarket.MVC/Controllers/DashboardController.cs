@@ -26,12 +26,18 @@ namespace Unimarket.MVC.Controllers
         public async Task<IActionResult> Index(DefaultSearch defaultSearch)
         {
             ResponseOrder cartItem = new ResponseOrder();
-            var response = await _client.GetAsync(_client.BaseAddress + $"order/all?status=BOOKED&page={defaultSearch.currentPage}&size={defaultSearch.perPage}");
+            var response = await _client.GetAsync(_client.BaseAddress + $"order/all?status=RECEIVED&page={defaultSearch.currentPage}&size={defaultSearch.perPage}");
             if (response.IsSuccessStatusCode)
             {
 
                 var data = await response.Content.ReadAsStringAsync();
                 cartItem = JsonConvert.DeserializeObject<ResponseOrder>(data);
+                response = await _client.GetAsync(_client.BaseAddress + $"revenue/current");
+                data = await response.Content.ReadAsStringAsync();
+                ResponseReveunue responseReveunue = new ResponseReveunue();
+                responseReveunue = JsonConvert.DeserializeObject<ResponseReveunue>(data);
+                ViewData["Revenue"] = responseReveunue.data.revenueAmount;
+
             }
             else
             {

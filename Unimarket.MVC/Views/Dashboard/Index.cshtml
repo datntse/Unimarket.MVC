@@ -6,7 +6,7 @@
 @{
     int totalOrders = Model.totalElements;
     int totalProductsSold = 0; // Initialize totalProductsSold outside the loop
-    float totalRevenue =(float) Model.data.Sum(order => order.totalPrice);
+    decimal totalRevenue = ViewData["Revenue"] != null ?  (decimal) ViewData["Revenue"] : 0;
 }
 <style>
     .link-line {

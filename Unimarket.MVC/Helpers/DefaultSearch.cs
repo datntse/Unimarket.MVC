@@ -10,5 +10,6 @@
         public float? MinPrice { get; set; }
         public float? MaxPrice { get; set; }
         public string? Keyword { get; set; }
+        public string? InvoiceType { get; set; } = "BOOKED";
     }
 }

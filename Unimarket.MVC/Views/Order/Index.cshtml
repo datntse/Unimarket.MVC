@@ -1,10 +1,10 @@
-﻿@* @model Unimarket.MVC.Models.ViewModels.ResponseOrder
+﻿@model Unimarket.MVC.Models.ViewModels.DataResponse
 
 @{
     Layout = "";
-    int countStatus1 = Model.Data != null ? Model.Data.Count(item => item.Status == 0) : 0;
-    int countStatus2 = Model.Data != null ? Model.Data.Count(item => item.Status == 1) : 0;
-    int countStatus3 = Model.Data != null ? Model.Data.Count(item => item.Status == 2) : 0;
+    int countStatus1 = Model.data != null ? Model.totalElements : 0;
+    int countStatus2 = ViewData["DELIVERY"] != null ? (int)ViewData["DELIVERY"] : 0;
+    int countStatus3 =  ViewData["RECEIVED"] != null ? (int) ViewData["RECEIVED"]  : 0;
     int number = 1;
     int number2 = 1;
 }
@@ -180,7 +180,8 @@
 
                     <div class="col-md-6 col-xl-4 mb-3 mb-xl-4">
                         <!-- Widget -->
-                        <div class="card flex-row align-items-center p-3 p-md-4">
+
+                        <a asp-action="Index" asp-controller="Order" asp-route-InvoiceType="BOOKED" class="card flex-row align-items-center p-3 p-md-4">
                             <div class="icon icon-lg bg-soft-primary rounded-circle mr-3">
                                 <i class="gd-bar-chart icon-text d-inline-block text-primary"></i>
                             </div>
@@ -189,28 +190,28 @@
                                 <h6 class="mb-0">@countStatus1 Đơn</h6>
                             </div>
                             <i class="gd-arrow-up icon-text d-flex text-success ml-auto"></i>
-                        </div>
+                        </a>
                         <!-- End Widget -->
                     </div>
 
                     <div class="col-md-6 col-xl-4 mb-3 mb-xl-4">
                         <!-- Widget -->
-                        <div class="card flex-row align-items-center p-3 p-md-4">
+                        <a asp-action="Index" asp-controller="Order" asp-route-InvoiceType="DELIVERY" class="card flex-row align-items-center p-3 p-md-4">
                             <div class="icon icon-lg bg-soft-secondary rounded-circle mr-3">
                                 <i class="gd-wallet icon-text d-inline-block text-secondary"></i>
                             </div>
                             <div>
-                                <h4 class="lh-1 mb-1">Đơn hàng vận chuyền</h4>
+                                <h4 class="lh-1 mb-1">Đơn hàng vận chuyển</h4>
                                 <h6 class="mb-0">@countStatus2 Đơn</h6>
                             </div>
                             <i class="gd-arrow-down icon-text d-flex text-danger ml-auto"></i>
-                        </div>
+                        </a>
                         <!-- End Widget -->
                     </div>
 
                     <div class="col-md-6 col-xl-4 mb-3 mb-xl-4">
                         <!-- Widget -->
-                        <div class="card flex-row align-items-center p-3 p-md-4">
+                        <a asp-action="Index" asp-controller="Order" asp-route-InvoiceType="RECEIVED" class="card flex-row align-items-center p-3 p-md-4">
                             <div class="icon icon-lg bg-soft-warning rounded-circle mr-3">
                                 <i class="gd-money icon-text d-inline-block text-warning"></i>
                             </div>
@@ -219,7 +220,7 @@
                                 <h6 class="mb-0">@countStatus3 Đơn</h6>
                             </div>
                             <i class="gd-arrow-up icon-text d-flex text-success ml-auto"></i>
-                        </div>
+                        </a>
                         <!-- End Widget -->
                     </div>
 
@@ -238,14 +239,14 @@
                                             <tr>
                                                 <th class="font-weight-semi-bold border-top-0 py-2">#</th>
                                                 <th class="font-weight-semi-bold border-top-0 py-2">Tên khách hàng</th>
-                                                <th class="font-weight-semi-bold border-top-0 py-2">Số điện thoại</th>
+                                                <th class="font-weight-semi-bold border-top-0 py-2">Ngày đặt hàng</th>
                                                 <th class="font-weight-semi-bold border-top-0 py-2">Số tiền</th>
                                                 <th class="font-weight-semi-bold border-top-0 py-2">Trạng thái</th>
                                                 <th class="font-weight-semi-bold border-top-0 py-2">Actions</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach (var item in Model.Data.OrderByDescending(c=>c.CreateAt))
+                                            @foreach (var item in Model.data.OrderByDescending(c=>c.orderDate))
                                             {
                                                
                                                 <tr>
@@ -259,29 +260,28 @@
                                                         display: -webkit-box;
                                                         -webkit-line-clamp: 1;
                                                         -webkit-box-orient: vertical;">
-                                                            @item.Id
+                                                            @item.id
                                                         </div>
                                                     </td>
                                                     <td class="py-3">
-                                                        <div>@(item.FirstName + item.LastName)</div>
-                                                        <div class="text-muted">@item.Username</div>
+                                                        <div>@(item.userName)</div>
                                                     </td>
-                                                    <td class="py-3">@item.PhoneNumber</td>
-                                                    <td class="py-3">@string.Format("{0:#,0}", item.TotalPrice)đ</td>
+                                                    <td class="py-3">@item.orderDate</td>
+                                                    <td class="py-3">@string.Format("{0:#,0}", item.totalPrice)đ</td>
                                                     <td class="py-3">
-                                                        @if (item.Status == 0)
+                                                        @if (item.orderStatus.Equals("BOOKED"))
                                                         {
                                                             <span class="badge badge-pill badge-light">Chờ lấy hàng</span>
                                                         }
-                                                        @if (item.Status == 1)
+                                                        @if (item.orderStatus.Equals("DELIVERY"))
                                                         {
                                                             <span class="badge badge-pill badge-warning">Vận chuyển</span>
                                                         }
-                                                        @if (item.Status == 2)
+                                                        @if (item.orderStatus.Equals("RECEIVED"))
                                                         {
                                                             <span class="badge badge-pill badge-success">Thành công</span>
                                                         }
-                                                        @if (item.Status == 3)
+                                                        @if (item.orderStatus.Equals("FAILED"))
                                                         {
                                                             <span class="badge badge-pill badge-danger">Thất bại</span>
                                                         }
@@ -300,22 +300,27 @@
                                                                         <span class="media-body">Chi tiết</span>
                                                                        
                                                                     </a>
-                                                                </li>                                                               
-                                                                @if(item.Status != 2 && item.Status !=3)
+                                                                </li>
+                                                                @if (item.orderStatus.Equals("BOOKED"))
                                                                 {
                                                                     <li class="unfold-item">
-                                                                        <a class="unfold-link media align-items-center text-nowrap update-order" href="#" data-order-id="@item.Id" data-order-status="@item.Status">
+                                                                        <a class="unfold-link media align-items-center text-nowrap update-order" href="#" data-order-id="@item.id" data-order-status="@item.orderStatus">
                                                                             <i class="gd-pencil unfold-item-icon mr-3"></i>
                                                                             <span class="media-body">Xác nhận</span>
                                                                         </a>
                                                                     </li>
+                                                                }
+
+                                                                @if (item.orderStatus.Equals("DELIVERY"))
+                                                                {
                                                                     <li class="unfold-item">
-                                                                        <a class="unfold-link media align-items-center text-nowrap reject-order" href="#" data-order-id="@item.Id">
-                                                                            <i class="gd-close unfold-item-icon mr-3"></i>
-                                                                            <span class="media-body">Từ chối</span>
+                                                                        <a class="unfold-link media align-items-center text-nowrap delivered-order" href="#" data-order-id="@item.id" data-order-status="@item.orderStatus">
+                                                                            <i class="gd-pencil unfold-item-icon mr-3"></i>
+                                                                            <span class="media-body">Giao thành công</span>
                                                                         </a>
                                                                     </li>
                                                                 }
+
                                                            </ul>
                                                         </div>
                                                     </td>
@@ -383,7 +388,7 @@
     </footer>
     <!-- End Footer -->
     <!-- Modal -->
-    @foreach(var item in Model.Data)
+    @foreach(var item in Model.data)
     {
         <div class="modal fade" id="orderDetail-@number" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -393,14 +398,12 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <p>ID: <span >@item.Id</span></p>
-                    <p>Họ tên: <span>@item.FirstName @item.LastName</span></p>
-                    <p>Username: <span>@item.Username</span></p>
-                    <p>Số điện thoại: <span ></span>@item.PhoneNumber</p>
-                    <p>Tổng tiền: <span>@item.TotalPrice</span></p>
-                    <p>Hình thức thanh toán: <span >@item.PaymentType</span></p>
+                    <p>ID: <span >@item.id</span></p>
+                    <p>Họ tên: <span>@item.userName</span></p>
+                    <p>Tổng tiền: <span>@item.totalPrice</span></p>
+            @*         <p>Hình thức thanh toán: <span >@item.PaymentType</span></p>
                     <p>Địa chỉ: <span >@item.Address</span></p>
-                    <p style="font-weight:bold;">Ghi chú: <span >@item.Note</span></p>
+                    <p style="font-weight:bold;">Ghi chú: <span >@item.Note</span></p> *@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -419,22 +422,21 @@
 
                 var orderId = $(this).data('order-id');
                 var currentStatus = $(this).data('order-status');
-                var newStatus = currentStatus + 1; 
 
                 var data = {
-                    OrderId: orderId,
-                    Status: newStatus
+                    orderId,
+                    type: 0
                 };
 
                 $.ajax({
                     dataType: "json",
                     url: 'Order/UpdateOrder', 
-                    type: 'PUT',
+                    type: 'POST',
                     contentType: "application/json; charset=utf-8",
                     data: JSON.stringify(data),
                     success: function (response) {
                         if (response.success) {
-                            alert("Order updated successfully!");
+                            alert("Xác nhận đơn hàng thành công!");
                             location.reload(); // Reload the page after success
                         } else {
                             alert("Failed to update order. Please try again.");
@@ -446,26 +448,25 @@
                 });
             });
 
-            $('.reject-order').on('click', function (e) {
+            $('.delivered-order').on('click', function (e) {
                 e.preventDefault();
 
                 var orderId = $(this).data('order-id');
-                var newStatus = 3; // Set status to 3 for rejection
 
                 var data = {
-                    OrderId: orderId,
-                    Status: newStatus
+                    orderId,
+                    type: 1
                 };
 
                 $.ajax({
                     dataType: "json",
                     url: 'Order/UpdateOrder',
-                    type: 'PUT',
+                    type: 'POST',
                     contentType: "application/json; charset=utf-8",
                     data: JSON.stringify(data),
                     success: function (response) {
                         if (response.success) {
-                            alert("Order rejected successfully!");
+                            alert("Giao hàng thành công!");
                             location.reload(); // Reload the page after success
                         } else {
                             alert("Failed to reject order. Please try again.");
@@ -482,4 +483,4 @@
 <script src="~/public/graindashboard/js/graindashboard.js"></script>
 <script src="public/graindashboard/js/graindashboard.vendor.js"></script>
 
-</html> *@
+</html>

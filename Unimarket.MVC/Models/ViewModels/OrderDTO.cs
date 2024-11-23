@@ -7,6 +7,20 @@
         public string message { get; set; }
     }
 
+    public class ResponseReveunue
+    {
+        public int status { get; set; }
+        public RevenuResponse data { get; set; }
+        public string message { get; set; }
+    }
+
+    public class RevenuResponse
+    {
+        public int month { get; set; }
+        public int year { get; set; }
+        public decimal revenueAmount { get; set; }
+    }
+
     public class DataResponse
     {
         public int currentPage { get; set; }
