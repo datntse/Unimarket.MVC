@@ -27,21 +27,21 @@ namespace Unimarket.MVC.Controllers
             _client.BaseAddress = new Uri(configuration["Cron:localhost"]);
         }
 
-
-
         [HttpGet]
         public async Task<IActionResult> Index(DefaultSearch defaultSearch) 
         {
 
             ProductResponseApi productList = new ProductResponseApi();
             var response = await _client.GetAsync(_client.BaseAddress + $"product/all?page={0}&size={defaultSearch.perPage = 4}");
-
             if (response.IsSuccessStatusCode)
             {
                 var data = await response.Content.ReadAsStringAsync();
                 productList = JsonConvert.DeserializeObject<ProductResponseApi>(data);
             }
-
+            if(productList.Data.Data.FirstOrDefault() == null)
+            {
+                return NotFound();
+            }
             return View(productList.Data);
         }
 

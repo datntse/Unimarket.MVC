@@ -17,7 +17,7 @@
             if (context.Response.StatusCode == 405)
             {
                 // Điều hướng về trang Index của Home
-                context.Response.Redirect("/Home");
+                context.Response.Redirect("/");
             }
         }
     }
