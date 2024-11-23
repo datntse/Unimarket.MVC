@@ -41,6 +41,7 @@ namespace Unimarket.MVC.Controllers
             {
                 var data = await response.Content.ReadAsStringAsync();
                 cartItem = JsonConvert.DeserializeObject<UserCartResponse>(data);
+                HttpContext.Session.SetString("OrderId", cartItem.Data.id.ToString());
             }
             if (cartItem.Data == null)
             {
@@ -123,7 +124,6 @@ namespace Unimarket.MVC.Controllers
                           Encoding.UTF8,
                           "application/json"));
                 }
-
             }
             else
             {

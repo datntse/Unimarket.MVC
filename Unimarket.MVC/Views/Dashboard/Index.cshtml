@@ -1,16 +1,12 @@
 ﻿@{
-	ViewData["Title"] = "Product Manager";
-	Layout = "_DashboardLayout"; // Chỉ định layout nếu layout mặc định không được sử dụng
+    ViewData["Title"] = "Product Manager";
+    Layout = "_DashboardLayout"; // Chỉ định layout nếu layout mặc định không được sử dụng
 }
-@model Unimarket.MVC.Models.ViewModels.ResponseOrder
+@model Unimarket.MVC.Models.ViewModels.DataResponse
 @{
-    int totalOrders = Model.Data.Count(item => item.Id != null);
+    int totalOrders = Model.totalElements;
     int totalProductsSold = 0; // Initialize totalProductsSold outside the loop
-    foreach (var item in Model.Data)
-    {
-        totalProductsSold += item.OrderdetailVM.Sum(detail => detail.Quantity);
-    }
-    float totalRevenue = Model.Data.Sum(order => order.TotalPrice);
+    float totalRevenue =(float) Model.data.Sum(order => order.totalPrice);
 }
 <style>
     .link-line {
@@ -28,7 +24,7 @@
     </div>
     <!-- row -->
     <div class="row tm-content-row">
-        <div class="col-sm-12 col-md-12 col-lg-4 col-xl-4 tm-block-col">
+        <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 tm-block-col">
             <div class="tm-bg-primary-dark tm-block" style="border-radius:40px;">
                 <div class="row link-line">
                     <div class="col-8">
@@ -42,7 +38,7 @@
                 <h1 class="tm-block-title" style="margin-bottom:0px;margin-top:20px;font-size:25px;text-align:center;color:wheat;">Đơn hàng</h1>
             </div>
         </div>
-        <div class="col-sm-12 col-md-12 col-lg-4 col-xl-4 tm-block-col">
+        <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 tm-block-col">
             <div class="tm-bg-primary-dark tm-block" style="border-radius:40px;">
                 <div class="row link-line">
                     <div class="col-8">
@@ -56,20 +52,6 @@
                 <h1 class="tm-block-title" style="margin-bottom:0px;margin-top:20px;font-size:25px;text-align:center;color:wheat;">VNĐ</h1>
             </div>
         </div>
-        <div class="col-sm-12 col-md-12 col-lg-4 col-xl-4 tm-block-col">
-            <div class="tm-bg-primary-dark tm-block" style="border-radius:40px;">
-                <div class="row link-line">
-                    <div class="col-8">
-                        <h1 class="tm-block-title" style="margin-top:10px; font-size:25px;text-transform: uppercase;">Tổng sản phẩm đã bán</h1>
-                    </div>
-                    <div class="col-4">
-                        <i class="fa-solid fa-dolly " style="color:white; font-size:80px;"></i>
-                    </div>
-                </div>
-                <h1 class="tm-block-title" style="margin-bottom:0px;margin-top:20px;font-size:25px;text-align:center;">@string.Format("{0:#,0}", totalProductsSold)</h1>
-                <h1 class="tm-block-title" style="margin-bottom:0px;margin-top:20px;font-size:25px;text-align:center;color:wheat;">Sản phẩm</h1>
-            </div>
-        </div>
 
 
         <div class="col-12 tm-block-col">
@@ -81,20 +63,15 @@
                             <th scope="col">Id</th>
                             <th scope="col">Trạng thái</th>
                             <th scope="col">Họ Tên</th>
-                            <th scope="col">Địa chỉ</th>
-                            <th scope="col">Thanh toán</th>
                             <th scope="col">Ngày Đặt</th>
                             <th scope="col">Tổng tiền</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach(var item in Model.Data)
+                        @foreach(var item in Model.data)
                         {
                             int totalQuantity = 0;
-                            foreach (var detail in item.OrderdetailVM)
-                            {
-                                totalQuantity += detail.Quantity;
-                            }
+                        
                             <tr>
                                 <th scope="row" style="text-wrap: wrap;
                                                         max-height: 40px;
@@ -104,40 +81,14 @@
                                                         overflow: hidden;
                                                         display: -webkit-box;
                                                         -webkit-line-clamp: 1;
-                                                        -webkit-box-orient: vertical;"><b>@item.Id</b></th>
-                                @if (item.Status == 0)
-                                {
+                                                        -webkit-box-orient: vertical;"><b>@item.id</b></th>
                                     <td>
-                                        <div class="tm-status-circle wait">
-                                        </div>Chờ vận chuyển
+                                    <div class="tm-status-circle moving">
+                                    </div>@item.orderStatus
                                     </td>
-                                }
-                                @if (item.Status == 1)
-                                {
-                                    <td>
-                                        <div class="tm-status-circle pending">
-                                        </div>Vận chuyển
-                                    </td>
-                                }
-                                @if (item.Status == 2)
-                                {
-                                    <td>
-                                        <div class="tm-status-circle moving">
-                                        </div>Thành công
-                                    </td>
-                                }
-                                @if (item.Status == 3)
-                                {
-                                    <td>
-                                        <div class="tm-status-circle cancelled">
-                                        </div>Thất bại
-                                    </td>
-                                }
-                                <td><b>@item.FirstName @item.LastName</b></td>
-                                <td><b>@item.Address</b></td>
-                                <td><b>@item.PaymentType</b></td>
-                                <td>@item.CreateAt.ToString("HH:mm, dd MMM yyyy")</td>
-                                <td>@string.Format("{0:#,0}", item.TotalPrice)đ(@totalQuantity)</td>
+                                <td><b>@item.userName </b></td>
+                                <td>@item.orderDate</td>
+                                <td>@string.Format("{0:#,0}", item.totalPrice)đ</td>
                             </tr>
                         }
 
