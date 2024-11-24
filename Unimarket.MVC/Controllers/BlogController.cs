@@ -8,5 +8,17 @@ namespace Unimarket.MVC.Controllers
         {
             return View();
         }
+        public IActionResult Blognew()
+        {
+            return View();
+        }
+        public IActionResult Blognew2()
+        {
+            return View();
+        }
+        public IActionResult Blognew3()
+        {
+            return View();
+        }
     }
 }
