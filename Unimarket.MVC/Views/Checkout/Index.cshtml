@@ -156,6 +156,10 @@
         }
 
         function checkOut() {
+
+
+             alert("Thanh toán hóa đơn thành công.");
+
             var diachichitiet = $('#street').val();
             var Note = $('#order-note').val();
             if (diachichitiet.length == 0) {
@@ -181,19 +185,17 @@
                         console.log(response);
                     },
                      error: function(xhr, status, error) {
-            // Kiểm tra mã lỗi
-            if (xhr.status === 405) {
-                // Nếu mã lỗi là 405, điều hướng về trang Index của Home
-                window.location.replace('/Home');
-            } else {
-                // Xử lý lỗi khác nếu cần
-                console.error("Error occurred: " + error);
-                alert("Thanh toán hóa đơn thành công.");
-            }
-        }
-                });
-                window.location.replace('/Home');
-
+                    // Kiểm tra mã lỗi
+                    if (xhr.status === 405) {
+                        
+                        alert("Thanh toán hóa đơn thành công.");
+                    window.location.replace('/Home');
+                         } else {
+                          // Xử lý lỗi khác nếu cần
+                        console.error("Error occurred: " + error);
+                            }
+                        }
+                    });
             }
 
         }
