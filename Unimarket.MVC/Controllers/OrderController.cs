@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Data;
 using System.Text;
 using Unimarket.MVC.Helpers;
 using Unimarket.MVC.Models.ViewModels;
@@ -26,32 +27,56 @@ namespace Unimarket.MVC.Controllers
         public async Task<IActionResult> Index(DefaultSearch defaultSearch)
         {
             ResponseOrder cartItem = new ResponseOrder();
-            var response = await _client.GetAsync(_client.BaseAddress + "Order/getall");
+            ResponseOrder cartItem2 = new ResponseOrder();
+            var response = await _client.GetAsync(_client.BaseAddress + $"order/all?status={defaultSearch.InvoiceType}&page={defaultSearch.currentPage}&size={defaultSearch.perPage}");
             if (response.IsSuccessStatusCode)
             {
                 var data = await response.Content.ReadAsStringAsync();
+                cartItem2 = JsonConvert.DeserializeObject<ResponseOrder>(data);
+                string status = "RECEIVED";
+                response = await _client.GetAsync(_client.BaseAddress + $"order/all?status={status}&page={defaultSearch.currentPage}&size={defaultSearch.perPage}");
+                data = await response.Content.ReadAsStringAsync();
                 cartItem = JsonConvert.DeserializeObject<ResponseOrder>(data);
+                ViewData["RECEIVED"] = cartItem.data.totalElements;
+                status = "DELIVERY";
+                response = await _client.GetAsync(_client.BaseAddress + $"order/all?status={status}&page={defaultSearch.currentPage}&size={defaultSearch.perPage}");
+                data = await response.Content.ReadAsStringAsync();
+                cartItem = JsonConvert.DeserializeObject<ResponseOrder>(data);
+                ViewData["DELIVERY"] = cartItem.data.totalElements;
             }
             else
             {
                 return RedirectToAction("Login", "User");
             }
-            return View(cartItem);
+
+            return View(cartItem2.data);
         }
-        [HttpPut]
-        public async Task<IActionResult> UpdateOrder([FromBody] UpdateOrder order)
+        [HttpPost]
+        public async Task<IActionResult> UpdateOrder([FromBody] UpdateOrderModel model)
         {
-            UpdateOrder _order = new UpdateOrder
+            HttpResponseMessage response = null;
+            if (model.type == 0)
             {
-                OrderId = order.OrderId,
-                Status = order.Status
-            };
-
-            var response = await _client.PutAsync(_client.BaseAddress + "Order/update/order", new StringContent(
-                JsonConvert.SerializeObject(_order),
-                Encoding.UTF8,
-                "application/json"));
-
+                var status = new
+                {
+                    orderStatus = "DELIVERY",
+                };
+                response = await _client.PutAsync(_client.BaseAddress + $"order/status/{model.orderId}", new StringContent(
+                 JsonConvert.SerializeObject(status),
+                 Encoding.UTF8,
+                 "application/json"));
+            }
+            else
+            {
+                var status = new
+                {
+                    orderStatus = "RECEIVED",
+                };
+                response = await _client.PutAsync(_client.BaseAddress + $"order/status/{model.orderId}", new StringContent(
+                 JsonConvert.SerializeObject(status),
+                 Encoding.UTF8,
+                 "application/json"));
+            }
             if (response.IsSuccessStatusCode)
             {
                 return Ok(new { success = true, message = "Order updated successfully!" });
