@@ -115,7 +115,9 @@
                             <li class="@(IsActive("Shop", "Index") ? "active" : "")">
                                 <a href="@Url.Action("Index", "Shop")">Sản phẩm</a>
                             </li>
-                            
+                            <li class="@(IsActive("Blog", "Index") ? "active" : "")">
+                                <a href="@Url.Action("Index", "Blog")">Blog</a>
+                            </li>
                         </ul>
                     </nav>
                 </div>
@@ -197,16 +199,6 @@
                         <div class="col-lg-6 col-md-6 footer__widget">
                             <h6>Tài khoản</h6>
                             <ul>
-                                <li>
-                                    <a href="@((user == null) ? Url.Action("Login", "User") : Url.Action("Index", "Profile"))">
-                                        Tài khoản của bạn
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="@((user == null) ? Url.Action("Login", "User") : Url.Action("OrderHistory", "Profile"))">
-                                        Lịch sử đơn hàng
-                                    </a>
-                                </li>
                                 <li>
                                     <a href="@((user == null) ? Url.Action("Login", "User") : Url.Action("Index", "Cart"))">
                                         Giỏ hàng
