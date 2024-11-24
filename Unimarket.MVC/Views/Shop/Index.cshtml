@@ -172,6 +172,7 @@
     }
 </script>
 @section Scripts {
+    <script src="./js/address.js"></script>
     <script>
         function submitAddToCartForm(itemId) {
             $.ajax({
@@ -215,4 +216,54 @@
             });
         });
     </script>
+    <script>
+        function submitAddToCartForm(itemId) {
+            $.ajax({
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                type: "POST",
+                url: "Cart/AddToCart",
+                data: JSON.stringify(itemId),
+                success: function (response) {
+                    if (response.requiresLogin) {
+                        Swal.fire({
+                            position: "center",
+                            icon: "warning",
+                            title: "Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng.",
+                            showConfirmButton: true,
+                            confirmButtonText: "Đăng nhập"
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.href = '/User/Login';
+                            }
+                        });
+                    } else if (response.success) {
+                        Swal.fire({
+                            position: "center",
+                            icon: "success",
+                            title: "Thêm vào giỏ hàng thành công!",
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    } else {
+                        Swal.fire({
+                            position: "center",
+                            icon: "error",
+                            title: "Vượt số lượng sản phẩm",
+                            showConfirmButton: true
+                        });
+                    }
+                },
+                error: function () {
+                    Swal.fire({
+                        position: "center",
+                        icon: "error",
+                        title: "Đã xảy ra lỗi, vui lòng thử lại.",
+                        showConfirmButton: true
+                    });
+                }
+            });
+        }
+    </script>
 }
+
